@@ -4,7 +4,7 @@
 #include "header.h"
 #include "image_processing.h"
 
-void filterLane(Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane);
+void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane);
 double getTheta(Point car, Point dst);
 double getAngleLane(Mat &binImg, double preTheta);
 void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst);

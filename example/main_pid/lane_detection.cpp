@@ -4,6 +4,7 @@
 
 Mat colorImg, hsvImg, binImg;
 double theta;
+//bool hasSign;
 //Point preCenterPoint;
 // My function
 /*
@@ -279,7 +280,7 @@ void laneProcessing()
     // Filter lanes
     // filterLane(binLeft, isLeft, centerLeft.x, -1);
     // filterLane(binRight, isRight, centerRight.x, 1);
-    filterLane(colorLaneImg, binLaneImg, preCenterPoint, centerLeft, centerRight, isLane);
+    filterLane(colorLaneImg, binLaneImg, centerLeft, centerRight, isLane);
     imshow("binLaneImg", binLaneImg);
     imshow("colorLaneImg", colorLaneImg);
     // centerLeft.x += xLeftRect;

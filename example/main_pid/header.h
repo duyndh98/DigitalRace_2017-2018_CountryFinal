@@ -27,8 +27,8 @@ using namespace cv;
 using namespace std;
 using namespace cv::ml;
 
-#define LOW_HSV_BLUE Scalar(104, 148, 55)
-#define HIG_HSV_BLUE Scalar(118, 255, 255)
+#define LOW_HSV_BLUE Scalar(100, 100, 100)
+#define HIG_HSV_BLUE Scalar(120, 255, 255)
 
 #define LOW_HSV_RED1 Scalar(0, 80, 100)
 #define HIG_HSV_RED1 Scalar(5, 255, 255)
@@ -48,7 +48,7 @@ using namespace cv::ml;
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
-#define MIN_SIGN_AREA 1800
+#define MIN_SIGN_AREA 200
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
@@ -57,6 +57,7 @@ using namespace cv::ml;
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
 #define ALPHA 1.5
+#define ALPHA_TURN 100
 
 #define SW1_PIN 160
 #define SW2_PIN 161
@@ -76,6 +77,10 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
+#define MIN_SIGN_TURN 1400
+
+#define Y_TURN 0.2
+#define TURN_TIME 1
 
 #define KI 0.3
 #define KP 0.1
@@ -85,7 +90,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL2 45
 
 // Global variables
-extern Mat colorImg, hsvImg, binImg, binSignImg;
+extern Mat colorImg, hsvImg, binImg, binSignImg, grayImg;
 
 // Switch input
 extern int sw1_stat;
@@ -123,6 +128,6 @@ extern unsigned int bt_status;
 extern unsigned int sensor_status;
 extern char key;
 extern Point preCenterPoint;
-
+extern bool hasSign;
 
 #endif

@@ -133,6 +133,8 @@ control.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.h
 header.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
+sign.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
 opencv2/imgproc/imgproc.hpp

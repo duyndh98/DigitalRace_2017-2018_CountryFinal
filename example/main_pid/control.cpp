@@ -14,6 +14,7 @@ int sensor;
 int set_throttle_val, throttle_val;
 
 Sign mySign;
+bool hasSign;
 
 void GPIO_init()
 {
@@ -156,7 +157,8 @@ void signProcessing()
             cout << signID << endl;
             Rect signROI = mySign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
-            if ((signROI.y + signROI.height) / 2 >= Y_TURN * FRAME_HEIGHT)
+            cout << "Sign area: " << signROI.height * signROI.width << endl;
+            if (signROI.height * signROI.width >= MIN_SIGN_TURN)
             {
                 controlTurn(signID);
                 mySign.resetClassID();
@@ -171,13 +173,13 @@ void controlTurn(int signID)
     if (signID == SIGN_LEFT)
     {
         putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        theta = ALPHA_TURN;
+        theta = -ALPHA_TURN;
         sleep(TURN_TIME);
     }
     else if (signID == SIGN_RIGHT)
     {
         putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        theta = -ALPHA_TURN;
+        theta = ALPHA_TURN;
         sleep(TURN_TIME);
     }
     else

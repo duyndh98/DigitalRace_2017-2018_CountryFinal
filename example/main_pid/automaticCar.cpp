@@ -21,7 +21,8 @@ unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
 char key;
 Point preCenterPoint;
-Mat binSignImg;
+Mat binSignImg, grayImg;
+//bool hasSign;
 
 int main(int argc, char *argv[])
 {
@@ -104,6 +105,8 @@ int main(int argc, char *argv[])
             medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             
+            cvtColor(colorImg, grayImg, CV_BGR2GRAY);
+
             // get lane binary image
             get_mask(hsvImg, binImg, false, false, true); // black
 		    bitwise_not(binImg, binImg);
