@@ -103,6 +103,7 @@ int api_set_STEERING_control( PCA9685 *pca9685,double &theta)
     pca9685->setPWM(STEERING_CHANNEL2,0, pwm2);
 	int pwm1 = map( -theta, MIN_ANGLE, MAX_ANGLE, STEERING_MAX_RIGHT1, STEERING_MAX_LEFT1 ); 
     pca9685->setPWM(STEERING_CHANNEL1,0, pwm1);
+	cout << "pwm1: " << pwm1 << endl;
     return pwm2;
 }
 

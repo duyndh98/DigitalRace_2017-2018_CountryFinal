@@ -16,6 +16,7 @@ CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o
  /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OniVersion.h
  /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OpenNI.h
  /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Win32/OniPlatformWin32.h
+ /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/./define.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/./sign_recognizer.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/automaticCar.cpp
  /usr/local/include/opencv/cv.h

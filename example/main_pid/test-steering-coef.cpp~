@@ -51,7 +51,7 @@ int main( int argc, char** argv )
             break;
 	    fprintf(stderr, "pwm2 = %d\n", pwm2);
 	    pca9685->setPWM(STEERING_CHANNEL1,0, pwm2);
-        //sleep(1);
+        sleep(1);
     }
 
     api_pwm_pca9685_release( pca9685 );

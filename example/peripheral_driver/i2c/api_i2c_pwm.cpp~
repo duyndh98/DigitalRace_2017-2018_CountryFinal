@@ -55,11 +55,11 @@ api_pwm_pca9685_init( PCA9685 *pca9685)
     pca9685->setPWMFrequency( PWM_FREQ ) ;
     // Set the PWM to "neutral" (1.5ms)
     sleep(1) ;
-    int pwm2 = map( 0, MIN_ANGLE, MAX_ANGLE, STEERING_MAX_RIGHT, STEERING_MAX_LEFT );
+    int pwm2 = map( 0, MIN_ANGLE, MAX_ANGLE, STEERING_MAX_RIGHT2, STEERING_MAX_LEFT2 );
     pca9685->setPWM(STEERING_CHANNEL2, 0, pwm2);
-
+    pca9685->setPWM(STEERING_CHANNEL1, 0, pwm2);
     pca9685->setPWM(THROTTLE_CHANNEL,0,THROTTLE_NEUTRAL);
-
+	sleep(1) ;
 }
 
 void
@@ -71,18 +71,27 @@ api_pwm_pca9685_release( PCA9685 *pca9685 )
     int current_state = 0;
 
     if (pca9685->error >= 0)
-        api_pwm_set_control( pca9685, dir, throttle_val, theta, current_state );
+        api_set_STEERING_control(pca9685, theta);
 
     pca9685->closePCA9685();
 }
-
-
-int
-api_pwm_set_control( PCA9685 *pca9685,
-            int dir,
-            int &throttle_val,
-            double &theta,
-            int &current_state)
+////////////////////////////////
+int api_set_FORWARD_control( PCA9685 *pca9685,int &throttle_val)
+{       
+    int pwm = map( throttle_val, 0, 100, THROTTLE_NEUTRAL, THROTTLE_MAX_FORWARD ); 
+    pca9685->setPWM(THROTTLE_CHANNEL,0, pwm);
+}
+///////////////////////////////////
+int api_set_REVERSE_control( PCA9685 *pca9685,int &throttle_val)
+{     
+	pca9685->setPWM(THROTTLE_CHANNEL,0, THROTTLE_MAX_REVERSE);
+	usleep(100000) ;
+	pca9685->setPWM(THROTTLE_CHANNEL,0,THROTTLE_NEUTRAL) ;
+    usleep(100000) ;  
+    int pwm = map( throttle_val, 0, 100, THROTTLE_NEUTRAL, THROTTLE_MAX_REVERSE ); 
+    pca9685->setPWM(THROTTLE_CHANNEL,0, pwm);
+}
+int api_set_STEERING_control( PCA9685 *pca9685,double &theta)
 {
     if( theta < MIN_ANGLE)
         theta = MIN_ANGLE;
@@ -90,45 +99,10 @@ api_pwm_set_control( PCA9685 *pca9685,
     if( theta > MAX_ANGLE )
         theta = MAX_ANGLE;
         
-    int pwm2 = map( theta, MIN_ANGLE, MAX_ANGLE, STEERING_MAX_RIGHT, STEERING_MAX_LEFT ); 
+    int pwm2 = map( theta, MIN_ANGLE, MAX_ANGLE, STEERING_MAX_RIGHT2, STEERING_MAX_LEFT2 ); 
     pca9685->setPWM(STEERING_CHANNEL2,0, pwm2);
-
-    int pwm0 = THROTTLE_NEUTRAL;
-
-    if( dir == DIR_BRAKE )
-    {
-        pca9685->setPWM(THROTTLE_CHANNEL,0, THROTTLE_NEUTRAL);
-    }
-
-    int numLevel = 100;
-    int offset = 5;
-
-    int min_forward = THROTTLE_NEUTRAL + offset;
-    int max_forward = min_forward + numLevel;
-    int min_reverse = THROTTLE_NEUTRAL - offset;
-    int max_reverse = min_reverse - numLevel;
-
-    if( dir == DIR_FORWARD )
-    {
-        pwm0 = min_forward + throttle_val;
-
-        if (pwm0 > max_forward)
-            pwm0 = max_forward;
-
-        pca9685->setPWM(THROTTLE_CHANNEL,0, pwm0);
-
-    }
-    if( dir == DIR_REVERSE )
-    {
-        pwm0 = min_reverse - throttle_val;
-
-        if (pwm0 < max_reverse)
-            pwm0 = max_reverse;
-
-        pca9685->setPWM(THROTTLE_CHANNEL,0, pwm0);
-    }
-
-    current_state = dir;
+	int pwm1 = map( -theta, MIN_ANGLE, MAX_ANGLE, STEERING_MAX_RIGHT1, STEERING_MAX_LEFT1 ); 
+    pca9685->setPWM(STEERING_CHANNEL1,0, pwm1);
     return pwm2;
 }
 

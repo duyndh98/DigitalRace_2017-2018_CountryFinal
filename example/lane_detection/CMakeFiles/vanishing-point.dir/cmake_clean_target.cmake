@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "libvanishing-point.a"
+  "../bin/Release/libvanishing-point.a"
 )

@@ -20,6 +20,21 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "/home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include"
   "/usr/local/include"
   "/usr/local/include/opencv"
+  "stereo_vision"
+  "lane_detection"
+  "lane_detection/msac"
+  "peripheral_driver/i2c"
+  "peripheral_driver/uart"
+  "ObjectDetection"
+  "ObjectRecognition"
+  "HAL"
+  "multilane"
+  "include"
+  "sign_detection"
+  "sign_recognize"
+  "radon"
+  "extract_info"
+  "openni2"
   )
 set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
 set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

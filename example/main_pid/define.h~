@@ -32,4 +32,4 @@
 #define GREEN_MIN Scalar(34, 138, 12)
 #define GREEN_MAX Scalar(83, 246, 124)
 #define AREA_MIN 17000
-#define OFFSET_DIVIDE 0
+#define OFFSET_DIVIDE 20

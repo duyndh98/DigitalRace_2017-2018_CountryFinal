@@ -114,6 +114,8 @@ crtdbg.h
 stdint.h
 -
 
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/./define.h
+
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/./sign_recognizer.h
 iostream
 -
@@ -163,6 +165,8 @@ pthread.h
 -
 ./sign_recognizer.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/./sign_recognizer.h
+./define.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/./define.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign_recognizer.cpp
 sign_recognizer.h
@@ -1500,8 +1504,6 @@ iostream
 iomanip
 -
 chrono
--
-cmath
 -
 msac/MSAC.h
 lane_detection/msac/MSAC.h

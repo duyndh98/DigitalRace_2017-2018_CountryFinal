@@ -274,11 +274,18 @@ double getTheta(Point car, Point dst)
 cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, bool &preState)
 {
     pop = false;
-    point.x = 0;
-    point.y = 0;
+    //point.x = 0;
+    //point.y = 0;
+	if (check==-1){
+		point.x = 0;
+		point.y = imgLane.rows/2;
+	} else {
+		point.x = imgLane.cols;
+		point.y = imgLane.rows/2;	
+	}
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+    cv::findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, cv::Point(0, 0));
     if (contours.size() == 0)
     {
         cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
@@ -304,7 +311,7 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
         return none;
     }
     int xMin = 0, yMin = 1000, xMax = 0, yMax = -1;
-    for (int i = 0; i < contours[maxIndex].size(); i++)
+    /*for (int i = 0; i < contours[maxIndex].size(); i++)
     {
         // if (contours[maxIndex][i].y > yMax)
         // {
@@ -319,11 +326,35 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
         sumX += contours[maxIndex][i].x;
         sumY += contours[maxIndex][i].y;
     }
-
+	*/
     //if((xMax>=xMin) && (check==1)){
     cv::drawContours(result, contours, maxIndex, cv::Scalar(255), CV_FILLED);
-    point.x = sumX / contours[maxIndex].size();
-    point.y = sumY / contours[maxIndex].size();
+    //point.x = sumX / contours[maxIndex].size();
+    //point.y = sumY / contours[maxIndex].size();
+	if(check==-1){
+		point.x = 0;
+		for (int i = 0; i < contours[maxIndex].size(); i++)
+    		{
+			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+				if (point.x < contours[maxIndex][i].x)
+					point.x = contours[maxIndex][i].x;
+			}
+        	//sumX += contours[maxIndex][i].x;
+        	//sumY += contours[maxIndex][i].y;
+    		}	
+	} else {
+		point.x = imgLane.cols;
+		for (int i = 0; i < contours[maxIndex].size(); i++)
+    		{
+			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+				if (point.x > contours[maxIndex][i].x)
+					point.x = contours[maxIndex][i].x;
+			}
+        	//sumX += contours[maxIndex][i].x;
+        	//sumY += contours[maxIndex][i].y;
+    		}	
+	}
+	point.y = imgLane.rows/2;
 
     if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
     {
@@ -658,8 +689,8 @@ int main(int argc, char *argv[])
             {
                 running = !running;
                 sw4_stat = bt_status;
-                throttle_val = 37;
-                set_throttle_val = 37;
+                throttle_val = 30;
+                set_throttle_val = 30;
                 road_width_set = false;
                 oneLine = false;
             }
@@ -674,8 +705,8 @@ int main(int argc, char *argv[])
             {
                 running = !running;
                 sw1_stat = bt_status;
-                throttle_val = 40;
-                set_throttle_val = 40;
+                throttle_val = 35;
+                set_throttle_val = 35;
                 road_width_set = false;
                 oneLine = false;
             }
@@ -779,8 +810,8 @@ int main(int argc, char *argv[])
                 //cvtColor(depthImg,)
                 //cout << "goi ham get_ob"<<depthImg.channels()<<endl;
                 //imshow("DepthImg",depthImg);
-                imshow("Depth__", depth_img_8u);
-                get_obtacle(depth_img_8u, x_Left, x_Right, y_ob, w_ob, test_obt);
+                //imshow("Depth__", depth_img_8u);
+                //get_obtacle(depth_img_8u, x_Left, x_Right, y_ob, w_ob, test_obt);
 
                 //PointCenter_Displacement( xTam, x_Left, x_Right);
                 //cout << "x_Left"<<x_Left <<endl<<"x_Right"<<x_Right;
@@ -871,11 +902,11 @@ int main(int argc, char *argv[])
                 bool isRight = false;
                 Point pointLeft(0, 0);
                 Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-                pointLeft.y += 3 * grayImage.rows / 4;
+                pointLeft.y += 4 * grayImage.rows / 5;
                 Point pointRight(0, 0);
                 Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
                 pointRight.x += (grayImage.cols / 2 + OFFSET_DIVIDE);
-                pointRight.y += 3 * grayImage.rows / 4;
+                pointRight.y += 4 * grayImage.rows / 5;
                 //circle(grayImage, pointRight, 2, Scalar(255, 0, 255), 3);
                 //circle(grayImage, pointLeft, 2, Scalar(255, 0, 255), 3);
                 preLeft = isLeft;
@@ -971,8 +1002,8 @@ int main(int argc, char *argv[])
                 {
                     putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = (grayImage.cols - pointLeft.x) / 2; // grayImage.cols / 2 + 150;
-                    yTam = 5 * grayImage.rows / 8;
+                    xTam = (grayImage.cols + pointLeft.x) / 2; // grayImage.cols / 2 + 150;
+                    yTam = pointLeft.y;
                     //std::cout << "angdiff: " << angDiff << std::endl;
                     // theta = (0.00);
                     //api_set_STEERING_control(pca9685, theta);
@@ -982,7 +1013,7 @@ int main(int argc, char *argv[])
                     putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
                     xTam = pointRight.x / 2; // grayImage.cols / 2 - 150;
-                    yTam = 5 * grayImage.rows / 8;
+                    yTam = pointRight.y;
                 }
                 else
                 {
@@ -1015,6 +1046,9 @@ int main(int argc, char *argv[])
                 theta = -(angDiff * ALPHA);
                 circle(grayImage, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
                 circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+		circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
+		circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
+		imshow("color", colorImg);
                 std::cout << "angdiff: " << angDiff << std::endl;
                 // theta = (0.00);
                 api_set_STEERING_control(pca9685, theta);

@@ -15,6 +15,7 @@ CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OniVersion.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OpenNI.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Win32/OniPlatformWin32.h
+CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/./define.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/./sign_recognizer.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/automaticCar.cpp
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /usr/local/include/opencv/cv.h
