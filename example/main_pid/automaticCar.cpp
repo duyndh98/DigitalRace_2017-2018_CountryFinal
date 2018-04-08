@@ -55,8 +55,8 @@ using namespace EmbeddedFramework;
 #define SW3_PIN 163
 #define SW4_PIN 164
 #define SENSOR 165
-#define GREEN_MIN Scalar(34,138,12)
-#define GREEN_MAX Scalar(83,246,124)
+#define GREEN_MIN Scalar(34, 138, 12)
+#define GREEN_MAX Scalar(83, 246, 124)
 #define AREA_MIN 17000
 
 enum SIGN_INDEX
@@ -79,7 +79,7 @@ int detectLeft = 0;
 int detectRight = 0;
 int set_throttle_val = 0;
 int throttle_config = 0;
-bool test_obt=false;
+bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
 
 double median(Mat gray)
@@ -131,32 +131,31 @@ int recognize_sign(Rect &sign, Mat &gray)
     return class_id;
 }
 
-
 void ycrcb_equalize(Mat &img)
 {
-	Mat ycrcb;
-	cvtColor(img, ycrcb, CV_BGR2YCrCb);
+    Mat ycrcb;
+    cvtColor(img, ycrcb, CV_BGR2YCrCb);
 
-	vector<Mat> chanels(3);
+    vector<Mat> chanels(3);
 
-	split(ycrcb, chanels);
+    split(ycrcb, chanels);
 
-	Ptr<CLAHE> clahe = createCLAHE(2.0, Size(8, 8));
+    Ptr<CLAHE> clahe = createCLAHE(2.0, Size(8, 8));
 
-	clahe->apply(chanels[0], chanels[0]);
+    clahe->apply(chanels[0], chanels[0]);
 
-	merge(chanels, ycrcb);
+    merge(chanels, ycrcb);
 
-	cvtColor(ycrcb, img, CV_YCrCb2BGR);
+    cvtColor(ycrcb, img, CV_YCrCb2BGR);
 }
 
 void get_mask(Mat &img, Mat &dst)
 {
     //GaussianBlur(img, img, Size(KERNEL_SIZE, KERNEL_SIZE), 0);
-	
+
     Mat hsv;
     cvtColor(img, hsv, COLOR_BGR2HSV);
-	//ycrcb_equalize(hsv);
+    //ycrcb_equalize(hsv);
     //Mat mask;
 
     inRange(hsv, LOW_HSV_BLUE, HIG_HSV_BLUE, dst);
@@ -166,17 +165,17 @@ void get_mask(Mat &img, Mat &dst)
     dilate(dst, dst, kernel);
     morphologyEx(dst, dst, MORPH_CLOSE, kernel);
 
-/*erode(dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    /*erode(dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
 		dilate( dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
 		dilate( dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
 		erode(dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-  */  //dst = mask.clone();
+  */ //dst = mask.clone();
 }
 
 void detect_sign(Mat &mask, Rect &sign)
 {
-	
-	bool isSign = false;
+
+    bool isSign = false;
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
 
@@ -195,13 +194,13 @@ void detect_sign(Mat &mask, Rect &sign)
                     if ((1 - DIF_RATIO_BOUND_WIDTH_PER_HEIGHT < (float)bound.width / bound.height) && ((float)bound.width / bound.height < 1 + DIF_RATIO_BOUND_WIDTH_PER_HEIGHT))
                         if ((1 - DIF_RATIO_CONTOUR_AREA < ((double)contour_area / ellipse_area)) && ((double)contour_area / ellipse_area < 1 + DIF_RATIO_CONTOUR_AREA))
                         {
-				isSign = true;
+                            isSign = true;
                             cout << "area contour: " << contour_area << endl;
                             sign = bound;
                             max_area = contour_area;
                         }
     }
-	/*if(isSign){
+    /*if(isSign){
 		cout << "reach set throttle=======================================" << endl;
 		set_throttle_val = 2;
 		//api_set_FORWARD_control(pca9685, set_throttle_val);
@@ -210,28 +209,26 @@ void detect_sign(Mat &mask, Rect &sign)
 	}*/
 }
 
-
-
-int api_sign_detection(Mat &img, sign_recognizer& sr)
+int api_sign_detection(Mat &img, sign_recognizer &sr)
 {
-   // resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
- //imshow("___", img);
+    // resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
+    //imshow("___", img);
     Mat mask;
     get_mask(img, mask);
     imshow("mask", mask);
 
-   // Mat gray;
-   // cvtColor(img, gray, COLOR_BGR2GRAY);
+    // Mat gray;
+    // cvtColor(img, gray, COLOR_BGR2GRAY);
 
     Rect sign;
     detect_sign(mask, sign);
-	//api_set_FORWARD_control(pca9685, set_throttle_val);
+    //api_set_FORWARD_control(pca9685, set_throttle_val);
 
-   sr.configure(mask, img, sign);
+    sr.configure(mask, img, sign);
     //cout << sign.x << ' ' << sign.y << ' ' << sign.width << ' ' << sign.height;
-  //  return recognize_sign(sign, gray);
+    //  return recognize_sign(sign, gray);
 
-  return sr.recognize();
+    return sr.recognize();
 }
 
 cv::Mat remOutlier(const cv::Mat &gray)
@@ -266,7 +263,7 @@ char analyzeFrame(const VideoFrameRef &frame_depth, const VideoFrameRef &frame_c
     int w = frame_color.getWidth();
     int h = frame_color.getHeight();
 
-    depth_img = Mat(h, w, CV_16U);////////////////--------------------------------------------test
+    depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
     color_img = Mat(h, w, CV_8UC3);
     Mat depth_img_8u;
 
@@ -357,18 +354,17 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
     point.x = sumX / contours[maxIndex].size();
     point.y = sumY / contours[maxIndex].size();
 
-	if ((point.x  > imgLane.cols/2) && (check == -1) && (preState == false))
+    if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
     {
-	//cout << "sum X: " << sumX << endl;
+        //cout << "sum X: " << sumX << endl;
         cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
-    if ((point.x  < imgLane.cols / 2) && (check == 1) && (preState == false))
+    if ((point.x < imgLane.cols / 2) && (check == 1) && (preState == false))
     {
         cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
-
 
     pop = true;
     return result;
@@ -405,7 +401,7 @@ void controlTurn(PCA9685 *&pca9685, int dir)
 
 void *detectSign(void *)
 {
-  /*  while (1)
+    /*  while (1)
     {
         //bool getFrame = (bool)var;
         //cv::imshow("IMG Color", colorImg);
@@ -454,11 +450,8 @@ void *detectSign(void *)
     }*/
 }
 
-
 ///////////////////////cose test
 ///////////////////////////////////////////////// MADE BY NGAN//////////////////////
-
-
 
 //////////////////////////////////////////////////////////END NGAN/////////////////////
 //////////////////////////////////////
@@ -613,7 +606,7 @@ int main(int argc, char *argv[])
     // Argc == 2 eg ./test-autocar 27 means initial throttle is 27
     if (argc == 2)
         set_throttle_val = atoi(argv[1]);
-	throttle_config = set_throttle_val;
+    throttle_config = set_throttle_val;
     fprintf(stderr, "Initial throttle: %d\n", set_throttle_val);
     int frame_width = VIDEO_FRAME_WIDTH;
     int frame_height = VIDEO_FRAME_HEIGHT;
@@ -634,7 +627,6 @@ int main(int argc, char *argv[])
     int preY = 0;
     bool preLeft = false;
     bool preRight = false;
-
 
     sign_recognizer sr;
     sr.init();
@@ -686,9 +678,9 @@ int main(int argc, char *argv[])
         key = getkey();
         unsigned int bt_status = 0;
         gpio->gpioGetValue(SW4_PIN, &bt_status);
-	unsigned int sensor_status = 0;
-	gpio->gpioGetValue(SENSOR, &sensor_status);
-	cout << "sensor: " << sensor_status << endl;
+        unsigned int sensor_status = 0;
+        gpio->gpioGetValue(SENSOR, &sensor_status);
+        cout << "sensor: " << sensor_status << endl;
         if (!bt_status)
         {
             if (bt_status != sw4_stat)
@@ -696,44 +688,44 @@ int main(int argc, char *argv[])
                 running = !running;
                 sw4_stat = bt_status;
                 throttle_val = 37;
-		set_throttle_val = 37;
-		road_width_set = false;
-		oneLine = false;
+                set_throttle_val = 37;
+                road_width_set = false;
+                oneLine = false;
             }
         }
         else
             sw4_stat = bt_status;
-	
 
-	gpio->gpioGetValue(SW1_PIN, &bt_status);
-	if (!bt_status)
+        gpio->gpioGetValue(SW1_PIN, &bt_status);
+        if (!bt_status)
         {
             if (bt_status != sw1_stat)
             {
                 running = !running;
                 sw1_stat = bt_status;
                 throttle_val = 40;
-		set_throttle_val = 40;
-		road_width_set = false;
-		oneLine = false;
+                set_throttle_val = 40;
+                road_width_set = false;
+                oneLine = false;
             }
         }
         else
             sw1_stat = bt_status;
-	if(sensor==0 && sensor_status==1){
-		running = true;
-		throttle_val = set_throttle_val;
-		road_width_set = false;
-		oneLine = false;
-	}
-	sensor = sensor_status;
+        if (sensor == 0 && sensor_status == 1)
+        {
+            running = true;
+            throttle_val = set_throttle_val;
+            road_width_set = false;
+            oneLine = false;
+        }
+        sensor = sensor_status;
         if (key == 's')
         {
             running = !running;
             throttle_val = set_throttle_val;
 
-		road_width_set = false;
-		oneLine = false;
+            road_width_set = false;
+            oneLine = false;
         }
         if (key == 'f')
         {
@@ -746,8 +738,8 @@ int main(int argc, char *argv[])
 
         if (running)
         {
-		cout << "v = " << throttle_val << endl;
-		throttle_val = set_throttle_val;
+            cout << "v = " << throttle_val << endl;
+            throttle_val = set_throttle_val;
             //// Check PCA9685 driver ////////////////////////////////////////////
             if (pca9685->error < 0)
             {
@@ -784,53 +776,45 @@ int main(int argc, char *argv[])
             if (recordStatus == 'c')
             {
 
+                //////////////////////////////////////////////////////////////-------------------------------- ------------------------------------test
+                // ngannnnn
+                DepthPixel *depth_img_data;
+                RGB888Pixel *color_img_data;
 
+                int w = frame_color.getWidth();
+                int h = frame_color.getHeight();
 
-//////////////////////////////////////////////////////////////-------------------------------- ------------------------------------test 
-// ngannnnn
-    DepthPixel *depth_img_data;
-    RGB888Pixel *color_img_data;
+                Mat depth_img = Mat(h, w, CV_16U); ////////////////------------------------------------------------------------------------------------------test
+                //color_img = Mat(h, w, CV_8UC3);
+                Mat depth_img_8u;
 
-    int w = frame_color.getWidth();
-    int h = frame_color.getHeight();
+                depth_img_data = (DepthPixel *)frame_depth.getData();
 
-    Mat depth_img = Mat(h, w, CV_16U);////////////////------------------------------------------------------------------------------------------test
-    //color_img = Mat(h, w, CV_8UC3);
-    Mat depth_img_8u;
+                memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
+                normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
 
-    depth_img_data = (DepthPixel *)frame_depth.getData();
+                depth_img_8u.convertTo(depth_img_8u, CV_8U);
+                //color_img_data = (RGB888Pixel *)frame_color.getData();
 
-    memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
-    normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
+                //memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
 
-    depth_img_8u.convertTo(depth_img_8u, CV_8U);
-    //color_img_data = (RGB888Pixel *)frame_color.getData();
+                //cvtColor(color_img, color_img, COLOR_RGB2BGR);
 
-    //memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
-
-    //cvtColor(color_img, color_img, COLOR_RGB2BGR);
-
-
-//////////////////get depth
-		int x_Left, x_Right, y_ob, w_ob;
+                //////////////////get depth
+                int x_Left, x_Right, y_ob, w_ob;
                 //cv::Mat depth__;
                 //const float scaleFactor = 0.05f;
-	        //depthImg.convertTo(depth__,CV_8UC1, scaleFactor);
+                //depthImg.convertTo(depth__,CV_8UC1, scaleFactor);
                 //cvtColor(depthImg,)
-			//cout << "goi ham get_ob"<<depthImg.channels()<<endl;
-                 //imshow("DepthImg",depthImg);
-                 imshow("Depth__",depth_img_8u);
-		get_obtacle(depth_img_8u, x_Left,x_Right,y_ob,w_ob, test_obt);
-		
-		//PointCenter_Displacement( xTam, x_Left, x_Right);
-		//cout << "x_Left"<<x_Left <<endl<<"x_Right"<<x_Right;
-		
-			
+                //cout << "goi ham get_ob"<<depthImg.channels()<<endl;
+                //imshow("DepthImg",depthImg);
+                imshow("Depth__", depth_img_8u);
+                get_obtacle(depth_img_8u, x_Left, x_Right, y_ob, w_ob, test_obt);
 
+                //PointCenter_Displacement( xTam, x_Left, x_Right);
+                //cout << "x_Left"<<x_Left <<endl<<"x_Right"<<x_Right;
 
-
-///////////////////////--------------------------------------------------------------------------------------------------------
-
+                ///////////////////////--------------------------------------------------------------------------------------------------------
 
                 // if(endThread){
                 //     endThread = false;
@@ -841,42 +825,42 @@ int main(int argc, char *argv[])
                 //     endThread = false;
                 //     pthread_create(&newThread, NULL, &detectSign, NULL);
                 // }
-		//if(test_obt){
-			//cout << "reach here====================================================" << endl;
-		Rect detectRoi(colorImg.cols/5,colorImg.rows/4,3*colorImg.cols/5,3*colorImg.rows/4);
-            Mat img = colorImg(detectRoi);
-            resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
-            //imshow("img", img);
-            int class_id = api_sign_detection(img, sr);
-            if (class_id != NO_SIGN)
-            {
-                if (class_id == SIGN_LEFT)
-                    detectLeft++;
-                if (class_id == SIGN_RIGHT)
-                    detectRight++;
-            }
-            countDetect++;
-            if (countDetect >= N_SAMPLE)
-            {
-		throttle_val = set_throttle_val;
-		api_set_FORWARD_control(pca9685, throttle_val);
-                if (detectLeft >= ACCEPT_SIGN)
+                //if(test_obt){
+                //cout << "reach here====================================================" << endl;
+                Rect detectRoi(colorImg.cols / 5, colorImg.rows / 4, 3 * colorImg.cols / 5, 3 * colorImg.rows / 4);
+                Mat img = colorImg(detectRoi);
+                resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
+                //imshow("img", img);
+                int class_id = api_sign_detection(img, sr);
+                if (class_id != NO_SIGN)
                 {
-                    flagTurn = true;
-                    dirTurn = SIGN_LEFT;
-                    //controlTurn(pca9685, SIGN_LEFT);
+                    if (class_id == SIGN_LEFT)
+                        detectLeft++;
+                    if (class_id == SIGN_RIGHT)
+                        detectRight++;
                 }
-                else if (detectRight >= ACCEPT_SIGN)
+                countDetect++;
+                if (countDetect >= N_SAMPLE)
                 {
-                    flagTurn = true;
-                    dirTurn = SIGN_RIGHT;
-                    //controlTurn(pca9685, SIGN_RIGHT);
+                    throttle_val = set_throttle_val;
+                    api_set_FORWARD_control(pca9685, throttle_val);
+                    if (detectLeft >= ACCEPT_SIGN)
+                    {
+                        flagTurn = true;
+                        dirTurn = SIGN_LEFT;
+                        //controlTurn(pca9685, SIGN_LEFT);
+                    }
+                    else if (detectRight >= ACCEPT_SIGN)
+                    {
+                        flagTurn = true;
+                        dirTurn = SIGN_RIGHT;
+                        //controlTurn(pca9685, SIGN_RIGHT);
+                    }
+                    countDetect = 0;
+                    detectRight = 0;
+                    detectLeft = 0;
                 }
-                countDetect = 0;
-                detectRight = 0;
-                detectLeft = 0;
-            }
-            preDetect = class_id;
+                preDetect = class_id;
 
                 getFrame = true;
                 if (flagTurn)
@@ -888,10 +872,10 @@ int main(int argc, char *argv[])
                     else
                         putText(colorImg, "Turn Right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     flagTurn = false;
-			continue;
+                    continue;
                 }
 
-		/*Mat imgHSV;
+                /*Mat imgHSV;
 		cvtColor(img, imgHSV, COLOR_BGR2HSV);
 
 		Mat imgThresholded;
@@ -917,7 +901,7 @@ int main(int argc, char *argv[])
 			obs_y = dM01/dArea;
 			has_obs = true;
 		}*/
-	//}
+                //}
                 cvtColor(colorImg, grayImage, CV_BGR2GRAY);
                 //cv::imshow("IMG", colorImg);
                 cout << "reach imshow" << endl;
@@ -1020,24 +1004,26 @@ int main(int argc, char *argv[])
                     xTam = preX;
                     yTam = preY;
                 }*/
- 		if (isLeft && isRight)
+                if (isLeft && isRight)
                 {
                     oneLine = false;
                     xTam = (pointLeft.x + pointRight.x) / 2;
                     yTam = (pointLeft.y + pointRight.y) / 2;
-                    if(road_width_set) {
-                        road_width = (road_width + pointRight.x - pointLeft.x)/2;
+                    if (road_width_set)
+                    {
+                        road_width = (road_width + pointRight.x - pointLeft.x) / 2;
                     }
-                    else {
+                    else
+                    {
                         road_width = pointRight.x - pointLeft.x;
-                        road_width_set = true;                    
+                        road_width_set = true;
                     }
                 }
                 else if (isLeft)
                 {
-			putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+                    putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = pointLeft.x + road_width *2/3; // grayImage.cols / 2 + 150;
+                    xTam = pointLeft.x + road_width * 2 / 3; // grayImage.cols / 2 + 150;
                     yTam = preY;
                     //std::cout << "angdiff: " << angDiff << std::endl;
                     // theta = (0.00);
@@ -1045,9 +1031,9 @@ int main(int argc, char *argv[])
                 }
                 else if (isRight)
                 {
-			putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+                    putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = pointRight.x - road_width *2/3;// grayImage.cols / 2 - 150;
+                    xTam = pointRight.x - road_width * 2 / 3; // grayImage.cols / 2 - 150;
                     yTam = preY;
                 }
                 else
@@ -1057,8 +1043,7 @@ int main(int argc, char *argv[])
                     yTam = preY;
                 }
 
-
-		/*if(has_obs) {
+                /*if(has_obs) {
 			if(obs_x > xTam && obs_x - xTam <= road_width/4) {
 				xTam -= road_width/4;	
 			}
@@ -1069,15 +1054,13 @@ int main(int argc, char *argv[])
 
                 preX = xTam;
                 preY = yTam;
-	if(test_obt == true)
-	{
-		cout<<"remove center point";
-		PointCenter_Displacement( xTam, x_Left, x_Right);
-	}
-		
-	
+                if (test_obt == true)
+                {
+                    cout << "remove center point";
+                    PointCenter_Displacement(xTam, x_Left, x_Right);
+                }
 
-/////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////
                 angDiff = getTheta(carPosition, Point(xTam, yTam));
                 if (-20 < angDiff && angDiff < 20)
                     angDiff = 0;
