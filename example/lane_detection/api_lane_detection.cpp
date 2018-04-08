@@ -1,232 +1,7 @@
 
 #include "api_lane_detection.h"
 
-//using namespace std;
-
-
-
-
-//#include "Lane_Detector.h"
-
-
-Lane_Detector::Lane_Detector() {
-}
-
-
-Lane_Detector::~Lane_Detector() {
-}
-
-
-
-
-//get region have only lanes
-Mat Filter_Region(Mat& binImg) {
-	Mat dst = Mat::zeros(Size(binImg.cols, binImg.rows), CV_8UC1);
-	Point poly[1][4];
-	poly[0][0] = LEFT_DOWN;
-	poly[0][1] = LEFT_UP;
-	poly[0][2] = RIGHT_UP;
-	poly[0][3] = RIGHT_DOWN;
-
-	const Point* polygons[1] = { poly[0] };
-	int num_points[] = { 4 };
-	
-	
-	fillPoly(dst, polygons, num_points, 1, Scalar(255, 255, 255));
-
-	bitwise_and(binImg, dst, dst);
-	return dst;
-}
-
-//line y1 = 120 ----> y2 = 240
-void ProcessLine_AVG(Vec4i& line) {
-	//(x1,y1) --> (x2,y2)
-	int x1 = line[0];
-	int y1 = line[1];
-	int x2 = line[2];
-	int y2 = line[3];
-	//y=ax+b
-	float a = (y2 - y1)*1.0 / (x2 - x1);
-	float b = y1 - a * x1;
-
-	y1 = 120;//VIDEO_HEIGHT_FRAME /2
-	x1 = (int)((y1 - b)*1.0 / a);
-
-	y2 = 240;//VIDEO_HEIGHT_FRAME
-	x2 = (int)((y2 - b)*1.0 / a);
-	
-	line = Vec4i(x1, y1, x2, y2);
-	return;
-}
-//get length line
-float Length_Line(Vec4i line) {
-	//(x1,y1) ----> (x2,y2)
-	int x1 = line[0];
-	int y1 = line[1];
-	int x2 = line[2];
-	int y2 = line[3];
-
-	return sqrt(1.0*(pow(x1 - x2, 2) + pow(y1 - y2, 2)));
-}
-void Swap_Line(Vec4i& a, Vec4i& b) {
-	Vec4i c = a;
-	a = b;
-	b = c;
-	return;
-}
-//Sort Decrease
-void Sort_Vector(vector<Vec4i>& lines) {
-	for (int i = 0; i < lines.size() - 1; i++)
-		for (int j = 0; j < lines.size(); j++)
-			if (Length_Line(lines[i]) < Length_Line(lines[j]))
-				Swap_Line(lines[i], lines[j]);
-	return;
-}
-void Draw_Line(Mat& maskdst,Vec4i _line) {
-	line(maskdst,Point(_line[0],_line[1]),Point(_line[2],_line[3]),Scalar(255,255,255));
-	return;
-}
-
-vector<Vec4i> Draw_Line_in_Lane(Mat binImg) {
-	vector<Vec4i> lines;
-	
-	//morph_dilate
-	dilate(binImg, binImg, Mat::ones(Size(5, 5), CV_8UC1));
-	imshow("delate image",binImg);
-	//HoughlineP
-	HoughLinesP(binImg, lines, RHO, CV_PI / 180, THREH, MIN_LENTH, MAX_GAP);
-	for (int i=0;i<lines.size();i++)
-		Draw_Line(binImg,lines[i]);
-
-
-	imshow("Draw line in lane",binImg);
-	Sort_Vector(lines);
-
-	return lines;
-}
-// Return angle between veritcal line containing car and destination point in degree
-double getTheta(Point car, Point dst) {
-
-	if (dst.x == car.x) return 0;
-
-	if (dst.y == car.y) return (dst.x < car.x ? -90 : 90);
-
-	double pi = acos(-1.0);
-
-	double dx = dst.x - car.x;
-
-	double dy = car.y - dst.y; // image coordinates system: car.y > dst.y
-
-	if (dx < 0) return -atan(-dx / dy) * 180 / pi;
-
-	return atan(dx / dy) * 180 / pi;
-
-}
-// one_lane = true for 1 lane ,otherwise false
-Point Process_One_Lane(Vec4i lane) {
-	double angle = getTheta(Point(lane[0], lane[1]),Point(lane[2],lane[3]));
-	int x1 = lane[0];
-	int y1 = lane[1];
-	int x2 = lane[2];
-	int y2 = lane[3];
-	
-	int shift_pC = 100;//-------- shift point center
-
-	return angle > 0 ? Point(x1 + shift_pC, 120) : Point(x1 - shift_pC, 120);
-}
-Point Process_Two_Lane(Vec4i flane, Vec4i slane) {
-	return Point((flane[0] + slane[0]) / 2, 120);
-}
-
-
-void Lane_Detector::Process_Lane_binImg(Mat& binImg,Point& pC) {
-	vector<Vec4i> lines = Draw_Line_in_Lane(binImg);
-	Mat masktest = Mat::zeros(Size(binImg.cols,binImg.rows),CV_8UC1);
-	if (lines.size() == 0) {
-		return;
-	}
-	// process first lane
-	line(masktest,Point(lines[0][0],lines[0][1]),Point(lines[0][2],lines[0][3]),Scalar(255,255,255));
-	ProcessLine_AVG(lines[0]);
-	if (lines.size() == 1) {
-		pC = Process_One_Lane(lines[0]);
-		return;
-	}
-	line(masktest,Point(lines[1][0],lines[1][1]),Point(lines[1][2],lines[1][3]),Scalar(255,255,255));
-	imshow("Draw Line",masktest);	
-	//process second lane
-	ProcessLine_AVG(lines[1]);
-	//get Lanes
-	Vec4i Lanes[] = { lines[0],lines[1] };
-	pC = Process_Two_Lane(Lanes[0], Lanes[1]);
-	return;
-}
-
-
-void Lane_Detector::Detect_Not_Lane(Mat grayImage,Point& pC) {
-	Mat proImg;
-	//equalize histogram
-	//equalizeHist(grayImage, proImg);
-	
-	//process candy edge detection
-	//-----------reduce noisy
-	blur(grayImage, proImg, Size(3, 3));
-	//------------edge detection
-	int TH_LOWER_EDGE = 100;
-	int RATIO = 3;
-	int KERNEL_SIZE = 3;
-	namedWindow("EDGE");
-	createTrackbar("TH_EDGE","EDGE",&TH_LOWER_EDGE,150);
-	createTrackbar("RATIO","EDGE",&RATIO,3);
-	createTrackbar("KERNEL","EDGE",&KERNEL_SIZE,3);
-
-
-
-	Canny(proImg, proImg, TH_LOWER_EDGE, TH_LOWER_EDGE*RATIO, KERNEL_SIZE);
-	imshow("EDGE",proImg);
-	//-----------get area lane
-	//proImg = Filter_Region(proImg);
-
-	//this->Process_Lane_binImg(proImg,pC);
-	//get point
-	this->xc = pC.x;
-	this->yc = pC.y;
-	return;
-}
-void Lane_Detector::Detect_White_Lane(Mat& colorImage,Point& pC) {
-	//Nothing
-}
-
-Point Lane_Detector::getPoint() {
-	return  Point(this->xc,this->yc);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+using namespace std;
 
 enum ConvolutionType {   
 /* Return the full convolution, including border */
@@ -266,7 +41,7 @@ double sqr(double x) {
 bool inRange(double val, double l, double r) {
 	return (l <= val && val <= r);
 }
-// edge detection
+
 void waveletTransform(const cv::Mat& img, cv::Mat& edge, double threshold = 0.15) {
 	Mat src = img;
 	if (img.type() == 16)
@@ -433,15 +208,15 @@ laneDetect(
     cv::Mat element = cv::getStructuringElement( MORPH_RECT,
                                          Size( 2*erosion_size + 1, 2*erosion_size+1 ),
                                          Point( erosion_size, erosion_size ) );
-    //auto bt = chrono::high_resolution_clock::now();
+    auto bt = chrono::high_resolution_clock::now();
     edgeProcessing(imgGray, imgCanny, element, method);
-    //if (debug) printf("Canny run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
+    if (debug) printf("Canny run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
     
     // Hough
     int houghThreshold = 100;
-    //bt = chrono::high_resolution_clock::now();
+    bt = chrono::high_resolution_clock::now();
     cv::HoughLinesP(imgCanny, lines, 2, CV_PI/90, houghThreshold, 10,30);
-    //if (debug) printf("Hough run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
+    if (debug) printf("Hough run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
 
 
     // Filter
@@ -559,7 +334,7 @@ api_get_vanishing_point(Mat imgGray,
                         Rect roi,
                         MSAC &msac,
                         Point &vp,
-                        bool is_show_output  = false,
+                        bool is_show_output  = true,
 						string method = "Canny")
 {
     auto bt = chrono::high_resolution_clock::now();
@@ -570,11 +345,11 @@ api_get_vanishing_point(Mat imgGray,
     cv::pyrDown(imgGray, imgPyr, cv::Size(imgGray.cols/2, imgGray.rows/2));
     cv::pyrUp(imgPyr, imgGray, imgGray.size());
     if (debug) printf("Pyramid run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
-    //bt = chrono::high_resolution_clock::now();
+    bt = chrono::high_resolution_clock::now();
     
     laneDetect(imgGray, roi, lineSegments, method);
     
-    //if (debug) printf("laneDetect run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
+    if (debug) printf("laneDetect run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
     int numVps = 1;
 
     // Multiple vanishing points
@@ -584,13 +359,13 @@ api_get_vanishing_point(Mat imgGray,
     std::vector<std::vector<std::vector<cv::Point> > > lineSegmentsClusters;
 
     // Call msac function for multiple vanishing point estimation
-    //bt = chrono::high_resolution_clock::now();
+    bt = chrono::high_resolution_clock::now();
     msac.multipleVPEstimation(lineSegments,
                               lineSegmentsClusters,
                               numInliers,
                               vps,
                               numVps);
-    //if (debug) printf("multipleVPEstimation run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
+    if (debug) printf("multipleVPEstimation run in %.2fms \n", chrono::duration<double, milli> (chrono::high_resolution_clock::now() - bt).count());
     if( vps.size() > 0 )
     {
         vp.x = (int)vps[0].at<float>(0,0);

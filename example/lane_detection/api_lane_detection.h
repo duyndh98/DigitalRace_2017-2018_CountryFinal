@@ -7,7 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include <cmath>
+
 #include "msac/MSAC.h"
 
 using namespace std;
@@ -17,50 +17,6 @@ using namespace cv;
 #define VIDEO_FRAME_WIDTH 320
 #define VIDEO_FRAME_HEIGHT 240
 #define debug false
-
-
-#define SET_FAR_LANE 100
-//width and height 
-#define VIDEO_WIDTH_FRAME 320
-#define VIDEO_HEIGHT_FRAME 240
-
-
-//set region lane
-#define LEFT_UP Point(20,120)
-#define LEFT_DOWN Point(0,240)
-#define RIGHT_UP Point(300,120)
-#define RIGHT_DOWN Point(320,240)
-//Canny edge index
-/*
-#define TH_LOWER_EDGE 100
-#define RATIO 3
-#define KERNEL_SIZE 3
-*/
-//set houghlineP
-#define RHO 10
-#define THREH 100
-#define MIN_LENTH 100
-#define MAX_GAP 100
-
-using namespace std;
-using namespace cv;
-
-class Lane_Detector
-{
-private:
-	int xc, yc;
-public:
-	Lane_Detector();
-	~Lane_Detector();
-
-	void Detect_Not_Lane(Mat,Point&);
-	void Detect_White_Lane(Mat&,Point&);
-	void Process_Lane_binImg(Mat&,Point&);
-	Point getPoint();
-};
-
-
-///////////-----------------------------------------
 
 void
 api_vanishing_point_init(MSAC &msac);
