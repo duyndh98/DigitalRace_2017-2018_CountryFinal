@@ -24,40 +24,11 @@
 #include <mutex>
 #include <pthread.h>
 #include "./sign_recognizer.h"
-#define OFFSET_DIVIDE 20
+
+#include "./define.h"
+
 using namespace openni;
 using namespace EmbeddedFramework;
-#define SAMPLE_READ_WAIT_TIMEOUT 2000 //2000ms
-#define VIDEO_FRAME_WIDTH 320
-#define VIDEO_FRAME_HEIGHT 240
-#define TEST_DETECT_SIGN 0
-#define ACCEPT_SIGN 1
-#define N_SAMPLE 1
-#define ALPHA 1.7
-
-#define IMG_DIR "img9.png"
-
-#define FRAME_WIDTH 640
-#define FRAME_HEIGHT 480
-
-#define LOW_HSV_BLUE Scalar(109, 60, 120)
-#define HIG_HSV_BLUE Scalar(133, 255, 255)
-
-#define KERNEL_SIZE 5
-#define SIGN_SIZE 100
-#define MIN_RATIO_BOUND_WIDTH_PER_FRAME_WIDTH 0.05
-#define DIF_RATIO_BOUND_WIDTH_PER_HEIGHT 0.5
-#define DIF_RATIO_CONTOUR_AREA 0.1
-#define MIN_CONTOUR_AREA 1800
-
-#define SW1_PIN 160
-#define SW2_PIN 161
-#define SW3_PIN 163
-#define SW4_PIN 164
-#define SENSOR 165
-#define GREEN_MIN Scalar(34, 138, 12)
-#define GREEN_MAX Scalar(83, 246, 124)
-#define AREA_MIN 17000
 
 enum SIGN_INDEX
 {
@@ -827,6 +798,9 @@ int main(int argc, char *argv[])
                 // }
                 //if(test_obt){
                 //cout << "reach here====================================================" << endl;
+
+                /*   /// detect sign
+                
                 Rect detectRoi(colorImg.cols / 5, colorImg.rows / 4, 3 * colorImg.cols / 5, 3 * colorImg.rows / 4);
                 Mat img = colorImg(detectRoi);
                 resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
@@ -875,36 +849,10 @@ int main(int argc, char *argv[])
                     continue;
                 }
 
-                /*Mat imgHSV;
-		cvtColor(img, imgHSV, COLOR_BGR2HSV);
+                */
 
-		Mat imgThresholded;
-		
-		inRange(imgHSV, GREEN_MIN, GREEN_MAX, imgThresholded); //Threshold the image
-		erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-		dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-		dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-		erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-
-		Moments oMoments = moments(imgThresholded);
-		
-		double dM01 = oMoments.m01;
-		double dM10 = oMoments.m10;
-		double dArea = oMoments.m00;
-		
-		bool has_obs = false;
-		int obs_x = 0;
-		int obs_y = 0;
-		
-		if(dArea > AREA_MIN) {
-			 obs_x = dM10/dArea;
-			obs_y = dM01/dArea;
-			has_obs = true;
-		}*/
-                //}
                 cvtColor(colorImg, grayImage, CV_BGR2GRAY);
                 //cv::imshow("IMG", colorImg);
-                cout << "reach imshow" << endl;
                 GaussianBlur(grayImage, grayImage, Size(5, 5), 0, 0);
                 Rect crop1(0, 0, grayImage.cols / 2 - OFFSET_DIVIDE, grayImage.rows);
                 Mat Left = grayImage(crop1);
@@ -1023,8 +971,8 @@ int main(int argc, char *argv[])
                 {
                     putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = pointLeft.x + road_width * 2 / 3; // grayImage.cols / 2 + 150;
-                    yTam = preY;
+                    xTam = (grayImage.cols - pointLeft.x) / 2; // grayImage.cols / 2 + 150;
+                    yTam = 5 * grayImage.rows / 8;
                     //std::cout << "angdiff: " << angDiff << std::endl;
                     // theta = (0.00);
                     //api_set_STEERING_control(pca9685, theta);
@@ -1033,8 +981,8 @@ int main(int argc, char *argv[])
                 {
                     putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = pointRight.x - road_width * 2 / 3; // grayImage.cols / 2 - 150;
-                    yTam = preY;
+                    xTam = pointRight.x / 2; // grayImage.cols / 2 - 150;
+                    yTam = 5 * grayImage.rows / 8;
                 }
                 else
                 {
@@ -1054,11 +1002,11 @@ int main(int argc, char *argv[])
 
                 preX = xTam;
                 preY = yTam;
-                if (test_obt == true)
-                {
-                    cout << "remove center point";
-                    PointCenter_Displacement(xTam, x_Left, x_Right);
-                }
+                // if (test_obt == true)
+                // {
+                //     cout << "remove center point";
+                //     PointCenter_Displacement(xTam, x_Left, x_Right);
+                // }
 
                 /////////////////////////////////////////////////////////////////////
                 angDiff = getTheta(carPosition, Point(xTam, yTam));
