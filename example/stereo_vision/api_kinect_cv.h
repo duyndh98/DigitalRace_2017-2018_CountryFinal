@@ -53,8 +53,8 @@ bool
 api_kinect_cv_get_obtacle_rect(Mat& depthMap,
                                vector< Rect > &output_boxes,
                                Rect &roi,
-                               int lower_bound = DIST_MIN,
-                               int upper_bound = DIST_MIN + 2*SLICE_DEPTH
+                               int lower_bound,
+                               int upper_bound,int iLowArea
                            );
 
 void
