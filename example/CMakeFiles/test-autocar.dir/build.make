@@ -141,12 +141,36 @@ CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o.provides: CMakeFiles/test-autoca
 
 CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o.provides.build: CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o
 
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: CMakeFiles/test-autocar.dir/flags.make
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles $(CMAKE_PROGRESS_5)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/test-autocar.dir/main_pid/control.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/test-autocar.dir/main_pid/control.cpp.o -c /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.cpp
+
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test-autocar.dir/main_pid/control.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.cpp > CMakeFiles/test-autocar.dir/main_pid/control.cpp.i
+
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test-autocar.dir/main_pid/control.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.cpp -o CMakeFiles/test-autocar.dir/main_pid/control.cpp.s
+
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.requires:
+.PHONY : CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.requires
+
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.provides: CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.provides.build
+.PHONY : CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.provides
+
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.provides.build: CMakeFiles/test-autocar.dir/main_pid/control.cpp.o
+
 # Object files for target test-autocar
 test__autocar_OBJECTS = \
 "CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o" \
 "CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o" \
 "CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o" \
-"CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o"
+"CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o" \
+"CMakeFiles/test-autocar.dir/main_pid/control.cpp.o"
 
 # External object files for target test-autocar
 test__autocar_EXTERNAL_OBJECTS =
@@ -155,6 +179,7 @@ bin/Release/test-autocar: CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.
 bin/Release/test-autocar: CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o
 bin/Release/test-autocar: CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o
 bin/Release/test-autocar: CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o
+bin/Release/test-autocar: CMakeFiles/test-autocar.dir/main_pid/control.cpp.o
 bin/Release/test-autocar: CMakeFiles/test-autocar.dir/build.make
 bin/Release/test-autocar: bin/Release/libvanishing-point.a
 bin/Release/test-autocar: bin/Release/libi2c-pwm.a
@@ -195,6 +220,7 @@ CMakeFiles/test-autocar.dir/requires: CMakeFiles/test-autocar.dir/main_pid/autom
 CMakeFiles/test-autocar.dir/requires: CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o.requires
 CMakeFiles/test-autocar.dir/requires: CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o.requires
 CMakeFiles/test-autocar.dir/requires: CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o.requires
+CMakeFiles/test-autocar.dir/requires: CMakeFiles/test-autocar.dir/main_pid/control.cpp.o.requires
 .PHONY : CMakeFiles/test-autocar.dir/requires
 
 CMakeFiles/test-autocar.dir/clean:

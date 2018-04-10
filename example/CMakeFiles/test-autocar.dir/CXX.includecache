@@ -123,6 +123,14 @@ lane_detection.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
 sign.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
+control.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.h
+
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.cpp
+control.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.h
+
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
 opencv2/imgproc/imgproc.hpp

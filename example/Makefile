@@ -385,6 +385,30 @@ main_pid/automaticCar.cpp.s:
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.s
 .PHONY : main_pid/automaticCar.cpp.s
 
+main_pid/control.o: main_pid/control.cpp.o
+.PHONY : main_pid/control.o
+
+# target to build an object file
+main_pid/control.cpp.o:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/control.cpp.o
+.PHONY : main_pid/control.cpp.o
+
+main_pid/control.i: main_pid/control.cpp.i
+.PHONY : main_pid/control.i
+
+# target to preprocess a source file
+main_pid/control.cpp.i:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/control.cpp.i
+.PHONY : main_pid/control.cpp.i
+
+main_pid/control.s: main_pid/control.cpp.s
+.PHONY : main_pid/control.s
+
+# target to generate assembly for a file
+main_pid/control.cpp.s:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/control.cpp.s
+.PHONY : main_pid/control.cpp.s
+
 main_pid/image_processing.o: main_pid/image_processing.cpp.o
 .PHONY : main_pid/image_processing.o
 
@@ -488,6 +512,9 @@ help:
 	@echo "... main_pid/automaticCar.o"
 	@echo "... main_pid/automaticCar.i"
 	@echo "... main_pid/automaticCar.s"
+	@echo "... main_pid/control.o"
+	@echo "... main_pid/control.i"
+	@echo "... main_pid/control.s"
 	@echo "... main_pid/image_processing.o"
 	@echo "... main_pid/image_processing.i"
 	@echo "... main_pid/image_processing.s"

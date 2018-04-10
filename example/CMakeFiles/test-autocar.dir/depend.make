@@ -16,6 +16,7 @@ CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OpenNI.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Win32/OniPlatformWin32.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/automaticCar.cpp
+CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/control.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/header.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/image_processing.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: main_pid/lane_detection.h
@@ -156,6 +157,9 @@ CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: multilane/multilane.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: peripheral_driver/i2c/JHPWMPCA9685.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: peripheral_driver/i2c/api_i2c_pwm.h
 CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o: stereo_vision/api_kinect_cv.h
+
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.cpp
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.h
 
 CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Android-Arm/OniPlatformAndroid-Arm.h
 CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Linux-Arm/OniPlatformLinux-Arm.h

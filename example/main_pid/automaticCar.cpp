@@ -13,6 +13,7 @@
 #include "image_processing.h"
 #include "lane_detection.h"
 #include "sign.h"
+#include "control.h"
 
 bool flagTurn = false;
 int dirTurn = 0;
@@ -28,6 +29,7 @@ int set_throttle_val = 0;
 int throttle_config = 0;
 bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
+
 
 void controlTurn(PCA9685 *&pca9685, int dir)
 {
@@ -74,6 +76,7 @@ int main(int argc, char *argv[])
     gpio->gpioSetDirection(SW3_PIN, INPUT);
     gpio->gpioSetDirection(SW4_PIN, INPUT);
     gpio->gpioSetDirection(SENSOR, INPUT);
+    
     usleep(10000);
 
     /// Init openNI ///
@@ -100,7 +103,7 @@ int main(int argc, char *argv[])
         {
             VideoMode depth_mode = depth.getVideoMode();
             depth_mode.setFps(30);
-            depth_mode.setResolution(VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT);
+            depth_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
             depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
             depth.setVideoMode(depth_mode);
 
@@ -123,7 +126,7 @@ int main(int argc, char *argv[])
         {
             VideoMode color_mode = color.getVideoMode();
             color_mode.setFps(30);
-            color_mode.setResolution(VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT);
+            color_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
             color_mode.setPixelFormat(PIXEL_FORMAT_RGB888);
             color.setVideoMode(color_mode);
 
@@ -155,9 +158,7 @@ int main(int argc, char *argv[])
 
     Mat depthImg, grayImage;
     int codec = CV_FOURCC('M', 'J', 'P', 'G');
-    int video_frame_width = VIDEO_FRAME_WIDTH;
-    int video_frame_height = VIDEO_FRAME_HEIGHT;
-    Size output_size(video_frame_width, video_frame_height);
+    Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
 
     FILE *thetaLogFile; // File creates log of signal send to pwm control
     if (is_save_file)
@@ -186,8 +187,8 @@ int main(int argc, char *argv[])
     /////////  Init UART here   ///////////////////////////////////////////////
     /// Init MSAC vanishing point library
     MSAC msac;
-    Rect roi1 = Rect(0, VIDEO_FRAME_HEIGHT * 3 / 4,
-                             VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT / 4);
+    Rect roi1 = Rect(0, FRAME_HEIGHT * 3 / 4,
+                             FRAME_WIDTH, FRAME_HEIGHT / 4);
 
     api_vanishing_point_init(msac);
 
@@ -198,11 +199,11 @@ int main(int argc, char *argv[])
     // Argc == 2 eg ./test-autocar 27 means initial throttle is 27
     if (argc == 2)
         set_throttle_val = atoi(argv[1]);
+
     throttle_config = set_throttle_val;
     fprintf(stderr, "Initial throttle: %d\n", set_throttle_val);
-    int frame_width = VIDEO_FRAME_WIDTH;
-    int frame_height = VIDEO_FRAME_HEIGHT;
-    Point carPosition(frame_width / 2, frame_height);
+    
+    Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     Point prvPosition = carPosition;
 
     bool running = false, started = false, stopped = false;

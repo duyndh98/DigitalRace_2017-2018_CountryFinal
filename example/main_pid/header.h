@@ -27,9 +27,6 @@ using namespace cv;
 using namespace std;
 using namespace cv::ml;
 
-#define FRAME_WIDTH 320
-#define FRAME_HEIGHT 240
-
 #define LOW_HSV_BLUE Scalar(80, 80, 100)
 #define HIG_HSV_BLUE Scalar(120, 255, 255)
 
@@ -49,8 +46,8 @@ using namespace cv::ml;
 
 
 #define SAMPLE_READ_WAIT_TIMEOUT 2000
-#define VIDEO_FRAME_WIDTH 320
-#define VIDEO_FRAME_HEIGHT 240
+#define FRAME_WIDTH 320
+#define FRAME_HEIGHT 240
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
