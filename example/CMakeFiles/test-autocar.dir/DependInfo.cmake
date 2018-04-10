@@ -5,7 +5,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/automaticCar.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign_recognizer.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/sign_recognizer.cpp.o"
+  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o"
+  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

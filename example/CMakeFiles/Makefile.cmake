@@ -58,11 +58,11 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
+  "stereo_vision/CMakeFiles/CMakeDirectoryInformation.cmake"
   "lane_detection/CMakeFiles/CMakeDirectoryInformation.cmake"
   "peripheral_driver/CMakeFiles/CMakeDirectoryInformation.cmake"
   "peripheral_driver/i2c/CMakeFiles/CMakeDirectoryInformation.cmake"
   "peripheral_driver/uart/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "stereo_vision/CMakeFiles/CMakeDirectoryInformation.cmake"
   "ObjectRecognition/CMakeFiles/CMakeDirectoryInformation.cmake"
   "ObjectDetection/CMakeFiles/CMakeDirectoryInformation.cmake"
   "HAL/CMakeFiles/CMakeDirectoryInformation.cmake"
@@ -76,18 +76,15 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/vision-test.dir/DependInfo.cmake"
-  "CMakeFiles/testSignRecognize.dir/DependInfo.cmake"
   "CMakeFiles/test-autocar.dir/DependInfo.cmake"
-  "CMakeFiles/test-steering-coef.dir/DependInfo.cmake"
+  "stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/DependInfo.cmake"
+  "stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
+  "stereo_vision/CMakeFiles/test-kinect-cv2.dir/DependInfo.cmake"
   "lane_detection/CMakeFiles/vanishing-point.dir/DependInfo.cmake"
   "lane_detection/CMakeFiles/test-vanishing-point.dir/DependInfo.cmake"
   "peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/DependInfo.cmake"
   "peripheral_driver/uart/CMakeFiles/uart.dir/DependInfo.cmake"
   "peripheral_driver/uart/CMakeFiles/test-uart.dir/DependInfo.cmake"
-  "stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/DependInfo.cmake"
-  "stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
-  "stereo_vision/CMakeFiles/test-kinect-cv2.dir/DependInfo.cmake"
   "ObjectRecognition/CMakeFiles/ObjectRecognition.dir/DependInfo.cmake"
   "ObjectDetection/CMakeFiles/ObjectDetection.dir/DependInfo.cmake"
   "HAL/CMakeFiles/HAL.dir/DependInfo.cmake"

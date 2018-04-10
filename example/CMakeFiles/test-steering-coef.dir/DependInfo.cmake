@@ -1,12 +1,7 @@
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
   )
 # The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/test-steering-coef.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES

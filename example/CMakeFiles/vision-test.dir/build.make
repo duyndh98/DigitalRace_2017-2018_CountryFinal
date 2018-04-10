@@ -49,37 +49,12 @@ include CMakeFiles/vision-test.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/vision-test.dir/flags.make
 
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o: CMakeFiles/vision-test.dir/flags.make
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o: main_pid/vision_test.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o -c /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/vision_test.cpp
-
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/vision_test.cpp > CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.i
-
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/vision_test.cpp -o CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.s
-
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.requires:
-.PHONY : CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.requires
-
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.provides: CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.requires
-	$(MAKE) -f CMakeFiles/vision-test.dir/build.make CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.provides.build
-.PHONY : CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.provides
-
-CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.provides.build: CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o
-
 # Object files for target vision-test
-vision__test_OBJECTS = \
-"CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o"
+vision__test_OBJECTS =
 
 # External object files for target vision-test
 vision__test_EXTERNAL_OBJECTS =
 
-bin/Release/vision-test: CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o
 bin/Release/vision-test: CMakeFiles/vision-test.dir/build.make
 bin/Release/vision-test: bin/Release/libopenni2.a
 bin/Release/vision-test: bin/Release/libi2c-pwm.a
@@ -120,7 +95,7 @@ bin/Release/vision-test: CMakeFiles/vision-test.dir/link.txt
 CMakeFiles/vision-test.dir/build: bin/Release/vision-test
 .PHONY : CMakeFiles/vision-test.dir/build
 
-CMakeFiles/vision-test.dir/requires: CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o.requires
+CMakeFiles/vision-test.dir/requires:
 .PHONY : CMakeFiles/vision-test.dir/requires
 
 CMakeFiles/vision-test.dir/clean:

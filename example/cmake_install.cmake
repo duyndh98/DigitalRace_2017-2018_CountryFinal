@@ -34,9 +34,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/cmake_install.cmake")
   include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/cmake_install.cmake")
   include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/cmake_install.cmake")
   include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/ObjectRecognition/cmake_install.cmake")
   include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/ObjectDetection/cmake_install.cmake")
   include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/cmake_install.cmake")

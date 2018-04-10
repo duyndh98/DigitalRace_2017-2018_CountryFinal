@@ -9,38 +9,13 @@
     Besure you set throttle val to 0 before end process. If not, you should stop the car by hand.
     In our experience, if you accidental end the processing and didn't stop the car, you may catch it and switch off the controller physically or run the code again (press up direction button then enter).
 **/
-#include "api_kinect_cv.h"
-// api_kinect_cv.h: manipulate openNI2, kinect, depthMap and object detection
-#include "api_lane_detection.h"
-// api_lane_detection.h: manipulate line detection, finding lane center and vanishing point
-#include "api_i2c_pwm.h"
-#include "multilane.h"
-#include <iostream>
-#include "Hal.h"
-#include "LCDI2C.h"
-#include <vector>
-#include <math.h>
-#include <thread>
-#include <mutex>
-#include <pthread.h>
-#include "./sign_recognizer.h"
-
-#include "./define.h"
-
-using namespace openni;
-using namespace EmbeddedFramework;
-
-enum SIGN_INDEX
-{
-    NO_SIGN = 0,
-    SIGN_LEFT = 1,
-    SIGN_RIGHT = 2,
-};
+#include "header.h"
+#include "image_processing.h"
+#include "lane_detection.h"
 
 bool flagTurn = false;
 int dirTurn = 0;
 Mat colorImg;
-//bool getFrame = false;
 bool endThread = true;
 bool getFrame = false;
 
@@ -52,334 +27,6 @@ int set_throttle_val = 0;
 int throttle_config = 0;
 bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
-
-double median(Mat gray)
-{
-    double sum = 0;
-    int count = 0;
-    for (int i = 0; i < gray.cols; i++)
-        for (int j = 0; j < gray.rows; j++)
-        {
-            count++;
-            sum += gray.at<uchar>(i, j);
-        }
-    return sum / count;
-}
-
-int classify_sign(Mat sign_gray)
-{
-    imshow("sign_gray", sign_gray);
-
-    Mat left_gray = sign_gray(Rect(SIGN_SIZE / 2 / 3,
-                                   SIGN_SIZE / 2,
-                                   SIGN_SIZE / 2 * 2 / 3,
-                                   SIGN_SIZE / 2 * 2 / 3));
-    Mat right_gray = sign_gray(Rect(SIGN_SIZE / 2,
-                                    SIGN_SIZE / 2,
-                                    SIGN_SIZE / 2 * 2 / 3,
-                                    SIGN_SIZE / 2 * 2 / 3));
-    imshow("left", left_gray);
-    imshow("right", right_gray);
-
-    double left_median = median(left_gray);
-    double right_median = median(right_gray);
-
-    if (left_median < right_median)
-        return SIGN_LEFT;
-    else
-        return SIGN_RIGHT;
-}
-
-int recognize_sign(Rect &sign, Mat &gray)
-{
-    if (sign.x == 0 && sign.y == 0 && sign.width == 0 && sign.height == 0)
-        return NO_SIGN;
-
-    Mat sign_gray = gray(sign);
-    resize(sign_gray, sign_gray, cv::Size(SIGN_SIZE, SIGN_SIZE));
-
-    int class_id = classify_sign(sign_gray);
-    return class_id;
-}
-
-void ycrcb_equalize(Mat &img)
-{
-    Mat ycrcb;
-    cvtColor(img, ycrcb, CV_BGR2YCrCb);
-
-    vector<Mat> chanels(3);
-
-    split(ycrcb, chanels);
-
-    Ptr<CLAHE> clahe = createCLAHE(2.0, Size(8, 8));
-
-    clahe->apply(chanels[0], chanels[0]);
-
-    merge(chanels, ycrcb);
-
-    cvtColor(ycrcb, img, CV_YCrCb2BGR);
-}
-
-void get_mask(Mat &img, Mat &dst)
-{
-    //GaussianBlur(img, img, Size(KERNEL_SIZE, KERNEL_SIZE), 0);
-
-    Mat hsv;
-    cvtColor(img, hsv, COLOR_BGR2HSV);
-    //ycrcb_equalize(hsv);
-    //Mat mask;
-
-    inRange(hsv, LOW_HSV_BLUE, HIG_HSV_BLUE, dst);
-
-    Mat kernel = Mat::ones(KERNEL_SIZE, KERNEL_SIZE, CV_8UC1);
-
-    dilate(dst, dst, kernel);
-    morphologyEx(dst, dst, MORPH_CLOSE, kernel);
-
-    /*erode(dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-		dilate( dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-		dilate( dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-		erode(dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-  */ //dst = mask.clone();
-}
-
-void detect_sign(Mat &mask, Rect &sign)
-{
-
-    bool isSign = false;
-    vector<vector<Point>> contours;
-    vector<Vec4i> hierarchy;
-
-    findContours(mask, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0));
-
-    float max_area = 0;
-    sign = Rect(0, 0, 0, 0);
-    for (int i = 0; i < contours.size(); i++)
-    {
-        Rect bound = boundingRect(contours[i]);
-        double contour_area = contourArea(contours[i]);
-        double ellipse_area = (3.14f * (double)(bound.width / 2) * (double)(bound.height / 2));
-        if (contour_area > max_area)
-            if (contour_area >= MIN_CONTOUR_AREA)
-                if ((float)bound.width / FRAME_WIDTH > MIN_RATIO_BOUND_WIDTH_PER_FRAME_WIDTH)
-                    if ((1 - DIF_RATIO_BOUND_WIDTH_PER_HEIGHT < (float)bound.width / bound.height) && ((float)bound.width / bound.height < 1 + DIF_RATIO_BOUND_WIDTH_PER_HEIGHT))
-                        if ((1 - DIF_RATIO_CONTOUR_AREA < ((double)contour_area / ellipse_area)) && ((double)contour_area / ellipse_area < 1 + DIF_RATIO_CONTOUR_AREA))
-                        {
-                            isSign = true;
-                            cout << "area contour: " << contour_area << endl;
-                            sign = bound;
-                            max_area = contour_area;
-                        }
-    }
-    /*if(isSign){
-		cout << "reach set throttle=======================================" << endl;
-		set_throttle_val = 2;
-		//api_set_FORWARD_control(pca9685, set_throttle_val);
-	} else {
-		set_throttle_val = throttle_config;
-	}*/
-}
-
-int api_sign_detection(Mat &img, sign_recognizer &sr)
-{
-    // resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
-    //imshow("___", img);
-    Mat mask;
-    get_mask(img, mask);
-    imshow("mask", mask);
-
-    // Mat gray;
-    // cvtColor(img, gray, COLOR_BGR2GRAY);
-
-    Rect sign;
-    detect_sign(mask, sign);
-    //api_set_FORWARD_control(pca9685, set_throttle_val);
-
-    sr.configure(mask, img, sign);
-    //cout << sign.x << ' ' << sign.y << ' ' << sign.width << ' ' << sign.height;
-    //  return recognize_sign(sign, gray);
-
-    return sr.recognize();
-}
-
-cv::Mat remOutlier(const cv::Mat &gray)
-{
-    int esize = 1;
-    cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT,
-                                                cv::Size(2 * esize + 1, 2 * esize + 1),
-                                                cv::Point(esize, esize));
-    cv::erode(gray, gray, element);
-    std::vector<std::vector<cv::Point>> contours, polygons;
-    std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(gray, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
-    for (size_t i = 0; i < contours.size(); ++i)
-    {
-        std::vector<cv::Point> p;
-        cv::approxPolyDP(cv::Mat(contours[i]), p, 2, true);
-        polygons.push_back(p);
-    }
-    cv::Mat poly = cv::Mat::zeros(gray.size(), CV_8UC3);
-    for (size_t i = 0; i < polygons.size(); ++i)
-    {
-        cv::Scalar color = cv::Scalar(255, 255, 255);
-        cv::drawContours(poly, polygons, i, color, CV_FILLED);
-    }
-    return poly;
-}
-char analyzeFrame(const VideoFrameRef &frame_depth, const VideoFrameRef &frame_color, Mat &depth_img, Mat &color_img)
-{
-    DepthPixel *depth_img_data;
-    RGB888Pixel *color_img_data;
-
-    int w = frame_color.getWidth();
-    int h = frame_color.getHeight();
-
-    depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
-    color_img = Mat(h, w, CV_8UC3);
-    Mat depth_img_8u;
-
-    depth_img_data = (DepthPixel *)frame_depth.getData();
-
-    memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
-
-    normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
-
-    depth_img_8u.convertTo(depth_img_8u, CV_8U);
-    color_img_data = (RGB888Pixel *)frame_color.getData();
-
-    memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
-
-    cvtColor(color_img, color_img, COLOR_RGB2BGR);
-
-    return 'c';
-}
-
-/// Return angle between veritcal line containing car and destination point in degree
-double getTheta(Point car, Point dst)
-{
-    if (dst.x == car.x)
-        return 0;
-    if (dst.y == car.y)
-        return (dst.x < car.x ? -90 : 90);
-    double pi = acos(-1.0);
-    double dx = dst.x - car.x;
-    double dy = car.y - dst.y; // image coordinates system: car.y > dst.y
-    if (dx < 0)
-        return -atan(-dx / dy) * 180 / pi;
-    return atan(dx / dy) * 180 / pi;
-}
-
-/////// My function
-
-cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, bool &preState)
-{
-    pop = false;
-    //point.x = 0;
-    //point.y = 0;
-	if (check==-1){
-		point.x = 0;
-		point.y = imgLane.rows/2;
-	} else {
-		point.x = imgLane.cols;
-		point.y = imgLane.rows/2;	
-	}
-    std::vector<std::vector<cv::Point>> contours;
-    std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, cv::Point(0, 0));
-    if (contours.size() == 0)
-    {
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-    cv::Mat result = cv::Mat::zeros(imgLane.size(), CV_8UC1);
-    int sumX = 0;
-    int sumY = 0;
-    int maxArea = 0;
-    int maxIndex = 0;
-    for (int i = 0; i < (int)contours.size(); ++i)
-    {
-        int s = cv::contourArea(contours[i]);
-        if (s > maxArea)
-        {
-            maxArea = s;
-            maxIndex = i;
-        }
-    }
-    if (cv::contourArea(contours[maxIndex]) < 100)
-    {
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-    int xMin = 0, yMin = 1000, xMax = 0, yMax = -1;
-    /*for (int i = 0; i < contours[maxIndex].size(); i++)
-    {
-        // if (contours[maxIndex][i].y > yMax)
-        // {
-        //     yMax = contours[maxIndex][i].y;
-        //     xMax = contours[maxIndex][i].x;
-        // }
-        // if (contours[maxIndex][i].y < yMin)
-        // {
-        //     yMin = contours[maxIndex][i].y;
-        //     xMin = contours[maxIndex][i].x;
-        // }
-        sumX += contours[maxIndex][i].x;
-        sumY += contours[maxIndex][i].y;
-    }
-	*/
-    //if((xMax>=xMin) && (check==1)){
-    cv::drawContours(result, contours, maxIndex, cv::Scalar(255), CV_FILLED);
-    //point.x = sumX / contours[maxIndex].size();
-    //point.y = sumY / contours[maxIndex].size();
-	if(check==-1){
-		point.x = 0;
-		for (int i = 0; i < contours[maxIndex].size(); i++)
-    		{
-			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
-				if (point.x < contours[maxIndex][i].x)
-					point.x = contours[maxIndex][i].x;
-			}
-        	//sumX += contours[maxIndex][i].x;
-        	//sumY += contours[maxIndex][i].y;
-    		}	
-	} else {
-		point.x = imgLane.cols;
-		for (int i = 0; i < contours[maxIndex].size(); i++)
-    		{
-			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
-				if (point.x > contours[maxIndex][i].x)
-					point.x = contours[maxIndex][i].x;
-			}
-        	//sumX += contours[maxIndex][i].x;
-        	//sumY += contours[maxIndex][i].y;
-    		}	
-	}
-	point.y = imgLane.rows/2;
-
-    if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
-    {
-        //cout << "sum X: " << sumX << endl;
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-    if ((point.x < imgLane.cols / 2) && (check == 1) && (preState == false))
-    {
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-
-    pop = true;
-    return result;
-    // } else
-    // if((xMax<=xMin) && (check==-1)){
-    //     cv::drawContours(result, contours, maxIndex, cv::Scalar(255), CV_FILLED);
-    //     point.x = sumX / contours[maxIndex].size();
-    //     point.y = sumY / contours[maxIndex].size();
-    //     pop = true;
-    //     return result;
-    // }
-    // return result;
-}
 
 void controlTurn(PCA9685 *&pca9685, int dir)
 {
@@ -401,65 +48,7 @@ void controlTurn(PCA9685 *&pca9685, int dir)
     }
 }
 
-void *detectSign(void *)
-{
-    /*  while (1)
-    {
-        //bool getFrame = (bool)var;
-        //cv::imshow("IMG Color", colorImg);
-        //cout << "sccs" << endl;
-        bool check = getFrame;
-        if (getFrame)
-        {
-		Rect detectRoi(colorImg.cols/5,colorImg.rows/4,3*colorImg.cols/5,3*colorImg.rows/4);
-            Mat img = colorImg(detectRoi);
-            resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
-            //imshow("img", img);
-//            int class_id = api_sign_detection(img, sr);
-            if (class_id != NO_SIGN)
-            {
-                if (class_id == SIGN_LEFT)
-                    detectLeft++;
-                if (class_id == SIGN_RIGHT)
-                    detectRight++;
-            }
-            countDetect++;
-            if (countDetect >= N_SAMPLE)
-            {
-                if (detectLeft >= ACCEPT_SIGN)
-                {
-                    flagTurn = true;
-                    dirTurn = SIGN_LEFT;
-                    //controlTurn(pca9685, SIGN_LEFT);
-                }
-                else if (detectRight >= ACCEPT_SIGN)
-                {
-                    flagTurn = true;
-                    dirTurn = SIGN_RIGHT;
-                    //controlTurn(pca9685, SIGN_RIGHT);
-                }
-                countDetect = 0;
-                detectRight = 0;
-                detectLeft = 0;
-            }
-            preDetect = class_id;
-            endThread = true;
-            getFrame = false;
-		//waitKey(1);
-            //pthread_exit(NULL);
-        }
-        usleep(3);
-    }*/
-}
-
-///////////////////////cose test
-///////////////////////////////////////////////// MADE BY NGAN//////////////////////
-
-//////////////////////////////////////////////////////////END NGAN/////////////////////
-//////////////////////////////////////
-
 ///////// utilitie functions  ///////////////////////////
-
 int main(int argc, char *argv[])
 {
     pthread_t newThread;
@@ -630,9 +219,9 @@ int main(int argc, char *argv[])
     bool preLeft = false;
     bool preRight = false;
 
+/*duyyyyyyyyyyyyyyyyyyyy
     sign_recognizer sr;
     sr.init();
-
     if (TEST_DETECT_SIGN)
     {
         while (1)
@@ -668,7 +257,7 @@ int main(int argc, char *argv[])
             //destroyAllWindows();
         }
     }
-
+*/
     int road_width;
     bool road_width_set = false;
 

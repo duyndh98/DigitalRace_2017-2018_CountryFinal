@@ -49,37 +49,12 @@ include CMakeFiles/test-steering-coef.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test-steering-coef.dir/flags.make
 
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o: CMakeFiles/test-steering-coef.dir/flags.make
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o: main_pid/test-steering-coef.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o -c /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/test-steering-coef.cpp
-
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/test-steering-coef.cpp > CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.i
-
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/test-steering-coef.cpp -o CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.s
-
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.requires:
-.PHONY : CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.requires
-
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.provides: CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test-steering-coef.dir/build.make CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.provides.build
-.PHONY : CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.provides
-
-CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.provides.build: CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o
-
 # Object files for target test-steering-coef
-test__steering__coef_OBJECTS = \
-"CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o"
+test__steering__coef_OBJECTS =
 
 # External object files for target test-steering-coef
 test__steering__coef_EXTERNAL_OBJECTS =
 
-bin/Release/test-steering-coef: CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o
 bin/Release/test-steering-coef: CMakeFiles/test-steering-coef.dir/build.make
 bin/Release/test-steering-coef: bin/Release/libi2c-pwm.a
 bin/Release/test-steering-coef: bin/Release/libuart.a
@@ -92,7 +67,7 @@ bin/Release/test-steering-coef: CMakeFiles/test-steering-coef.dir/link.txt
 CMakeFiles/test-steering-coef.dir/build: bin/Release/test-steering-coef
 .PHONY : CMakeFiles/test-steering-coef.dir/build
 
-CMakeFiles/test-steering-coef.dir/requires: CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o.requires
+CMakeFiles/test-steering-coef.dir/requires:
 .PHONY : CMakeFiles/test-steering-coef.dir/requires
 
 CMakeFiles/test-steering-coef.dir/clean:

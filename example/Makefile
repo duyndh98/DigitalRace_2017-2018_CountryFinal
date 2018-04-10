@@ -115,43 +115,43 @@ test-autocar/fast:
 .PHONY : test-autocar/fast
 
 #=============================================================================
-# Target rules for targets named test-steering-coef
+# Target rules for targets named kinect-cv2
 
 # Build rule for target.
-test-steering-coef: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test-steering-coef
-.PHONY : test-steering-coef
+kinect-cv2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 kinect-cv2
+.PHONY : kinect-cv2
 
 # fast build rule for target.
-test-steering-coef/fast:
-	$(MAKE) -f CMakeFiles/test-steering-coef.dir/build.make CMakeFiles/test-steering-coef.dir/build
-.PHONY : test-steering-coef/fast
+kinect-cv2/fast:
+	$(MAKE) -f stereo_vision/CMakeFiles/kinect-cv2.dir/build.make stereo_vision/CMakeFiles/kinect-cv2.dir/build
+.PHONY : kinect-cv2/fast
 
 #=============================================================================
-# Target rules for targets named testSignRecognize
+# Target rules for targets named test-kinect-cv2
 
 # Build rule for target.
-testSignRecognize: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testSignRecognize
-.PHONY : testSignRecognize
+test-kinect-cv2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test-kinect-cv2
+.PHONY : test-kinect-cv2
 
 # fast build rule for target.
-testSignRecognize/fast:
-	$(MAKE) -f CMakeFiles/testSignRecognize.dir/build.make CMakeFiles/testSignRecognize.dir/build
-.PHONY : testSignRecognize/fast
+test-kinect-cv2/fast:
+	$(MAKE) -f stereo_vision/CMakeFiles/test-kinect-cv2.dir/build.make stereo_vision/CMakeFiles/test-kinect-cv2.dir/build
+.PHONY : test-kinect-cv2/fast
 
 #=============================================================================
-# Target rules for targets named vision-test
+# Target rules for targets named test-kinect-cv2-2
 
 # Build rule for target.
-vision-test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 vision-test
-.PHONY : vision-test
+test-kinect-cv2-2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test-kinect-cv2-2
+.PHONY : test-kinect-cv2-2
 
 # fast build rule for target.
-vision-test/fast:
-	$(MAKE) -f CMakeFiles/vision-test.dir/build.make CMakeFiles/vision-test.dir/build
-.PHONY : vision-test/fast
+test-kinect-cv2-2/fast:
+	$(MAKE) -f stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/build.make stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/build
+.PHONY : test-kinect-cv2-2/fast
 
 #=============================================================================
 # Target rules for targets named test-vanishing-point
@@ -217,45 +217,6 @@ uart: cmake_check_build_system
 uart/fast:
 	$(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/build
 .PHONY : uart/fast
-
-#=============================================================================
-# Target rules for targets named kinect-cv2
-
-# Build rule for target.
-kinect-cv2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 kinect-cv2
-.PHONY : kinect-cv2
-
-# fast build rule for target.
-kinect-cv2/fast:
-	$(MAKE) -f stereo_vision/CMakeFiles/kinect-cv2.dir/build.make stereo_vision/CMakeFiles/kinect-cv2.dir/build
-.PHONY : kinect-cv2/fast
-
-#=============================================================================
-# Target rules for targets named test-kinect-cv2
-
-# Build rule for target.
-test-kinect-cv2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test-kinect-cv2
-.PHONY : test-kinect-cv2
-
-# fast build rule for target.
-test-kinect-cv2/fast:
-	$(MAKE) -f stereo_vision/CMakeFiles/test-kinect-cv2.dir/build.make stereo_vision/CMakeFiles/test-kinect-cv2.dir/build
-.PHONY : test-kinect-cv2/fast
-
-#=============================================================================
-# Target rules for targets named test-kinect-cv2-2
-
-# Build rule for target.
-test-kinect-cv2-2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test-kinect-cv2-2
-.PHONY : test-kinect-cv2-2
-
-# fast build rule for target.
-test-kinect-cv2-2/fast:
-	$(MAKE) -f stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/build.make stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/build
-.PHONY : test-kinect-cv2-2/fast
 
 #=============================================================================
 # Target rules for targets named ObjectRecognition
@@ -424,101 +385,53 @@ main_pid/automaticCar.cpp.s:
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.s
 .PHONY : main_pid/automaticCar.cpp.s
 
-main_pid/sign_recognizer.o: main_pid/sign_recognizer.cpp.o
-.PHONY : main_pid/sign_recognizer.o
+main_pid/image_processing.o: main_pid/image_processing.cpp.o
+.PHONY : main_pid/image_processing.o
 
 # target to build an object file
-main_pid/sign_recognizer.cpp.o:
-	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign_recognizer.cpp.o
-.PHONY : main_pid/sign_recognizer.cpp.o
+main_pid/image_processing.cpp.o:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o
+.PHONY : main_pid/image_processing.cpp.o
 
-main_pid/sign_recognizer.i: main_pid/sign_recognizer.cpp.i
-.PHONY : main_pid/sign_recognizer.i
+main_pid/image_processing.i: main_pid/image_processing.cpp.i
+.PHONY : main_pid/image_processing.i
 
 # target to preprocess a source file
-main_pid/sign_recognizer.cpp.i:
-	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign_recognizer.cpp.i
-.PHONY : main_pid/sign_recognizer.cpp.i
+main_pid/image_processing.cpp.i:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.i
+.PHONY : main_pid/image_processing.cpp.i
 
-main_pid/sign_recognizer.s: main_pid/sign_recognizer.cpp.s
-.PHONY : main_pid/sign_recognizer.s
+main_pid/image_processing.s: main_pid/image_processing.cpp.s
+.PHONY : main_pid/image_processing.s
 
 # target to generate assembly for a file
-main_pid/sign_recognizer.cpp.s:
-	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign_recognizer.cpp.s
-.PHONY : main_pid/sign_recognizer.cpp.s
+main_pid/image_processing.cpp.s:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.s
+.PHONY : main_pid/image_processing.cpp.s
 
-main_pid/test-steering-coef.o: main_pid/test-steering-coef.cpp.o
-.PHONY : main_pid/test-steering-coef.o
+main_pid/lane_detection.o: main_pid/lane_detection.cpp.o
+.PHONY : main_pid/lane_detection.o
 
 # target to build an object file
-main_pid/test-steering-coef.cpp.o:
-	$(MAKE) -f CMakeFiles/test-steering-coef.dir/build.make CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.o
-.PHONY : main_pid/test-steering-coef.cpp.o
+main_pid/lane_detection.cpp.o:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o
+.PHONY : main_pid/lane_detection.cpp.o
 
-main_pid/test-steering-coef.i: main_pid/test-steering-coef.cpp.i
-.PHONY : main_pid/test-steering-coef.i
-
-# target to preprocess a source file
-main_pid/test-steering-coef.cpp.i:
-	$(MAKE) -f CMakeFiles/test-steering-coef.dir/build.make CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.i
-.PHONY : main_pid/test-steering-coef.cpp.i
-
-main_pid/test-steering-coef.s: main_pid/test-steering-coef.cpp.s
-.PHONY : main_pid/test-steering-coef.s
-
-# target to generate assembly for a file
-main_pid/test-steering-coef.cpp.s:
-	$(MAKE) -f CMakeFiles/test-steering-coef.dir/build.make CMakeFiles/test-steering-coef.dir/main_pid/test-steering-coef.cpp.s
-.PHONY : main_pid/test-steering-coef.cpp.s
-
-main_pid/testSignRecognition.o: main_pid/testSignRecognition.cpp.o
-.PHONY : main_pid/testSignRecognition.o
-
-# target to build an object file
-main_pid/testSignRecognition.cpp.o:
-	$(MAKE) -f CMakeFiles/testSignRecognize.dir/build.make CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o
-.PHONY : main_pid/testSignRecognition.cpp.o
-
-main_pid/testSignRecognition.i: main_pid/testSignRecognition.cpp.i
-.PHONY : main_pid/testSignRecognition.i
+main_pid/lane_detection.i: main_pid/lane_detection.cpp.i
+.PHONY : main_pid/lane_detection.i
 
 # target to preprocess a source file
-main_pid/testSignRecognition.cpp.i:
-	$(MAKE) -f CMakeFiles/testSignRecognize.dir/build.make CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.i
-.PHONY : main_pid/testSignRecognition.cpp.i
+main_pid/lane_detection.cpp.i:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.i
+.PHONY : main_pid/lane_detection.cpp.i
 
-main_pid/testSignRecognition.s: main_pid/testSignRecognition.cpp.s
-.PHONY : main_pid/testSignRecognition.s
-
-# target to generate assembly for a file
-main_pid/testSignRecognition.cpp.s:
-	$(MAKE) -f CMakeFiles/testSignRecognize.dir/build.make CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.s
-.PHONY : main_pid/testSignRecognition.cpp.s
-
-main_pid/vision_test.o: main_pid/vision_test.cpp.o
-.PHONY : main_pid/vision_test.o
-
-# target to build an object file
-main_pid/vision_test.cpp.o:
-	$(MAKE) -f CMakeFiles/vision-test.dir/build.make CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.o
-.PHONY : main_pid/vision_test.cpp.o
-
-main_pid/vision_test.i: main_pid/vision_test.cpp.i
-.PHONY : main_pid/vision_test.i
-
-# target to preprocess a source file
-main_pid/vision_test.cpp.i:
-	$(MAKE) -f CMakeFiles/vision-test.dir/build.make CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.i
-.PHONY : main_pid/vision_test.cpp.i
-
-main_pid/vision_test.s: main_pid/vision_test.cpp.s
-.PHONY : main_pid/vision_test.s
+main_pid/lane_detection.s: main_pid/lane_detection.cpp.s
+.PHONY : main_pid/lane_detection.s
 
 # target to generate assembly for a file
-main_pid/vision_test.cpp.s:
-	$(MAKE) -f CMakeFiles/vision-test.dir/build.make CMakeFiles/vision-test.dir/main_pid/vision_test.cpp.s
-.PHONY : main_pid/vision_test.cpp.s
+main_pid/lane_detection.cpp.s:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.s
+.PHONY : main_pid/lane_detection.cpp.s
 
 # Help Target
 help:
@@ -526,20 +439,17 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... vision-test"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... testSignRecognize"
 	@echo "... test-autocar"
-	@echo "... test-steering-coef"
+	@echo "... test-kinect-cv2-2"
+	@echo "... kinect-cv2"
+	@echo "... test-kinect-cv2"
 	@echo "... vanishing-point"
 	@echo "... test-vanishing-point"
 	@echo "... i2c-pwm"
 	@echo "... uart"
 	@echo "... test-uart"
-	@echo "... test-kinect-cv2-2"
-	@echo "... kinect-cv2"
-	@echo "... test-kinect-cv2"
 	@echo "... ObjectRecognition"
 	@echo "... ObjectDetection"
 	@echo "... HAL"
@@ -554,18 +464,12 @@ help:
 	@echo "... main_pid/automaticCar.o"
 	@echo "... main_pid/automaticCar.i"
 	@echo "... main_pid/automaticCar.s"
-	@echo "... main_pid/sign_recognizer.o"
-	@echo "... main_pid/sign_recognizer.i"
-	@echo "... main_pid/sign_recognizer.s"
-	@echo "... main_pid/test-steering-coef.o"
-	@echo "... main_pid/test-steering-coef.i"
-	@echo "... main_pid/test-steering-coef.s"
-	@echo "... main_pid/testSignRecognition.o"
-	@echo "... main_pid/testSignRecognition.i"
-	@echo "... main_pid/testSignRecognition.s"
-	@echo "... main_pid/vision_test.o"
-	@echo "... main_pid/vision_test.i"
-	@echo "... main_pid/vision_test.s"
+	@echo "... main_pid/image_processing.o"
+	@echo "... main_pid/image_processing.i"
+	@echo "... main_pid/image_processing.s"
+	@echo "... main_pid/lane_detection.o"
+	@echo "... main_pid/lane_detection.i"
+	@echo "... main_pid/lane_detection.s"
 .PHONY : help
 
 

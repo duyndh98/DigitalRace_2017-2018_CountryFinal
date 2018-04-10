@@ -49,37 +49,12 @@ include CMakeFiles/testSignRecognize.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/testSignRecognize.dir/flags.make
 
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o: CMakeFiles/testSignRecognize.dir/flags.make
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o: main_pid/testSignRecognition.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o -c /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/testSignRecognition.cpp
-
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/testSignRecognition.cpp > CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.i
-
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/testSignRecognition.cpp -o CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.s
-
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.requires:
-.PHONY : CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.requires
-
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.provides: CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.requires
-	$(MAKE) -f CMakeFiles/testSignRecognize.dir/build.make CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.provides.build
-.PHONY : CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.provides
-
-CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.provides.build: CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o
-
 # Object files for target testSignRecognize
-testSignRecognize_OBJECTS = \
-"CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o"
+testSignRecognize_OBJECTS =
 
 # External object files for target testSignRecognize
 testSignRecognize_EXTERNAL_OBJECTS =
 
-bin/Release/testSignRecognize: CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o
 bin/Release/testSignRecognize: CMakeFiles/testSignRecognize.dir/build.make
 bin/Release/testSignRecognize: bin/Release/libObjectRecognition.a
 bin/Release/testSignRecognize: bin/Release/libObjectDetection.a
@@ -112,7 +87,7 @@ bin/Release/testSignRecognize: CMakeFiles/testSignRecognize.dir/link.txt
 CMakeFiles/testSignRecognize.dir/build: bin/Release/testSignRecognize
 .PHONY : CMakeFiles/testSignRecognize.dir/build
 
-CMakeFiles/testSignRecognize.dir/requires: CMakeFiles/testSignRecognize.dir/main_pid/testSignRecognition.cpp.o.requires
+CMakeFiles/testSignRecognize.dir/requires:
 .PHONY : CMakeFiles/testSignRecognize.dir/requires
 
 CMakeFiles/testSignRecognize.dir/clean:
