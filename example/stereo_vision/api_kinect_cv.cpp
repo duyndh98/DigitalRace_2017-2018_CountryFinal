@@ -162,10 +162,10 @@ api_kinect_cv_get_obtacle_rect( Mat& depthMap,
                                 vector< Rect > &output_boxes,
                                 Rect &roi,
                                 int lower_bound,
-                                int upper_bound)
+                                int upper_bound, int iLowArea)
 {
 
-    int thresh_area_min = 100;//300
+    int thresh_area_min = iLowArea;//300
 	int thresh_area_max = 400;//400
 
     int erosion_type = MORPH_ELLIPSE;
