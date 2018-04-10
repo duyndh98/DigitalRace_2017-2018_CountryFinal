@@ -121,6 +121,8 @@ image_processing.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.h
 lane_detection.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
+sign.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
 opencv2/imgproc/imgproc.hpp
@@ -165,6 +167,8 @@ image_processing.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.h
 header.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
+image_processing.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.cpp
 lane_detection.h
@@ -173,6 +177,16 @@ lane_detection.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
 header.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
+
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.cpp
+sign.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
+
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
+header.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
+image_processing.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.h
 
 /usr/local/include/opencv/cv.h
 opencv2/core/core_c.h

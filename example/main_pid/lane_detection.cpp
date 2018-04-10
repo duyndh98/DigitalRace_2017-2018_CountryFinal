@@ -1,7 +1,7 @@
 #include "lane_detection.h"
 
 /////// My function
-cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, bool &preState)
+Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &preState)
 {
     pop = false;
     //point.x = 0;
@@ -13,31 +13,31 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
 		point.x = imgLane.cols;
 		point.y = imgLane.rows/2;	
 	}
-    std::vector<std::vector<cv::Point>> contours;
-    std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, cv::Point(0, 0));
+    std::vector<std::vector<Point>> contours;
+    std::vector<Vec4i> hierarchy;
+    findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
     if (contours.size() == 0)
     {
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
+        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
-    cv::Mat result = cv::Mat::zeros(imgLane.size(), CV_8UC1);
+    Mat result = Mat::zeros(imgLane.size(), CV_8UC1);
     int sumX = 0;
     int sumY = 0;
     int maxArea = 0;
     int maxIndex = 0;
     for (int i = 0; i < (int)contours.size(); ++i)
     {
-        int s = cv::contourArea(contours[i]);
+        int s = contourArea(contours[i]);
         if (s > maxArea)
         {
             maxArea = s;
             maxIndex = i;
         }
     }
-    if (cv::contourArea(contours[maxIndex]) < 100)
+    if (contourArea(contours[maxIndex]) < 100)
     {
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
+        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
     int xMin = 0, yMin = 1000, xMax = 0, yMax = -1;
@@ -58,7 +58,7 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
     }
 	*/
     //if((xMax>=xMin) && (check==1)){
-    cv::drawContours(result, contours, maxIndex, cv::Scalar(255), CV_FILLED);
+    drawContours(result, contours, maxIndex, Scalar(255), CV_FILLED);
     //point.x = sumX / contours[maxIndex].size();
     //point.y = sumY / contours[maxIndex].size();
 	if(check==-1){
@@ -89,12 +89,12 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
     if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
     {
         //cout << "sum X: " << sumX << endl;
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
+        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
     if ((point.x < imgLane.cols / 2) && (check == 1) && (preState == false))
     {
-        cv::Mat none = cv::Mat::zeros(imgLane.size(), CV_8UC1);
+        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
 
@@ -102,7 +102,7 @@ cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, b
     return result;
     // } else
     // if((xMax<=xMin) && (check==-1)){
-    //     cv::drawContours(result, contours, maxIndex, cv::Scalar(255), CV_FILLED);
+    //     drawContours(result, contours, maxIndex, Scalar(255), CV_FILLED);
     //     point.x = sumX / contours[maxIndex].size();
     //     point.y = sumY / contours[maxIndex].size();
     //     pop = true;

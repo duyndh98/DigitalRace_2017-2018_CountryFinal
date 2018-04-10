@@ -12,6 +12,7 @@
 #include "header.h"
 #include "image_processing.h"
 #include "lane_detection.h"
+#include "sign.h"
 
 bool flagTurn = false;
 int dirTurn = 0;
@@ -185,7 +186,7 @@ int main(int argc, char *argv[])
     /////////  Init UART here   ///////////////////////////////////////////////
     /// Init MSAC vanishing point library
     MSAC msac;
-    cv::Rect roi1 = cv::Rect(0, VIDEO_FRAME_HEIGHT * 3 / 4,
+    Rect roi1 = Rect(0, VIDEO_FRAME_HEIGHT * 3 / 4,
                              VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT / 4);
 
     api_vanishing_point_init(msac);
@@ -212,52 +213,13 @@ int main(int argc, char *argv[])
     bool is_show_cam = true;
     int count_s, count_ss;
     int frame_id = 0;
-    vector<cv::Vec4i> lines;
+    vector<Vec4i> lines;
     bool oneLine = false;
     int preX = 0;
     int preY = 0;
     bool preLeft = false;
     bool preRight = false;
 
-/*duyyyyyyyyyyyyyyyyyyyy
-    sign_recognizer sr;
-    sr.init();
-    if (TEST_DETECT_SIGN)
-    {
-        while (1)
-        {
-            int readyStream = -1;
-            rc = OpenNI::waitForAnyStream(streams, 2, &readyStream, SAMPLE_READ_WAIT_TIMEOUT);
-            if (rc != STATUS_OK)
-            {
-                printf("Wait failed! (timeout is %d ms)\n%s\n", SAMPLE_READ_WAIT_TIMEOUT, OpenNI::getExtendedError());
-                break;
-            }
-
-            depth.readFrame(&frame_depth);
-            color.readFrame(&frame_color);
-            frame_id++;
-            char recordStatus = analyzeFrame(frame_depth, frame_color, depthImg, colorImg);
-            flip(depthImg, depthImg, 1);
-            flip(colorImg, colorImg, 1);
-            Mat img = colorImg.clone();
-            resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
-            //imshow("img", img);
-
-            int class_id = api_sign_detection(img, sr);
-
-            if (class_id == SIGN_LEFT)
-                cout << "=> LEFT SIGN\n";
-            else if (class_id == SIGN_RIGHT)
-                cout << "=> RIGHT SIGN\n";
-            else
-                cout << "=> NO SIGN\n";
-
-            waitKey(1);
-            //destroyAllWindows();
-        }
-    }
-*/
     int road_width;
     bool road_width_set = false;
 
@@ -357,12 +319,13 @@ int main(int argc, char *argv[])
 
             depth.readFrame(&frame_depth);
             color.readFrame(&frame_color);
+            //resize(frame_color, frame_color, Size(FRAME_WIDTH, FRAME_HEIGHT));
 
             frame_id++;
             char recordStatus = analyzeFrame(frame_depth, frame_color, depthImg, colorImg);
             //flip(depthImg, depthImg, 1);
             flip(colorImg, colorImg, 1);
-            //cv::imshow("depth", depthImg);
+            //imshow("depth", depthImg);
             ////////// Detect Center Point ////////////////////////////////////
             if (recordStatus == 'c')
             {
@@ -393,7 +356,7 @@ int main(int argc, char *argv[])
 
                 //////////////////get depth
                 int x_Left, x_Right, y_ob, w_ob;
-                //cv::Mat depth__;
+                //Mat depth__;
                 //const float scaleFactor = 0.05f;
                 //depthImg.convertTo(depth__,CV_8UC1, scaleFactor);
                 //cvtColor(depthImg,)
@@ -423,7 +386,7 @@ int main(int argc, char *argv[])
                 
                 Rect detectRoi(colorImg.cols / 5, colorImg.rows / 4, 3 * colorImg.cols / 5, 3 * colorImg.rows / 4);
                 Mat img = colorImg(detectRoi);
-                resize(img, img, cv::Size(FRAME_HEIGHT, FRAME_WIDTH));
+                resize(img, img, Size(FRAME_HEIGHT, FRAME_WIDTH));
                 //imshow("img", img);
                 int class_id = api_sign_detection(img, sr);
                 if (class_id != NO_SIGN)
@@ -472,12 +435,12 @@ int main(int argc, char *argv[])
                 */
 
                 cvtColor(colorImg, grayImage, CV_BGR2GRAY);
-                //cv::imshow("IMG", colorImg);
+                //imshow("IMG", colorImg);
                 GaussianBlur(grayImage, grayImage, Size(5, 5), 0, 0);
                 Rect crop1(0, 0, grayImage.cols / 2 - OFFSET_DIVIDE, grayImage.rows);
                 Mat Left = grayImage(crop1);
-                cv::Rect crop2(grayImage.cols / 2 + OFFSET_DIVIDE, 0, grayImage.cols / 2 - OFFSET_DIVIDE, grayImage.rows);
-                cv::Mat Right = grayImage(crop2);
+                Rect crop2(grayImage.cols / 2 + OFFSET_DIVIDE, 0, grayImage.cols / 2 - OFFSET_DIVIDE, grayImage.rows);
+                Mat Right = grayImage(crop2);
                 if (is_show_cam)
                 {
                     //imshow("LEFT",Left);
@@ -485,8 +448,8 @@ int main(int argc, char *argv[])
                 }
                 Mat dstLeft = keepLanes(Left, false);
                 Mat dstRight = keepLanes(Right, false);
-                //cv::Mat dst = keepLanes(grayImage, false);
-                //cv::imshow("dst", dst);
+                //Mat dst = keepLanes(grayImage, false);
+                //imshow("dst", dst);
                 bool isLeft = false;
                 bool isRight = false;
                 Point pointLeft(0, 0);
@@ -502,14 +465,14 @@ int main(int argc, char *argv[])
                 preRight = isRight;
                 imshow("LEFT", Left);
                 imshow("RIGHT", Right);
-                //cv::Point shift(0, 3 * grayImage.rows / 4);
+                //Point shift(0, 3 * grayImage.rows / 4);
                 //bool isRight = true;
-                //cv::Mat two = twoRightMostLanes(grayImage.size(), dst, shift, isRight);
-                //cv::imshow("two", two);
+                //Mat two = twoRightMostLanes(grayImage.size(), dst, shift, isRight);
+                //imshow("two", two);
                 //Rect roi2(0, 3 * two.rows / 4, two.cols, two.rows / 4); //c?t ?nh
 
                 //Mat imgROI2 = two(roi2);
-                //cv::imshow("roi", imgROI2);
+                //imshow("roi", imgROI2);
                 //int widthSrc = imgROI2.cols;
                 //int heightSrc = imgROI2.rows;
                 //vector<Point> pointList;
@@ -635,9 +598,9 @@ int main(int argc, char *argv[])
                 theta = -(angDiff * ALPHA);
                 circle(grayImage, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
                 circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-		circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
-		circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
-		imshow("color", colorImg);
+		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
+	        	circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
+		        imshow("color", colorImg);
                 std::cout << "angdiff: " << angDiff << std::endl;
                 // theta = (0.00);
                 api_set_STEERING_control(pca9685, theta);

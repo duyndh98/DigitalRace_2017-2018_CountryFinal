@@ -433,6 +433,30 @@ main_pid/lane_detection.cpp.s:
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.s
 .PHONY : main_pid/lane_detection.cpp.s
 
+main_pid/sign.o: main_pid/sign.cpp.o
+.PHONY : main_pid/sign.o
+
+# target to build an object file
+main_pid/sign.cpp.o:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o
+.PHONY : main_pid/sign.cpp.o
+
+main_pid/sign.i: main_pid/sign.cpp.i
+.PHONY : main_pid/sign.i
+
+# target to preprocess a source file
+main_pid/sign.cpp.i:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign.cpp.i
+.PHONY : main_pid/sign.cpp.i
+
+main_pid/sign.s: main_pid/sign.cpp.s
+.PHONY : main_pid/sign.s
+
+# target to generate assembly for a file
+main_pid/sign.cpp.s:
+	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign.cpp.s
+.PHONY : main_pid/sign.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -470,6 +494,9 @@ help:
 	@echo "... main_pid/lane_detection.o"
 	@echo "... main_pid/lane_detection.i"
 	@echo "... main_pid/lane_detection.s"
+	@echo "... main_pid/sign.o"
+	@echo "... main_pid/sign.i"
+	@echo "... main_pid/sign.s"
 .PHONY : help
 
 

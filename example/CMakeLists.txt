@@ -82,6 +82,7 @@ set( source_files
     main_pid/automaticCar.cpp
     main_pid/image_processing.cpp
     main_pid/lane_detection.cpp
+    main_pid/sign.cpp
     # if you write extra libraries for automaticCar.cpp, declare them here.
     # See CMakeLists.txt in sub-directory for more details.
 )
