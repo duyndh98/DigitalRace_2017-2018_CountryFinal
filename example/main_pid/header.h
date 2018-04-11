@@ -71,5 +71,9 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
+#define Ki 0.3
+#define Kp 0.1
+#define Kd 0.01
+
 
 #endif

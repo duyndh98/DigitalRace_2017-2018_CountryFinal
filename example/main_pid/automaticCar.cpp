@@ -15,6 +15,8 @@
 #include "sign.h"
 #include "control.h"
 
+
+
 bool flagTurn = false;
 int dirTurn = 0;
 Mat colorImg;
@@ -30,10 +32,21 @@ int throttle_config = 0;
 bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
 
+double PID(double fps, int xCar, int xTam, double &previous, double &intergral)
+{
+    double dt=1.0/fps;
+    double error=xTam - xCar;
+    intergral = intergral + (dt*error);
+    double derivative =(error-previous)/dt;
+    double output= (Kp*error) + (Ki*intergral)+ (Kd *derivative);
+    previous=error;
+    return output + xCar;
+}
 ///////// utilitie functions  ///////////////////////////
 int main(int argc, char *argv[])
 {
-    
+    double previous=0;
+    double intergral=0;
     pthread_t newThread;
     //pthread_create(&newThread, NULL, &detectSign, NULL);
     //imshow("dnjdcnd", colorImg);
@@ -212,6 +225,8 @@ int main(int argc, char *argv[])
             {
                 running = !running;
                 sw4_stat = bt_status;
+                previous = 0;
+                intergral = 0;
                 throttle_val = 30;
                 set_throttle_val = 30;
                 road_width_set = false;
@@ -490,13 +505,19 @@ int main(int argc, char *argv[])
                 // }
 
                 /////////////////////////////////////////////////////////////////////
-                angDiff = getTheta(carPosition, Point(xTam, yTam));
-                cout<<"---------------------------"<<getTheta(carPosition, Point(xTam, yTam))<<endl;
+
+                et = getTickCount();
+                fps = 1.0 / ((et - st) / freq);
+
+                int OutputX=PID(fps,carPosition.x, xTam,previous, intergral);
+                cout <<"Output X: " <<OutputX <<endl;
+                angDiff = getTheta(carPosition, Point(OutputX, yTam));
+                cout<<"---------------------------"<<getTheta(carPosition, Point(OutputX, yTam))<<endl;
                 if (-20 < angDiff && angDiff < 20)
                     angDiff = 0;
                 theta = -(angDiff * ALPHA);
-                circle(binImage, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-                circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+                circle(binImage, Point(OutputX, yTam), 2, Scalar(255, 255, 0), 3);
+                circle(colorImg, Point(OutputX, yTam), 2, Scalar(255, 255, 0), 3);
 		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
 	        	circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
 		        imshow("color", colorImg);
