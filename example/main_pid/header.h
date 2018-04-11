@@ -38,6 +38,12 @@ using namespace cv::ml;
 #define LOW_HSV_GREEN Scalar(34, 80, 100)
 #define HIG_HSV_GREEN Scalar(83, 255, 255)
 
+#define GREEN_MIN Scalar(34, 138, 12)
+#define GREEN_MAX Scalar(83, 246, 124)
+
+#define LOW_HSV_BLACK Scalar(100, 0, 0)
+#define HIG_HSV_BLACK Scalar(135, 255, 255)
+
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
@@ -58,8 +64,6 @@ using namespace cv::ml;
 #define SW3_PIN 163
 #define SW4_PIN 164
 #define SENSOR 165
-#define GREEN_MIN Scalar(34, 138, 12)
-#define GREEN_MAX Scalar(83, 246, 124)
 #define AREA_MIN 17000
 #define OFFSET_DIVIDE 0
 

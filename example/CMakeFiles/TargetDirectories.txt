@@ -1,5 +1,6 @@
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/extract_info/CMakeFiles/test_extract_info.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/sign_recognize/CMakeFiles/signsRecognizer.dir
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/threshold-selection.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/test-kinect-cv2-2.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/CMakeFiles/vanishing-point.dir

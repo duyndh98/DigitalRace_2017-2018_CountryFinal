@@ -115,6 +115,19 @@ test-autocar/fast:
 .PHONY : test-autocar/fast
 
 #=============================================================================
+# Target rules for targets named threshold-selection
+
+# Build rule for target.
+threshold-selection: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 threshold-selection
+.PHONY : threshold-selection
+
+# fast build rule for target.
+threshold-selection/fast:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/build
+.PHONY : threshold-selection/fast
+
+#=============================================================================
 # Target rules for targets named kinect-cv2
 
 # Build rule for target.
@@ -457,6 +470,30 @@ main_pid/lane_detection.cpp.s:
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.s
 .PHONY : main_pid/lane_detection.cpp.s
 
+main_pid/real_camera.o: main_pid/real_camera.cpp.o
+.PHONY : main_pid/real_camera.o
+
+# target to build an object file
+main_pid/real_camera.cpp.o:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.o
+.PHONY : main_pid/real_camera.cpp.o
+
+main_pid/real_camera.i: main_pid/real_camera.cpp.i
+.PHONY : main_pid/real_camera.i
+
+# target to preprocess a source file
+main_pid/real_camera.cpp.i:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.i
+.PHONY : main_pid/real_camera.cpp.i
+
+main_pid/real_camera.s: main_pid/real_camera.cpp.s
+.PHONY : main_pid/real_camera.s
+
+# target to generate assembly for a file
+main_pid/real_camera.cpp.s:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.s
+.PHONY : main_pid/real_camera.cpp.s
+
 main_pid/sign.o: main_pid/sign.cpp.o
 .PHONY : main_pid/sign.o
 
@@ -481,12 +518,37 @@ main_pid/sign.cpp.s:
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign.cpp.s
 .PHONY : main_pid/sign.cpp.s
 
+main_pid/thresholdSelection.o: main_pid/thresholdSelection.cpp.o
+.PHONY : main_pid/thresholdSelection.o
+
+# target to build an object file
+main_pid/thresholdSelection.cpp.o:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o
+.PHONY : main_pid/thresholdSelection.cpp.o
+
+main_pid/thresholdSelection.i: main_pid/thresholdSelection.cpp.i
+.PHONY : main_pid/thresholdSelection.i
+
+# target to preprocess a source file
+main_pid/thresholdSelection.cpp.i:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.i
+.PHONY : main_pid/thresholdSelection.cpp.i
+
+main_pid/thresholdSelection.s: main_pid/thresholdSelection.cpp.s
+.PHONY : main_pid/thresholdSelection.s
+
+# target to generate assembly for a file
+main_pid/thresholdSelection.cpp.s:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.s
+.PHONY : main_pid/thresholdSelection.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... threshold-selection"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test-autocar"
@@ -521,9 +583,15 @@ help:
 	@echo "... main_pid/lane_detection.o"
 	@echo "... main_pid/lane_detection.i"
 	@echo "... main_pid/lane_detection.s"
+	@echo "... main_pid/real_camera.o"
+	@echo "... main_pid/real_camera.i"
+	@echo "... main_pid/real_camera.s"
 	@echo "... main_pid/sign.o"
 	@echo "... main_pid/sign.i"
 	@echo "... main_pid/sign.s"
+	@echo "... main_pid/thresholdSelection.o"
+	@echo "... main_pid/thresholdSelection.i"
+	@echo "... main_pid/thresholdSelection.s"
 .PHONY : help
 
 

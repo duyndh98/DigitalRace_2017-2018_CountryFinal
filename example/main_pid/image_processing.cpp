@@ -2,7 +2,7 @@
 
 void get_mask(const Mat &hsv, Mat &mask, string colors)
 {
-	mask = Mat::zeros(mask.rows, mask.cols, CV_8UC1);
+	mask = Mat::zeros(hsv.rows, hsv.cols, CV_8UC1);
 
 	Mat tmp_mask(mask.rows, mask.cols, CV_8UC1);
 	if (colors.find("blue") != std::string::npos)
@@ -24,6 +24,11 @@ void get_mask(const Mat &hsv, Mat &mask, string colors)
 		inRange(hsv, LOW_HSV_GREEN, HIG_HSV_GREEN, tmp_mask);
 		bitwise_or(mask, tmp_mask, mask);
 	}
+    if (colors.find("black") != std::string::npos)
+    {
+        inRange(hsv, LOW_HSV_BLACK, HIG_HSV_BLACK, tmp_mask);
+		bitwise_or(mask, tmp_mask, mask);
+    }
 
 	Mat kernel = Mat::ones(KERNEL_SIZE, KERNEL_SIZE, CV_8UC1);
 

@@ -93,6 +93,46 @@ clean: CMakeFiles/test-autocar.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/threshold-selection.dir
+
+# All Build rule for target.
+CMakeFiles/threshold-selection.dir/all: stereo_vision/CMakeFiles/kinect-cv2.dir/all
+CMakeFiles/threshold-selection.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
+CMakeFiles/threshold-selection.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
+CMakeFiles/threshold-selection.dir/all: peripheral_driver/uart/CMakeFiles/uart.dir/all
+CMakeFiles/threshold-selection.dir/all: HAL/CMakeFiles/HAL.dir/all
+CMakeFiles/threshold-selection.dir/all: multilane/CMakeFiles/multilane.dir/all
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/depend
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  28 29
+	@echo "Built target threshold-selection"
+.PHONY : CMakeFiles/threshold-selection.dir/all
+
+# Include target in all.
+all: CMakeFiles/threshold-selection.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/threshold-selection.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles 16
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/threshold-selection.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles 0
+.PHONY : CMakeFiles/threshold-selection.dir/rule
+
+# Convenience name for target.
+threshold-selection: CMakeFiles/threshold-selection.dir/rule
+.PHONY : threshold-selection
+
+# clean rule for target.
+CMakeFiles/threshold-selection.dir/clean:
+	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/clean
+.PHONY : CMakeFiles/threshold-selection.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/threshold-selection.dir/clean
+.PHONY : clean
+
+#=============================================================================
 # Directory level rules for directory stereo_vision
 
 # Convenience name for "all" pass in the directory.
@@ -275,7 +315,7 @@ clean: lane_detection/CMakeFiles/test-vanishing-point.dir/clean
 lane_detection/CMakeFiles/vanishing-point.dir/all:
 	$(MAKE) -f lane_detection/CMakeFiles/vanishing-point.dir/build.make lane_detection/CMakeFiles/vanishing-point.dir/depend
 	$(MAKE) -f lane_detection/CMakeFiles/vanishing-point.dir/build.make lane_detection/CMakeFiles/vanishing-point.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  30 31 32 33
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  32 33 34 35
 	@echo "Built target vanishing-point"
 .PHONY : lane_detection/CMakeFiles/vanishing-point.dir/all
 
@@ -430,7 +470,7 @@ clean: peripheral_driver/uart/CMakeFiles/test-uart.dir/clean
 peripheral_driver/uart/CMakeFiles/uart.dir/all:
 	$(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/depend
 	$(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  28 29
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  30 31
 	@echo "Built target uart"
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/all
 
@@ -764,8 +804,8 @@ sign_recognize/preinstall:
 # Target rules for target sign_recognize/CMakeFiles/signsRecognizer.dir
 
 # All Build rule for target.
-sign_recognize/CMakeFiles/signsRecognizer.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 sign_recognize/CMakeFiles/signsRecognizer.dir/all: radon/CMakeFiles/radon.dir/all
+sign_recognize/CMakeFiles/signsRecognizer.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 	$(MAKE) -f sign_recognize/CMakeFiles/signsRecognizer.dir/build.make sign_recognize/CMakeFiles/signsRecognizer.dir/depend
 	$(MAKE) -f sign_recognize/CMakeFiles/signsRecognizer.dir/build.make sign_recognize/CMakeFiles/signsRecognizer.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  16
@@ -867,8 +907,8 @@ extract_info/preinstall:
 # Target rules for target extract_info/CMakeFiles/extractInfo.dir
 
 # All Build rule for target.
-extract_info/CMakeFiles/extractInfo.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 extract_info/CMakeFiles/extractInfo.dir/all: radon/CMakeFiles/radon.dir/all
+extract_info/CMakeFiles/extractInfo.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 	$(MAKE) -f extract_info/CMakeFiles/extractInfo.dir/build.make extract_info/CMakeFiles/extractInfo.dir/depend
 	$(MAKE) -f extract_info/CMakeFiles/extractInfo.dir/build.make extract_info/CMakeFiles/extractInfo.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  7
@@ -903,8 +943,8 @@ clean: extract_info/CMakeFiles/extractInfo.dir/clean
 # Target rules for target extract_info/CMakeFiles/test_extract_info.dir
 
 # All Build rule for target.
-extract_info/CMakeFiles/test_extract_info.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 extract_info/CMakeFiles/test_extract_info.dir/all: radon/CMakeFiles/radon.dir/all
+extract_info/CMakeFiles/test_extract_info.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 extract_info/CMakeFiles/test_extract_info.dir/all: extract_info/CMakeFiles/extractInfo.dir/all
 	$(MAKE) -f extract_info/CMakeFiles/test_extract_info.dir/build.make extract_info/CMakeFiles/test_extract_info.dir/depend
 	$(MAKE) -f extract_info/CMakeFiles/test_extract_info.dir/build.make extract_info/CMakeFiles/test_extract_info.dir/build

@@ -89,3 +89,11 @@ set( source_files
 )
 add_executable( ${exec_name} ${source_files} )
 target_link_libraries( ${exec_name} vanishing-point i2c-pwm uart kinect-cv2 OpenNI2 HAL multilane ${OpenCV_LIBS})
+
+add_executable( threshold-selection 
+main_pid/thresholdSelection.cpp
+main_pid/camera.h
+main_pid/my_assert.h
+main_pid/real_camera.h
+main_pid/real_camera.cpp)
+target_link_libraries( threshold-selection vanishing-point i2c-pwm uart kinect-cv2 OpenNI2 HAL multilane ${OpenCV_LIB})

@@ -30,53 +30,21 @@ int throttle_config = 0;
 bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
 
-
-void controlTurn(PCA9685 *&pca9685, int dir)
-{
-    if (dir == SIGN_LEFT)
-    {
-        double theta = ALPHA * 78;
-        api_set_STEERING_control(pca9685, theta);
-        cout << "Turn Left==================================================" << endl;
-        sleep(1);
-        cout << "Normal" << endl;
-    }
-    else if (dir == SIGN_RIGHT)
-    {
-        double theta = -ALPHA * 78;
-        api_set_STEERING_control(pca9685, theta);
-        cout << "Turn Right==================================================" << endl;
-        sleep(1);
-        cout << "Normal" << endl;
-    }
-}
-
 ///////// utilitie functions  ///////////////////////////
 int main(int argc, char *argv[])
 {
+    
     pthread_t newThread;
     //pthread_create(&newThread, NULL, &detectSign, NULL);
     //imshow("dnjdcnd", colorImg);
+    // Setup input
     GPIO *gpio = new GPIO();
     int sw1_stat = 1;
     int sw2_stat = 1;
     int sw3_stat = 1;
     int sw4_stat = 1;
     int sensor = 0;
-
-    // Setup input
-    gpio->gpioExport(SW1_PIN);
-    gpio->gpioExport(SW2_PIN);
-    gpio->gpioExport(SW3_PIN);
-    gpio->gpioExport(SW4_PIN);
-    gpio->gpioExport(SENSOR);
-
-    gpio->gpioSetDirection(SW1_PIN, INPUT);
-    gpio->gpioSetDirection(SW2_PIN, INPUT);
-    gpio->gpioSetDirection(SW3_PIN, INPUT);
-    gpio->gpioSetDirection(SW4_PIN, INPUT);
-    gpio->gpioSetDirection(SENSOR, INPUT);
-    
+    SetupInput(gpio);
     usleep(10000);
 
     /// Init openNI ///
@@ -92,17 +60,17 @@ int main(int argc, char *argv[])
     }
     rc = device.open(ANY_DEVICE);
     if (rc != STATUS_OK)
-    {
-        printf("Couldn't open device\n%s\n", OpenNI::getExtendedError());
         return 0;
-    }
+    
     if (device.getSensorInfo(SENSOR_DEPTH) != NULL)
     {
         rc = depth.create(device, SENSOR_DEPTH);
         if (rc == STATUS_OK)
         {
             VideoMode depth_mode = depth.getVideoMode();
-            depth_mode.setFps(30);
+            depth_mode.setFps(30);    
+        printf("Couldn't open device\n%s\n", OpenNI::getExtendedError());
+
             depth_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
             depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
             depth.setVideoMode(depth_mode);
@@ -156,7 +124,8 @@ int main(int argc, char *argv[])
     string color_filename = "color.avi";
     string depth_filename = "depth.avi";
 
-    Mat depthImg, grayImage;
+    Mat depthImg, binImage;
+    Mat hsv;
     int codec = CV_FOURCC('M', 'J', 'P', 'G');
     Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
 
@@ -227,7 +196,9 @@ int main(int argc, char *argv[])
     while (true)
     {
         Point center_point(0, 0);
+       // Starts(char key, );
 
+        
         st = getTickCount();
         key = getkey();
         unsigned int bt_status = 0;
@@ -320,7 +291,7 @@ int main(int argc, char *argv[])
 
             depth.readFrame(&frame_depth);
             color.readFrame(&frame_color);
-            //resize(frame_color, frame_color, Size(FRAME_WIDTH, FRAME_HEIGHT));
+            
 
             frame_id++;
             char recordStatus = analyzeFrame(frame_depth, frame_color, depthImg, colorImg);
@@ -357,91 +328,17 @@ int main(int argc, char *argv[])
 
                 //////////////////get depth
                 int x_Left, x_Right, y_ob, w_ob;
-                //Mat depth__;
-                //const float scaleFactor = 0.05f;
-                //depthImg.convertTo(depth__,CV_8UC1, scaleFactor);
-                //cvtColor(depthImg,)
-                //cout << "goi ham get_ob"<<depthImg.channels()<<endl;
-                //imshow("DepthImg",depthImg);
-                //imshow("Depth__", depth_img_8u);
-                //get_obtacle(depth_img_8u, x_Left, x_Right, y_ob, w_ob, test_obt);
-
-                //PointCenter_Displacement( xTam, x_Left, x_Right);
-                //cout << "x_Left"<<x_Left <<endl<<"x_Right"<<x_Right;
-
-                ///////////////////////--------------------------------------------------------------------------------------------------------
-
-                // if(endThread){
-                //     endThread = false;
-                //     std::thread first(detectSign);
-                // }
-                // if (endThread)
-                // {
-                //     endThread = false;
-                //     pthread_create(&newThread, NULL, &detectSign, NULL);
-                // }
-                //if(test_obt){
-                //cout << "reach here====================================================" << endl;
-
-                /*   /// detect sign
+                hist_equalize(colorImg);
+                cvtColor(colorImg, hsv, CV_BGR2HSV);
+                get_mask(hsv, binImage, "black");
+                bitwise_not(binImage, binImage);
+                imshow("binImage", binImage);
                 
-                Rect detectRoi(colorImg.cols / 5, colorImg.rows / 4, 3 * colorImg.cols / 5, 3 * colorImg.rows / 4);
-                Mat img = colorImg(detectRoi);
-                resize(img, img, Size(FRAME_HEIGHT, FRAME_WIDTH));
-                //imshow("img", img);
-                int class_id = api_sign_detection(img, sr);
-                if (class_id != NO_SIGN)
-                {
-                    if (class_id == SIGN_LEFT)
-                        detectLeft++;
-                    if (class_id == SIGN_RIGHT)
-                        detectRight++;
-                }
-                countDetect++;
-                if (countDetect >= N_SAMPLE)
-                {
-                    throttle_val = set_throttle_val;
-                    api_set_FORWARD_control(pca9685, throttle_val);
-                    if (detectLeft >= ACCEPT_SIGN)
-                    {
-                        flagTurn = true;
-                        dirTurn = SIGN_LEFT;
-                        //controlTurn(pca9685, SIGN_LEFT);
-                    }
-                    else if (detectRight >= ACCEPT_SIGN)
-                    {
-                        flagTurn = true;
-                        dirTurn = SIGN_RIGHT;
-                        //controlTurn(pca9685, SIGN_RIGHT);
-                    }
-                    countDetect = 0;
-                    detectRight = 0;
-                    detectLeft = 0;
-                }
-                preDetect = class_id;
-
-                getFrame = true;
-                if (flagTurn)
-                {
-                    controlTurn(pca9685, dirTurn);
-                    //fprintf(thetaLogFile, "turn: %d\n", dirTurn);
-                    if (dirTurn == SIGN_LEFT)
-                        putText(colorImg, "Turn Left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
-                    else
-                        putText(colorImg, "Turn Right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
-                    flagTurn = false;
-                    continue;
-                }
-
-                */
-
-                cvtColor(colorImg, grayImage, CV_BGR2GRAY);
-                //imshow("IMG", colorImg);
-                GaussianBlur(grayImage, grayImage, Size(5, 5), 0, 0);
-                Rect crop1(0, 0, grayImage.cols / 2 - OFFSET_DIVIDE, grayImage.rows);
-                Mat Left = grayImage(crop1);
-                Rect crop2(grayImage.cols / 2 + OFFSET_DIVIDE, 0, grayImage.cols / 2 - OFFSET_DIVIDE, grayImage.rows);
-                Mat Right = grayImage(crop2);
+                //GaussianBlur(binImage, binImage, Size(5, 5), 0, 0);
+                Rect crop1(0, 0, binImage.cols / 2 - OFFSET_DIVIDE, binImage.rows);
+                Mat Left = binImage(crop1);
+                Rect crop2(binImage.cols / 2 + OFFSET_DIVIDE, 0, binImage.cols / 2 - OFFSET_DIVIDE, binImage.rows);
+                Mat Right = binImage(crop2);
                 if (is_show_cam)
                 {
                     //imshow("LEFT",Left);
@@ -449,26 +346,26 @@ int main(int argc, char *argv[])
                 }
                 Mat dstLeft = keepLanes(Left, false);
                 Mat dstRight = keepLanes(Right, false);
-                //Mat dst = keepLanes(grayImage, false);
+                //Mat dst = keepLanes(binImage, false);
                 //imshow("dst", dst);
                 bool isLeft = false;
                 bool isRight = false;
                 Point pointLeft(0, 0);
                 Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-                pointLeft.y += 4 * grayImage.rows / 5;
+                pointLeft.y += 4 * binImage.rows / 5;
                 Point pointRight(0, 0);
                 Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
-                pointRight.x += (grayImage.cols / 2 + OFFSET_DIVIDE);
-                pointRight.y += 4 * grayImage.rows / 5;
-                //circle(grayImage, pointRight, 2, Scalar(255, 0, 255), 3);
-                //circle(grayImage, pointLeft, 2, Scalar(255, 0, 255), 3);
+                pointRight.x += (binImage.cols / 2 + OFFSET_DIVIDE);
+                pointRight.y += 4 * binImage.rows / 5;
+                //circle(binImage, pointRight, 2, Scalar(255, 0, 255), 3);
+                //circle(binImage, pointLeft, 2, Scalar(255, 0, 255), 3);
                 preLeft = isLeft;
                 preRight = isRight;
                 imshow("LEFT", Left);
                 imshow("RIGHT", Right);
-                //Point shift(0, 3 * grayImage.rows / 4);
+                //Point shift(0, 3 * binImage.rows / 4);
                 //bool isRight = true;
-                //Mat two = twoRightMostLanes(grayImage.size(), dst, shift, isRight);
+                //Mat two = twoRightMostLanes(binImage.size(), dst, shift, isRight);
                 //imshow("two", two);
                 //Rect roi2(0, 3 * two.rows / 4, two.cols, two.rows / 4); //c?t ?nh
 
@@ -518,8 +415,8 @@ int main(int argc, char *argv[])
                 else if (isLeft && (!oneLine))
                 {
                     oneLine = true;
-                    xTam = grayImage.cols / 2 + 150;
-                    yTam = 7 * grayImage.rows / 8;
+                    xTam = binImage.cols / 2 + 150;
+                    yTam = 7 * binImage.rows / 8;
                     //std::cout << "angdiff: " << angDiff << std::endl;
                     // theta = (0.00);
                     //api_set_STEERING_control(pca9685, theta);
@@ -527,8 +424,8 @@ int main(int argc, char *argv[])
                 else if (isRight && (!oneLine))
                 {
                     //oneLine = true;
-                    xTam = grayImage.cols / 2 - 150;
-                    yTam = 7 * grayImage.rows / 8;
+                    xTam = binImage.cols / 2 - 150;
+                    yTam = 7 * binImage.rows / 8;
                 }
                 else
                 {
@@ -555,7 +452,7 @@ int main(int argc, char *argv[])
                 {
                     putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = (grayImage.cols + pointLeft.x) / 2; // grayImage.cols / 2 + 150;
+                    xTam = (binImage.cols + pointLeft.x) / 2; // binImage.cols / 2 + 150;
                     yTam = pointLeft.y;
                     //std::cout << "angdiff: " << angDiff << std::endl;
                     // theta = (0.00);
@@ -565,7 +462,7 @@ int main(int argc, char *argv[])
                 {
                     putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
-                    xTam = pointRight.x / 2; // grayImage.cols / 2 - 150;
+                    xTam = pointRight.x / 2; // binImage.cols / 2 - 150;
                     yTam = pointRight.y;
                 }
                 else
@@ -594,10 +491,11 @@ int main(int argc, char *argv[])
 
                 /////////////////////////////////////////////////////////////////////
                 angDiff = getTheta(carPosition, Point(xTam, yTam));
+                cout<<"---------------------------"<<getTheta(carPosition, Point(xTam, yTam))<<endl;
                 if (-20 < angDiff && angDiff < 20)
                     angDiff = 0;
                 theta = -(angDiff * ALPHA);
-                circle(grayImage, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+                circle(binImage, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
                 circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
 		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
 	        	circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
@@ -632,8 +530,8 @@ int main(int argc, char *argv[])
 
                 if (!colorImg.empty())
                     color_videoWriter.write(colorImg);
-                if (!grayImage.empty())
-                    gray_videoWriter.write(grayImage);
+                if (!binImage.empty())
+                    gray_videoWriter.write(binImage);
             }
             if (recordStatus == 'd' && is_save_file)
             {
@@ -644,8 +542,6 @@ int main(int argc, char *argv[])
             //////// using for debug stuff  ///////////////////////////////////
             if (is_show_cam)
             {
-                if (!grayImage.empty())
-                    imshow("gray", grayImage);
                 waitKey(1);
             }
             //if (key == 27)
