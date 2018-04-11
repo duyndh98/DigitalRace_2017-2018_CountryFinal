@@ -83,7 +83,7 @@ main( int argc, char** argv )
 
             }
         }
-*/
+
         et = getTickCount();
 
         fps = 1.0 / ((et-st)/freq);
@@ -100,7 +100,7 @@ main( int argc, char** argv )
 
 
     }
-
+*/
 	waitKey(0);
     return 0;
 }

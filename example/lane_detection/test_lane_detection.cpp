@@ -23,25 +23,7 @@ main( int argc, char** argv )
     }
 
 */
-	Lane_Detector rc;
-    cv::Mat imgInput=imread("source/image_1.jpg");
-    cv::Mat imgGray;
-	cvtColor(imgInput,imgGray,CV_BGR2GRAY);
-	Point pC;
-	rc.Detect_Not_Lane(imgGray,pC);
-    //MSAC msac;
-    cv::Rect roi = cv::Rect(0, VIDEO_FRAME_HEIGHT*3/4,
-                            VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT/4);
-
-    //api_vanishing_point_init( msac );
-
-    char key = 0;
-
-    double st = 0, et = 0, fps = 0;
-    double freq = getTickFrequency();
-
-    vector< Point > points;
-    int max_size = 5;
+	
 	
 
 
