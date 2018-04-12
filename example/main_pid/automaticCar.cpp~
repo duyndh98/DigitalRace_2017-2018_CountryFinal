@@ -342,13 +342,13 @@ int main(int argc, char *argv[])
                     int signID = mySign.getClassID();
 			cout << "signID: " << signID << endl;
 			if(signID==1)
-				putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+				putText(colorImg, "TURN LEFT", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
 			else 
 			if(signID==2)
-				putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+				putText(colorImg, "TURN RIGHT", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
 			else 
 			if(signID==3)
-				putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+				putText(colorImg, "STOP", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
 			
                 }
                 //GaussianBlur(binImage, binImage, Size(5, 5), 0, 0);
