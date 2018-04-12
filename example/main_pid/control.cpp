@@ -20,19 +20,14 @@ void controlTurn(PCA9685 *&pca9685, int dir)
     }
 }
 
-
-void SetupInput(GPIO *gpio)
+double PID(double fps, int x_car, int x_center, double &previous_error, double &intergral)
 {
-    gpio->gpioExport(SW1_PIN);
-    gpio->gpioExport(SW2_PIN);
-    gpio->gpioExport(SW3_PIN);
-    gpio->gpioExport(SW4_PIN);
-    gpio->gpioExport(SENSOR);
-
-    gpio->gpioSetDirection(SW1_PIN, INPUT);
-    gpio->gpioSetDirection(SW2_PIN, INPUT);
-    gpio->gpioSetDirection(SW3_PIN, INPUT);
-    gpio->gpioSetDirection(SW4_PIN, INPUT);
-    gpio->gpioSetDirection(SENSOR, INPUT);
-    
+    double dt = 1.0/fps;
+    double error = x_center - x_car;
+    intergral = intergral + (dt * error);
+    double derivative = (error - previous_error) / dt;
+    double output = (KP * error) + (KI * intergral)+ (KD * derivative);
+    previous_error = error;
+    return output + xCar;
 }
+

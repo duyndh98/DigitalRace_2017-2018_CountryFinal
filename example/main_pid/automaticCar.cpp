@@ -15,8 +15,6 @@
 #include "sign.h"
 #include "control.h"
 
-
-
 bool flagTurn = false;
 int dirTurn = 0;
 Mat colorImg;
@@ -32,32 +30,28 @@ int throttle_config = 0;
 bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
 
-double PID(double fps, int xCar, int xTam, double &previous, double &intergral)
-{
-    double dt=1.0/fps;
-    double error=xTam - xCar;
-    intergral = intergral + (dt*error);
-    double derivative =(error-previous)/dt;
-    double output= (Kp*error) + (Ki*intergral)+ (Kd *derivative);
-    previous=error;
-    return output + xCar;
-}
 ///////// utilitie functions  ///////////////////////////
 int main(int argc, char *argv[])
 {
-    Sign mySign;
-
-    pthread_t newThread;
-    //pthread_create(&newThread, NULL, &detectSign, NULL);
-    //imshow("dnjdcnd", colorImg);
     // Setup input
-    GPIO *gpio = new GPIO();
     int sw1_stat = 1;
     int sw2_stat = 1;
     int sw3_stat = 1;
     int sw4_stat = 1;
     int sensor = 0;
-    SetupInput(gpio);
+    
+    GPIO *gpio = new GPIO();
+    gpio->gpioExport(SW1_PIN);
+    gpio->gpioExport(SW2_PIN);
+    gpio->gpioExport(SW3_PIN);
+    gpio->gpioExport(SW4_PIN);
+    gpio->gpioExport(SENSOR);
+    gpio->gpioSetDirection(SW1_PIN, INPUT);
+    gpio->gpioSetDirection(SW2_PIN, INPUT);
+    gpio->gpioSetDirection(SW3_PIN, INPUT);
+    gpio->gpioSetDirection(SW4_PIN, INPUT);
+    gpio->gpioSetDirection(SENSOR, INPUT);
+    
     usleep(10000);
 
     /// Init openNI ///
@@ -74,7 +68,8 @@ int main(int argc, char *argv[])
     rc = device.open(ANY_DEVICE);
     if (rc != STATUS_OK)
         return 0;
-    
+
+    // depth video stream init
     if (device.getSensorInfo(SENSOR_DEPTH) != NULL)
     {
         rc = depth.create(device, SENSOR_DEPTH);
@@ -82,7 +77,7 @@ int main(int argc, char *argv[])
         {
             VideoMode depth_mode = depth.getVideoMode();
             depth_mode.setFps(30);    
-        printf("Couldn't open device\n%s\n", OpenNI::getExtendedError());
+            printf("Couldn't open device\n%s\n", OpenNI::getExtendedError());
 
             depth_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
             depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
@@ -100,6 +95,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    // color video stream init
     if (device.getSensorInfo(SENSOR_COLOR) != NULL)
     {
         rc = color.create(device, SENSOR_COLOR);
@@ -137,8 +133,8 @@ int main(int argc, char *argv[])
     string color_filename = "color.avi";
     string depth_filename = "depth.avi";
 
-    Mat depthImg, binImage, grayImg, signMask;
-    Mat hsv;
+    Mat depthImg, binImage, grayImg, signMask, hsv;
+
     int codec = CV_FOURCC('M', 'J', 'P', 'G');
     Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
 
@@ -152,6 +148,7 @@ int main(int argc, char *argv[])
     }
     /// End of init logs phase ///
 
+    Sign mySign;
     int dir = 0, throttle_val = 0;
     double theta = 0;
     int current_state = 0;
@@ -160,19 +157,17 @@ int main(int argc, char *argv[])
     //=========== Init  =======================================================
 
     ////////  Init PCA9685 driver   ///////////////////////////////////////////
-
     api_pwm_pca9685_init(pca9685);
 
     if (pca9685->error >= 0)
-        // api_pwm_set_control( pca9685, dir, throttle_val, theta, current_state );
         api_set_FORWARD_control(pca9685, throttle_val);
+    
     /////////  Init UART here   ///////////////////////////////////////////////
     /// Init MSAC vanishing point library
     MSAC msac;
-    Rect roi1 = Rect(0, FRAME_HEIGHT * 3 / 4,
-                             FRAME_WIDTH, FRAME_HEIGHT / 4);
-
     api_vanishing_point_init(msac);
+    
+    Rect roi1 = Rect(0, FRAME_HEIGHT * 3 / 4, FRAME_WIDTH, FRAME_HEIGHT / 4);
 
     ////////  Init direction and ESC speed  ///////////////////////////
     throttle_val = 0;

@@ -27,9 +27,6 @@ using namespace cv;
 using namespace std;
 using namespace cv::ml;
 
-//#define LOW_HSV_BLUE Scalar(80, 80, 100)
-//#define HIG_HSV_BLUE Scalar(120, 255, 255)
-
 #define LOW_HSV_BLUE Scalar(104, 148, 55)
 #define HIG_HSV_BLUE Scalar(118, 255, 255)
 
@@ -53,7 +50,6 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
 
-
 #define SAMPLE_READ_WAIT_TIMEOUT 2000
 #define FRAME_WIDTH 320
 #define FRAME_HEIGHT 240
@@ -74,9 +70,10 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
-#define Ki 0.3
-#define Kp 0.1
-#define Kd 0.01
+
+#define KI 0.3
+#define KP 0.1
+#define KD 0.01
 
 
 #endif

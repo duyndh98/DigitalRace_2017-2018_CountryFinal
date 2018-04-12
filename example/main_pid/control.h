@@ -3,7 +3,6 @@
 #include "header.h"
 
     void controlTurn(PCA9685 *&pca9685, int dir);
-    void SetupInput(GPIO *gpio);
-    //void Starts();
+    double PID(double fps, int x_car, int x_center, double &previous_error, double &intergral);
 
 #endif 
