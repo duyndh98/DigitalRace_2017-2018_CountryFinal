@@ -160,7 +160,7 @@ cv::Mat removeOutlier(const cv::Mat &org, std::vector< std::vector< cv::Point> >
 cv::Mat keepLanes(const cv::Mat &org, bool verbose = false) {
     if (verbose)
         cv::imshow("orgKeepLanes", org);
-    cv::Rect roi(0, 3 * org.rows / 4, org.cols, 1 * org.rows / 4);
+    cv::Rect roi(0, 4 * org.rows / 5, org.cols, 1 * org.rows / 5);
     cv::Mat img = org(roi).clone();
     std::vector< std::vector< cv::Point> > polys;
     std::vector<Lane> lanes;

@@ -342,13 +342,13 @@ int main(int argc, char *argv[])
                     int signID = mySign.getClassID();
 			cout << "signID: " << signID << endl;
 			if(signID==1)
-				putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+				putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 			else 
 			if(signID==2)
-				putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+				putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 			else 
 			if(signID==3)
-				putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
+				putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 			
                 }
                 //GaussianBlur(binImage, binImage, Size(5, 5), 0, 0);
@@ -369,11 +369,11 @@ int main(int argc, char *argv[])
                 bool isRight = false;
                 Point pointLeft(0, 0);
                 Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-                pointLeft.y += 4 * binImage.rows / 5;
+                pointLeft.y += 3 * binImage.rows / 4;
                 Point pointRight(0, 0);
                 Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
                 pointRight.x += (binImage.cols / 2 + OFFSET_DIVIDE);
-                pointRight.y += 4 * binImage.rows / 5;
+                pointRight.y += 3 * binImage.rows / 4;
                 //circle(binImage, pointRight, 2, Scalar(255, 0, 255), 3);
                 //circle(binImage, pointLeft, 2, Scalar(255, 0, 255), 3);
                 preLeft = isLeft;
