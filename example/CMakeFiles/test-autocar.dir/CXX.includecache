@@ -187,6 +187,8 @@ lane_detection.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
 header.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
+image_processing.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.cpp
 sign.h

@@ -299,45 +299,34 @@ int main(int argc, char *argv[])
             //flip(depthImg, depthImg, 1);
             flip(colorImg, colorImg, 1);
             //imshow("depth", depthImg);
+
+
+
+
+
+
+
             ////////// Detect Center Point ////////////////////////////////////
             if (recordStatus == 'c')
             {
 
-                //////////////////////////////////////////////////////////////-------------------------------- ------------------------------------test
-                // ngannnnn
-                DepthPixel *depth_img_data;
-                RGB888Pixel *color_img_data;
-
-                int w = frame_color.getWidth();
-                int h = frame_color.getHeight();
-
-                Mat depth_img = Mat(h, w, CV_16U); ////////////////------------------------------------------------------------------------------------------test
-                //color_img = Mat(h, w, CV_8UC3);
-                Mat depth_img_8u;
-
-                depth_img_data = (DepthPixel *)frame_depth.getData();
-
-                memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
-                normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
-
-                depth_img_8u.convertTo(depth_img_8u, CV_8U);
-                //color_img_data = (RGB888Pixel *)frame_color.getData();
-
-                //memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
-
-                //cvtColor(color_img, color_img, COLOR_RGB2BGR);
-
+                
                 //////////////////get depth
                 int x_Left, x_Right, y_ob, w_ob;
                 hist_equalize(colorImg);
                 cvtColor(colorImg, hsv, CV_BGR2HSV);
                 cvtColor(colorImg, grayImg, CV_BGR2GRAY);
                 get_mask(hsv, binImage, "black");
+		
 		get_mask(hsv, signMask, "blue,red");
                 bitwise_not(binImage, binImage);
                 imshow("binImage", binImage);
 		imshow("signMask", signMask);		
-                if(mySign.detect(signMask)){
+                
+
+
+
+		if(mySign.detect(signMask)){
                     mySign.recognize(grayImg);
                     int signID = mySign.getClassID();
 			cout << "signID: " << signID << endl;
@@ -352,142 +341,16 @@ int main(int argc, char *argv[])
 			
                 }
                 //GaussianBlur(binImage, binImage, Size(5, 5), 0, 0);
-                Rect crop1(0, 0, binImage.cols / 2 - OFFSET_DIVIDE, binImage.rows);
-                Mat Left = binImage(crop1);
-                Rect crop2(binImage.cols / 2 + OFFSET_DIVIDE, 0, binImage.cols / 2 - OFFSET_DIVIDE, binImage.rows);
-                Mat Right = binImage(crop2);
-                if (is_show_cam)
-                {
-                    //imshow("LEFT",Left);
-                    //imshow("RIGHT",Right);
-                }
-                Mat dstLeft = keepLanes(Left, false);
-                Mat dstRight = keepLanes(Right, false);
-                //Mat dst = keepLanes(binImage, false);
-                //imshow("dst", dst);
-                bool isLeft = false;
-                bool isRight = false;
-                Point pointLeft(0, 0);
-                Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-                pointLeft.y += 3 * binImage.rows / 4;
-                Point pointRight(0, 0);
-                Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
-                pointRight.x += (binImage.cols / 2 + OFFSET_DIVIDE);
-                pointRight.y += 3 * binImage.rows / 4;
-                //circle(binImage, pointRight, 2, Scalar(255, 0, 255), 3);
-                //circle(binImage, pointLeft, 2, Scalar(255, 0, 255), 3);
-                preLeft = isLeft;
-                preRight = isRight;
-                imshow("LEFT", Left);
-                imshow("RIGHT", Right);
-                //Point shift(0, 3 * binImage.rows / 4);
-                //bool isRight = true;
-                //Mat two = twoRightMostLanes(binImage.size(), dst, shift, isRight);
-                //imshow("two", two);
-                //Rect roi2(0, 3 * two.rows / 4, two.cols, two.rows / 4); //c?t ?nh
+                
 
-                //Mat imgROI2 = two(roi2);
-                //imshow("roi", imgROI2);
-                //int widthSrc = imgROI2.cols;
-                //int heightSrc = imgROI2.rows;
-                //vector<Point> pointList;
-                //for (int y = 0; y < heightSrc; y++)
-                //{
-                // for (int x = widthSrc; x >= 0; x--)
-                // {
-                //     if (imgROI2.at<uchar>(25, x) == 255)
-                //     {
-                //         pointList.push_back(Point(25, x));
-                //         //break;
-                //     }
-                //     if (pointList.size() == 0)
-                //     {
 
-                //         pointList.push_back(Point(20, 300));
-                //     }
-                // }
-                //}
-                // std::cout << "size" << pointList.size() << std::endl;
-                // int x = 0, y = 0;
-                int xTam = 0, yTam = 0;
-                // for (int i = 0; i < pointList.size(); i++)
-                // {
-                //     x = x + pointList.at(i).y;
-                //     y = y + pointList.at(i).x;
-                // }
-                // xTam = (x / pointList.size());
-                // yTam = (y / pointList.size());
-                // xTam = xTam;
-                // if (pointList.size() <= 15 && pointList.size() > 1)
-                //     xTam = xTam - 70;
-                // yTam = yTam + 240 * 3 / 4;
-                double angDiff = 0;
-                cout << "Left: " << isLeft << " Right: " << isRight << endl;
-                /*if (isLeft && isRight)
-                {
-                    oneLine = false;
-                    xTam = (pointLeft.x + pointRight.x) / 2;
-                    yTam = (pointLeft.y + pointRight.y) / 2;
-                }
-                else if (isLeft && (!oneLine))
-                {
-                    oneLine = true;
-                    xTam = binImage.cols / 2 + 150;
-                    yTam = 7 * binImage.rows / 8;
-                    //std::cout << "angdiff: " << angDiff << std::endl;
-                    // theta = (0.00);
-                    //api_set_STEERING_control(pca9685, theta);
-                }
-                else if (isRight && (!oneLine))
-                {
-                    //oneLine = true;
-                    xTam = binImage.cols / 2 - 150;
-                    yTam = 7 * binImage.rows / 8;
-                }
-                else
-                {
-                    //oneLine = false;
-                    xTam = preX;
-                    yTam = preY;
-                }*/
-                if (isLeft && isRight)
-                {
-                    oneLine = false;
-                    xTam = (pointLeft.x + pointRight.x) / 2;
-                    yTam = (pointLeft.y + pointRight.y) / 2;
-                    if (road_width_set)
-                    {
-                        road_width = (road_width + pointRight.x - pointLeft.x) / 2;
-                    }
-                    else
-                    {
-                        road_width = pointRight.x - pointLeft.x;
-                        road_width_set = true;
-                    }
-                }
-                else if (isLeft)
-                {
-                    putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
-                    oneLine = true;
-                    xTam = (binImage.cols + pointLeft.x) / 2; // binImage.cols / 2 + 150;
-                    yTam = pointLeft.y;
-                    //std::cout << "angdiff: " << angDiff << std::endl;
-                    // theta = (0.00);
-                    //api_set_STEERING_control(pca9685, theta);
-                }
-                else if (isRight)
-                {
-                    putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
-                    oneLine = true;
-                    xTam = pointRight.x / 2; // binImage.cols / 2 - 150;
-                    yTam = pointRight.y;
-                }
-                else
-                {
-                    //oneLine = false;
-                    xTam = preX;
-                    yTam = preY;
-                }
+		int xTam = 0, yTam = 0;
+
+
+		LaneProcessing(colorImg,binImage,xTam,yTam,preLeft,preRight,oneLine,preX,preY);
+		//---------------------- 
+		//Can get xTam yTam
+
 
                 /*if(has_obs) {
 			if(obs_x > xTam && obs_x - xTam <= road_width/4) {
@@ -506,17 +369,16 @@ int main(int argc, char *argv[])
                 //     PointCenter_Displacement(xTam, x_Left, x_Right);
                 // }
 
-                /////////////////////////////////////////////////////////////////////
+                
+		double angDiff = 0;
+
+		/////////////////////////////////////////////////////////////////////
                 angDiff = getTheta(carPosition, Point(xTam, yTam));
                 cout<<"---------------------------"<<getTheta(carPosition, Point(xTam, yTam))<<endl;
                 if (-20 < angDiff && angDiff < 20)
                     angDiff = 0;
                 theta = -(angDiff * ALPHA);
-                circle(binImage, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-                circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
-	        	circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
-		        imshow("color", colorImg);
+                
                 std::cout << "angdiff: " << angDiff << std::endl;
                 // theta = (0.00);
                 api_set_STEERING_control(pca9685, theta);
