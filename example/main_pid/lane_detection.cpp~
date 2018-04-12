@@ -117,13 +117,11 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                 Mat Left = binImg(crop1);
                 Rect crop2(binImg.cols / 2 + OFFSET_DIVIDE, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
                 Mat Right = binImg(crop2);
-		/*                
-		if (is_show_cam)
+                if (is_show_cam)
                 {
                     //imshow("LEFT",Left);
                     //imshow("RIGHT",Right);
                 }
-		*/
                 Mat dstLeft = keepLanes(Left, false);
                 Mat dstRight = keepLanes(Right, false);
                 //Mat dst = keepLanes(binImg, false);

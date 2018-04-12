@@ -481,6 +481,7 @@ CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: /home/ubuntu/Download
 CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OpenNI.h
 CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Win32/OniPlatformWin32.h
 CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: main_pid/header.h
+CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: main_pid/image_processing.h
 CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: main_pid/lane_detection.cpp
 CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: main_pid/lane_detection.h
 CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o: /usr/local/include/opencv/cv.h

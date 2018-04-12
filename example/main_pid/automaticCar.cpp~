@@ -15,8 +15,6 @@
 #include "sign.h"
 #include "control.h"
 
-
-
 bool flagTurn = false;
 int dirTurn = 0;
 Mat colorImg;
@@ -32,16 +30,6 @@ int throttle_config = 0;
 bool test_obt = false;
 PCA9685 *pca9685 = new PCA9685();
 
-double PID(double fps, int xCar, int xTam, double &previous, double &intergral)
-{
-    double dt=1.0/fps;
-    double error=xTam - xCar;
-    intergral = intergral + (dt*error);
-    double derivative =(error-previous)/dt;
-    double output= (Kp*error) + (Ki*intergral)+ (Kd *derivative);
-    previous=error;
-    return output + xCar;
-}
 ///////// utilitie functions  ///////////////////////////
 int main(int argc, char *argv[])
 {
@@ -225,8 +213,6 @@ int main(int argc, char *argv[])
             {
                 running = !running;
                 sw4_stat = bt_status;
-                previous = 0;
-                intergral = 0;
                 throttle_val = 30;
                 set_throttle_val = 30;
                 road_width_set = false;
@@ -339,7 +325,7 @@ int main(int argc, char *argv[])
                 
 
 
-		//---------------------- define Sign Traffic
+
 		if(mySign.detect(signMask)){
                     mySign.recognize(grayImg);
                     int signID = mySign.getClassID();
@@ -359,7 +345,7 @@ int main(int argc, char *argv[])
 
 
 		int xTam = 0, yTam = 0;
-		//Process Lane to get Point Center
+
 
 		LaneProcessing(colorImg,binImage,xTam,yTam,preLeft,preRight,oneLine,preX,preY);
 		//---------------------- 
@@ -383,7 +369,7 @@ int main(int argc, char *argv[])
                 //     PointCenter_Displacement(xTam, x_Left, x_Right);
                 // }
 
-                //process angDiff
+                
 		double angDiff = 0;
 
 		/////////////////////////////////////////////////////////////////////
