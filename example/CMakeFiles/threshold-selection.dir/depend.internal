@@ -21,16 +21,13 @@ CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.o
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/my_assert.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/real_camera.cpp
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/real_camera.h
- /usr/local/include/opencv/cv.h
  /usr/local/include/opencv/cxcore.h
- /usr/local/include/opencv/highgui.h
  /usr/local/include/opencv2/calib3d.hpp
  /usr/local/include/opencv2/calib3d/calib3d_c.h
  /usr/local/include/opencv2/core.hpp
  /usr/local/include/opencv2/core/affine.hpp
  /usr/local/include/opencv2/core/base.hpp
  /usr/local/include/opencv2/core/bufferpool.hpp
- /usr/local/include/opencv2/core/core.hpp
  /usr/local/include/opencv2/core/core_c.h
  /usr/local/include/opencv2/core/cuda.hpp
  /usr/local/include/opencv2/core/cuda.inl.hpp
@@ -150,9 +147,6 @@ CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.o
  /usr/local/include/opencv2/xfeatures2d/nonfree.hpp
  HAL/Hal.h
  HAL/LCDI2C.h
- lane_detection/api_lane_detection.h
- lane_detection/msac/MSAC.h
- lane_detection/msac/errorNIETO.h
  multilane/multilane.h
  peripheral_driver/i2c/JHPWMPCA9685.h
  peripheral_driver/i2c/api_i2c_pwm.h
@@ -176,16 +170,13 @@ CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/real_camera.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/thresholdSelection.cpp
- /usr/local/include/opencv/cv.h
  /usr/local/include/opencv/cxcore.h
- /usr/local/include/opencv/highgui.h
  /usr/local/include/opencv2/calib3d.hpp
  /usr/local/include/opencv2/calib3d/calib3d_c.h
  /usr/local/include/opencv2/core.hpp
  /usr/local/include/opencv2/core/affine.hpp
  /usr/local/include/opencv2/core/base.hpp
  /usr/local/include/opencv2/core/bufferpool.hpp
- /usr/local/include/opencv2/core/core.hpp
  /usr/local/include/opencv2/core/core_c.h
  /usr/local/include/opencv2/core/cuda.hpp
  /usr/local/include/opencv2/core/cuda.inl.hpp
@@ -305,9 +296,6 @@ CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o
  /usr/local/include/opencv2/xfeatures2d/nonfree.hpp
  HAL/Hal.h
  HAL/LCDI2C.h
- lane_detection/api_lane_detection.h
- lane_detection/msac/MSAC.h
- lane_detection/msac/errorNIETO.h
  multilane/multilane.h
  peripheral_driver/i2c/JHPWMPCA9685.h
  peripheral_driver/i2c/api_i2c_pwm.h

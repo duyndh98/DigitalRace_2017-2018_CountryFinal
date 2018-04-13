@@ -131,8 +131,6 @@ opencv2/ml.hpp
 -
 api_kinect_cv.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/api_kinect_cv.h
-api_lane_detection.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/api_lane_detection.h
 api_i2c_pwm.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/api_i2c_pwm.h
 multilane.h
@@ -186,27 +184,9 @@ iostream
 real_camera.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/real_camera.h
 
-/usr/local/include/opencv/cv.h
-opencv2/core/core_c.h
-/usr/local/include/opencv/opencv2/core/core_c.h
-opencv2/imgproc/imgproc_c.h
-/usr/local/include/opencv/opencv2/imgproc/imgproc_c.h
-opencv2/photo/photo_c.h
-/usr/local/include/opencv/opencv2/photo/photo_c.h
-opencv2/video/tracking_c.h
-/usr/local/include/opencv/opencv2/video/tracking_c.h
-opencv2/objdetect/objdetect_c.h
-/usr/local/include/opencv/opencv2/objdetect/objdetect_c.h
-
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h
 /usr/local/include/opencv/opencv2/core/core_c.h
-
-/usr/local/include/opencv/highgui.h
-opencv2/core/core_c.h
-/usr/local/include/opencv/opencv2/core/core_c.h
-opencv2/highgui/highgui_c.h
-/usr/local/include/opencv/opencv2/highgui/highgui_c.h
 
 /usr/local/include/opencv2/calib3d.hpp
 opencv2/core.hpp
@@ -275,10 +255,6 @@ opencv2/core/neon_utils.hpp
 /usr/local/include/opencv2/core/opencv2/core/neon_utils.hpp
 
 /usr/local/include/opencv2/core/bufferpool.hpp
-
-/usr/local/include/opencv2/core/core.hpp
-opencv2/core.hpp
-/usr/local/include/opencv2/core/opencv2/core.hpp
 
 /usr/local/include/opencv2/core/core_c.h
 opencv2/core/types_c.h
@@ -1479,46 +1455,6 @@ poll.h
 HAL/LCDI2C.h
 Hal.h
 HAL/Hal.h
-
-lane_detection/api_lane_detection.h
-stdio.h
-lane_detection/stdio.h
-opencv2/imgproc/imgproc.hpp
--
-opencv2/highgui/highgui.hpp
--
-opencv2/core/core.hpp
-lane_detection/opencv2/core/core.hpp
-vector
--
-iostream
--
-iomanip
--
-chrono
--
-msac/MSAC.h
-lane_detection/msac/MSAC.h
-
-lane_detection/msac/MSAC.h
-cv.h
-lane_detection/msac/cv.h
-highgui.h
-lane_detection/msac/highgui.h
-cxcore.h
-lane_detection/msac/cxcore.h
-errorNIETO.h
-lane_detection/msac/errorNIETO.h
-math.h
--
-
-lane_detection/msac/errorNIETO.h
-cv.h
-lane_detection/msac/cv.h
-highgui.h
-lane_detection/msac/highgui.h
-cxcore.h
-lane_detection/msac/cxcore.h
 
 multilane/multilane.h
 vector

@@ -8,7 +8,6 @@
 #include <opencv2/ml.hpp>
 
 #include "api_kinect_cv.h"
-#include "api_lane_detection.h"
 #include "api_i2c_pwm.h"
 #include "multilane.h"
 #include "Hal.h"
@@ -75,5 +74,9 @@ using namespace cv::ml;
 #define KP 0.1
 #define KD 0.01
 
+#define THROTTLE_VAL1 30
+#define THROTTLE_VAL2 40
+
+#define HEIGHT_LANE_CROP 0.25
 
 #endif

@@ -232,32 +232,6 @@ uart/fast:
 .PHONY : uart/fast
 
 #=============================================================================
-# Target rules for targets named ObjectRecognition
-
-# Build rule for target.
-ObjectRecognition: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ObjectRecognition
-.PHONY : ObjectRecognition
-
-# fast build rule for target.
-ObjectRecognition/fast:
-	$(MAKE) -f ObjectRecognition/CMakeFiles/ObjectRecognition.dir/build.make ObjectRecognition/CMakeFiles/ObjectRecognition.dir/build
-.PHONY : ObjectRecognition/fast
-
-#=============================================================================
-# Target rules for targets named ObjectDetection
-
-# Build rule for target.
-ObjectDetection: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ObjectDetection
-.PHONY : ObjectDetection
-
-# fast build rule for target.
-ObjectDetection/fast:
-	$(MAKE) -f ObjectDetection/CMakeFiles/ObjectDetection.dir/build.make ObjectDetection/CMakeFiles/ObjectDetection.dir/build
-.PHONY : ObjectDetection/fast
-
-#=============================================================================
 # Target rules for targets named HAL
 
 # Build rule for target.
@@ -295,32 +269,6 @@ test-multilane: cmake_check_build_system
 test-multilane/fast:
 	$(MAKE) -f multilane/CMakeFiles/test-multilane.dir/build.make multilane/CMakeFiles/test-multilane.dir/build
 .PHONY : test-multilane/fast
-
-#=============================================================================
-# Target rules for targets named SignDetection
-
-# Build rule for target.
-SignDetection: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 SignDetection
-.PHONY : SignDetection
-
-# fast build rule for target.
-SignDetection/fast:
-	$(MAKE) -f sign_detection/CMakeFiles/SignDetection.dir/build.make sign_detection/CMakeFiles/SignDetection.dir/build
-.PHONY : SignDetection/fast
-
-#=============================================================================
-# Target rules for targets named signsRecognizer
-
-# Build rule for target.
-signsRecognizer: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 signsRecognizer
-.PHONY : signsRecognizer
-
-# fast build rule for target.
-signsRecognizer/fast:
-	$(MAKE) -f sign_recognize/CMakeFiles/signsRecognizer.dir/build.make sign_recognize/CMakeFiles/signsRecognizer.dir/build
-.PHONY : signsRecognizer/fast
 
 #=============================================================================
 # Target rules for targets named radon
@@ -560,13 +508,9 @@ help:
 	@echo "... i2c-pwm"
 	@echo "... uart"
 	@echo "... test-uart"
-	@echo "... ObjectRecognition"
-	@echo "... ObjectDetection"
 	@echo "... HAL"
 	@echo "... test-multilane"
 	@echo "... multilane"
-	@echo "... SignDetection"
-	@echo "... signsRecognizer"
 	@echo "... radon"
 	@echo "... test_extract_info"
 	@echo "... extractInfo"

@@ -224,23 +224,23 @@ Mat remOutlier(const Mat &gray)
 
 char analyzeFrame(const VideoFrameRef &frame_depth, const VideoFrameRef &frame_color, Mat &depth_img, Mat &color_img)
 {
-    DepthPixel *depth_img_data;
+    //DepthPixel *depth_img_data;
     RGB888Pixel *color_img_data;
 
     int w = frame_color.getWidth();
     int h = frame_color.getHeight();
 
-    depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
+    //depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
     color_img = Mat(h, w, CV_8UC3);
-    Mat depth_img_8u;
+    //Mat depth_img_8u;
 
-    depth_img_data = (DepthPixel *)frame_depth.getData();
+    //depth_img_data = (DepthPixel *)frame_depth.getData();
 
-    memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
+    //memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
 
-    normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
+    //normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
 
-    depth_img_8u.convertTo(depth_img_8u, CV_8U);
+    //depth_img_8u.convertTo(depth_img_8u, CV_8U);
     color_img_data = (RGB888Pixel *)frame_color.getData();
 
     memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
