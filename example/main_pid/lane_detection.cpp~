@@ -65,10 +65,10 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
 		point.x = 0;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
     		{
-			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
 				if (point.x < contours[maxIndex][i].x)
 					point.x = contours[maxIndex][i].x;
-			//}
+			}
         	//sumX += contours[maxIndex][i].x;
         	//sumY += contours[maxIndex][i].y;
     		}	
@@ -76,10 +76,10 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
 		point.x = imgLane.cols;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
     		{
-			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
 				if (point.x > contours[maxIndex][i].x)
 					point.x = contours[maxIndex][i].x;
-			//}
+			}
         	//sumX += contours[maxIndex][i].x;
         	//sumY += contours[maxIndex][i].y;
     		}	

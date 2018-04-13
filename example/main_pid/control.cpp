@@ -14,7 +14,7 @@ void GPIO_init(GPIO *&gpio)
     gpio->gpioSetDirection(SENSOR, INPUT);
 }
 
-bool OpenNI_init(Status &rc, Device &device, VideoStream &depth, VideoStream &color)
+bool OpenNI_init(Status &rc, Device &device, VideoStream &color)
 {
     rc = OpenNI::initialize();
     if (rc != STATUS_OK)
@@ -25,7 +25,7 @@ bool OpenNI_init(Status &rc, Device &device, VideoStream &depth, VideoStream &co
     rc = device.open(ANY_DEVICE);
     if (rc != STATUS_OK)
         return 0;
-
+/*
     // depth video stream init
     if (device.getSensorInfo(SENSOR_DEPTH) != NULL)
     {
@@ -51,7 +51,7 @@ bool OpenNI_init(Status &rc, Device &device, VideoStream &depth, VideoStream &co
             printf("Couldn't create depth stream\n%s\n", OpenNI::getExtendedError());
         }
     }
-
+*/
     // color video stream init
     if (device.getSensorInfo(SENSOR_COLOR) != NULL)
     {
