@@ -18,8 +18,6 @@
 #include "control.h"
 //pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZE;
 
-
-
 ///////// utilitie functions  ///////////////////////////
 int main(int argc, char *argv[])
 {
@@ -29,24 +27,24 @@ int main(int argc, char *argv[])
     int sw3_stat = 1;
     int sw4_stat = 1;
     int sensor = 0;
-    
+
     GPIO *gpio = new GPIO();
     GPIO_init(gpio);
-    
+
     usleep(10000);
 
     /// Init OpenNI
     Status rc;
     VideoStream color;
     Device device;
-    OpenNI_init(rc, device,color);
-    
+    OpenNI_init(rc, device, color);
+
     VideoFrameRef frame_color;
     VideoStream *streams[] = {&color};
-    
+
     /// Init video writer and log files
     bool is_save_file = true; // set is_save_file = true if you want to log video and i2c pwm coeffs.
-    
+
     //VideoWriter depth_videoWriter;
     VideoWriter color_videoWriter;
     VideoWriter gray_videoWriter;
@@ -61,22 +59,22 @@ int main(int argc, char *argv[])
     {
         int codec = CV_FOURCC('M', 'J', 'P', 'G');
         Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
-        
+
         gray_videoWriter.open(gray_filename, codec, 8, output_size, false);
         color_videoWriter.open(color_filename, codec, 8, output_size, true);
         //depth_videoWriter.open(depth_filename, codec, 8, output_size, false);
     }
-    
+
     Sign mySign;
     int set_throttle_val = 0, throttle_val = 0;
     double theta = 0;
-    
+
     //  Init PCA9685 driver
     PCA9685 *pca9685 = new PCA9685();
     api_pwm_pca9685_init(pca9685);
     if (pca9685->error >= 0)
         api_set_FORWARD_control(pca9685, throttle_val);
-    
+
     Rect roi1 = Rect(0, FRAME_HEIGHT * (1 - HEIGHT_LANE_CROP), FRAME_WIDTH, FRAME_HEIGHT * HEIGHT_LANE_CROP);
 
     ////////  Init direction and ESC speed  ///////////////////////////
@@ -88,7 +86,7 @@ int main(int argc, char *argv[])
         set_throttle_val = atoi(argv[1]);
 
     fprintf(stderr, "Initial throttle: %d\n", set_throttle_val);
-    
+
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     Point prvPosition = carPosition;
 
@@ -98,7 +96,7 @@ int main(int argc, char *argv[])
     double freq = getTickFrequency();
 
     bool oneLine = false;
-    
+
     int preX = 0;
     int preY = 0;
     bool preLeft = false;
@@ -106,6 +104,8 @@ int main(int argc, char *argv[])
 
     int road_width;
     bool road_width_set = false;
+    int preLefX = 0;
+    int preRightX = 0;
     //bool captureSign = true;
     while (true)
     {
@@ -114,10 +114,10 @@ int main(int argc, char *argv[])
         unsigned int bt_status = 0;
         gpio->gpioGetValue(SW4_PIN, &bt_status);
         unsigned int sensor_status = 0;
-        
+
         gpio->gpioGetValue(SENSOR, &sensor_status);
         cout << "sensor: " << sensor_status << endl;
-        
+
         if (!bt_status)
         {
             if (bt_status != sw4_stat)
@@ -149,9 +149,6 @@ int main(int argc, char *argv[])
         else
             sw1_stat = bt_status;
 
-        
-
-
         if (sensor == 0 && sensor_status == 1)
         {
             running = true;
@@ -160,7 +157,7 @@ int main(int argc, char *argv[])
             oneLine = false;
         }
         sensor = sensor_status;
-        
+
         if (key == 's')
         {
             running = !running;
@@ -210,51 +207,51 @@ int main(int argc, char *argv[])
             //depth.readFrame(&frame_depth);
             color.readFrame(&frame_color);
             //get image from openNI
-            analyzeFrame(frame_color,colorImg);
+            analyzeFrame(frame_color, colorImg);
             flip(colorImg, colorImg, 1);
-            
+
             ////////// Detect Center Point ////////////////////////////////////
             int x_Left, x_Right, y_ob, w_ob;
             hist_equalize(colorImg);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             get_mask(hsvImg, binImg, "black");
-		
-		    get_mask(hsvImg, signMask, "blue,red");
+
+            get_mask(hsvImg, signMask, "blue,red");
             bitwise_not(binImg, binImg);
             imshow("binImg", binImg);
-	        imshow("signMask", signMask);		
-                
-	        //---------------------- define Sign Traffic
-            if(mySign.detect(signMask)) {
+            imshow("signMask", signMask);
+
+            //---------------------- define Sign Traffic
+            if (mySign.detect(signMask))
+            {
                 mySign.recognize(grayImg);
                 int signID = mySign.getClassID();
-			    cout << "signID: " << signID << endl;
-			    if (signID==1)
-			    	putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-		    	else if(signID==2)
-				    putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-			    else if(signID==3)
-				    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+                cout << "signID: " << signID << endl;
+                if (signID == 1)
+                    putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+                else if (signID == 2)
+                    putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+                else if (signID == 3)
+                    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             }
-	        int xTam = 0, yTam = 0;
-		    //Process Lane to get Point Center
-            LaneProcessing(colorImg,binImg,xTam,yTam,preLeft,preRight,oneLine,preX,preY);
-		
+            int xTam = 0, yTam = 0;
+            //Process Lane to get Point Center
+            LaneProcessing(colorImg, binImg, xTam, yTam, preLeft, preRight, oneLine, preX, preY, preLefX, preRightX);
+
             preX = xTam;
             preY = yTam;
-                
-		    double angDiff = 0;
 
-		    angDiff = getTheta(carPosition, Point(xTam, yTam));
-            cout<<"---------------------------"<<getTheta(carPosition, Point(xTam, yTam))<<endl;
+            double angDiff = 0;
+
+            angDiff = getTheta(carPosition, Point(xTam, yTam));
+            cout << "---------------------------" << getTheta(carPosition, Point(xTam, yTam)) << endl;
             if (-20 < angDiff && angDiff < 20)
                 angDiff = 0;
             theta = -(angDiff * ALPHA);
-                
+
             std::cout << "angdiff: " << angDiff << std::endl;
             api_set_STEERING_control(pca9685, theta);
-            
 
             ////////////////////////////////////////////////////////////
 

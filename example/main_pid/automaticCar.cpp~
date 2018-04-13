@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     VideoStream *streams[] = {&color};
     
     /// Init video writer and log files
-    bool is_save_file = false; // set is_save_file = true if you want to log video and i2c pwm coeffs.
+    bool is_save_file = true; // set is_save_file = true if you want to log video and i2c pwm coeffs.
     
     //VideoWriter depth_videoWriter;
     VideoWriter color_videoWriter;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     if (pca9685->error >= 0)
         api_set_FORWARD_control(pca9685, throttle_val);
     
-    Rect roi1 = Rect(0, FRAME_HEIGHT * HEIGHT_LANE_CROP, FRAME_WIDTH, FRAME_HEIGHT * (1 - HEIGHT_LANE_CROP));
+    Rect roi1 = Rect(0, FRAME_HEIGHT * (1 - HEIGHT_LANE_CROP), FRAME_WIDTH, FRAME_HEIGHT * HEIGHT_LANE_CROP);
 
     ////////  Init direction and ESC speed  ///////////////////////////
     throttle_val = 0;
@@ -106,6 +106,8 @@ int main(int argc, char *argv[])
 
     int road_width;
     bool road_width_set = false;
+	int preLefX = 0;
+	int preRightX = 0;
     //bool captureSign = true;
     while (true)
     {

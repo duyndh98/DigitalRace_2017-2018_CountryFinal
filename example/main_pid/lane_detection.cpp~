@@ -65,10 +65,10 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
 		point.x = 0;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
     		{
-			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
 				if (point.x < contours[maxIndex][i].x)
 					point.x = contours[maxIndex][i].x;
-			}
+			//}
         	//sumX += contours[maxIndex][i].x;
         	//sumY += contours[maxIndex][i].y;
     		}	
@@ -76,17 +76,17 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
 		point.x = imgLane.cols;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
     		{
-			if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
 				if (point.x > contours[maxIndex][i].x)
 					point.x = contours[maxIndex][i].x;
-			}
+			//}
         	//sumX += contours[maxIndex][i].x;
         	//sumY += contours[maxIndex][i].y;
     		}	
 	}
 	point.y = imgLane.rows/2;
 
-    if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
+    /*if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
     {
         //cout << "sum X: " << sumX << endl;
         Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
@@ -96,7 +96,7 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
     {
         Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
-    }
+    }*/
 
     pop = true;
     return result;
@@ -112,7 +112,7 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
 }
 
 
-void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY) {
+void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) {
 		Rect crop1(0, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
                 Mat Left = binImg(crop1);
                 Rect crop2(binImg.cols / 2 + OFFSET_DIVIDE, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
@@ -134,15 +134,30 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                 bool isRight = false;
                 Point pointLeft(0, 0);
                 Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
+		Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
+		if(isLeft){
+			// do nothing
+		} else {
+			pointLeft.x = preLeftX;
+		}
                 pointLeft.y += 3 * binImg.rows / 4;
                 Point pointRight(0, 0);
-                Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
-                pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
+		if(isRight){
+			pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
+		} else {
+			pointRight.x = preRightX;
+		}
                 pointRight.y += 3 * binImg.rows / 4;
+		if(pointRight.x-pointLeft.x<10 && pointRight.x-pointLeft.x>-10){
+			pointRight.x = preRightX;
+			pointLeft.x = preLeftX;
+		}
                 //circle(binImg, pointRight, 2, Scalar(255, 0, 255), 3);
                 //circle(binImg, pointLeft, 2, Scalar(255, 0, 255), 3);
                 preLeft = isLeft;
                 preRight = isRight;
+		preLeftX = pointLeft.x;
+		preRightX = pointRight.x;
                 imshow("LEFT", Left);
                 imshow("RIGHT", Right);
                 
@@ -152,7 +167,7 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                 
 
 
-                if (isLeft && isRight)
+                /*if (isLeft && isRight)
                 {
                     oneLine = false;
                     xTam = (pointLeft.x + pointRight.x) / 2;
@@ -168,13 +183,14 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                         road_width_set = true;
                     }
 		*/
-                }
+                /*}
                 else if (isLeft)
                 {
                     putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
                     oneLine = true;
                     xTam = (binImg.cols + pointLeft.x) / 2; // binImg.cols / 2 + 150;
                     yTam = pointLeft.y;
+			
                     //std::cout << "angdiff: " << angDiff << std::endl;
                     // theta = (0.00);
                     //api_set_STEERING_control(pca9685, theta);
@@ -191,7 +207,9 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                     //oneLine = false;
                     xTam = preX;
                     yTam = preY;
-                }
+                }*/
+		xTam = (pointLeft.x + pointRight.x) / 2;
+                yTam = (pointLeft.y + pointRight.y) / 2;
 		circle(binImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
                 circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
 		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
