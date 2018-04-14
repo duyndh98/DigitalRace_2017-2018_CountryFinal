@@ -6,13 +6,16 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
     pop = false;
     //point.x = 0;
     //point.y = 0;
-	if (check==-1){
-		point.x = 0;
-		point.y = imgLane.rows/2;
-	} else {
-		point.x = imgLane.cols;
-		point.y = imgLane.rows/2;	
-	}
+    if (check == -1)
+    {
+        point.x = 0;
+        point.y = imgLane.rows / 2;
+    }
+    else
+    {
+        point.x = imgLane.cols;
+        point.y = imgLane.rows / 2;
+    }
     std::vector<std::vector<Point>> contours;
     std::vector<Vec4i> hierarchy;
     findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
@@ -40,51 +43,40 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
         Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
         return none;
     }
-    int xMin = 0, yMin = 1000, xMax = 0, yMax = -1;
-    /*for (int i = 0; i < contours[maxIndex].size(); i++)
-    {
-        // if (contours[maxIndex][i].y > yMax)
-        // {
-        //     yMax = contours[maxIndex][i].y;
-        //     xMax = contours[maxIndex][i].x;
-        // }
-        // if (contours[maxIndex][i].y < yMin)
-        // {
-        //     yMin = contours[maxIndex][i].y;
-        //     xMin = contours[maxIndex][i].x;
-        // }
-        sumX += contours[maxIndex][i].x;
-        sumY += contours[maxIndex][i].y;
-    }
-	*/
-    //if((xMax>=xMin) && (check==1)){
     drawContours(result, contours, maxIndex, Scalar(255), CV_FILLED);
     //point.x = sumX / contours[maxIndex].size();
     //point.y = sumY / contours[maxIndex].size();
-	if(check==-1){
-		point.x = 0;
-		for (int i = 0; i < contours[maxIndex].size(); i++)
-    		{
-			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
-				if (point.x < contours[maxIndex][i].x)
-					point.x = contours[maxIndex][i].x;
-			//}
-        	//sumX += contours[maxIndex][i].x;
-        	//sumY += contours[maxIndex][i].y;
-    		}	
-	} else {
-		point.x = imgLane.cols;
-		for (int i = 0; i < contours[maxIndex].size(); i++)
-    		{
-			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
-				if (point.x > contours[maxIndex][i].x)
-					point.x = contours[maxIndex][i].x;
-			//}
-        	//sumX += contours[maxIndex][i].x;
-        	//sumY += contours[maxIndex][i].y;
-    		}	
-	}
-	point.y = imgLane.rows/2;
+    if (check == -1)
+    {
+        point.x = 0;
+        for (int i = 0; i < contours[maxIndex].size(); i++)
+        {
+            //if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+            if (point.x < contours[maxIndex][i].x){
+                point.x = contours[maxIndex][i].x;
+                point.y = contours[maxIndex][i].y;
+            }
+            //}
+            //sumX += contours[maxIndex][i].x;
+            //sumY += contours[maxIndex][i].y;
+        }
+    }
+    else
+    {
+        point.x = imgLane.cols;
+        for (int i = 0; i < contours[maxIndex].size(); i++)
+        {
+            //if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
+            if (point.x > contours[maxIndex][i].x){
+                point.x = contours[maxIndex][i].x;
+                point.y = contours[maxIndex][i].y;
+            }
+            //}
+            //sumX += contours[maxIndex][i].x;
+            //sumY += contours[maxIndex][i].y;
+        }
+    }
+    //point.y = imgLane.rows / 2;
 
     /*if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
     {
@@ -111,64 +103,120 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
     // return result;
 }
 
+Rect creatCrop(int Width, int Height, int preX, int preY, int &marginX, int &marginY)
+{
+    int xLeft = 0 < (preX - OFFSET_CROP) ? preX - OFFSET_CROP : 0;
+    int xRight = Width > (preX + OFFSET_CROP) ? preX + OFFSET_CROP : Width;
+    int yUp = 0 < (preY - OFFSET_CROP) ? preY - OFFSET_CROP : 0;
+    int yDown = Height > (preY + OFFSET_CROP) ? preY + OFFSET_CROP : Height;
+    Rect myCrop(xLeft, yUp, xRight - xLeft, yDown - yUp);
+    marginX = xLeft;
+    marginY = yUp;
+    return myCrop;
+}
 
-void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) {
-		Rect crop1(0, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
-                Mat Left = binImg(crop1);
-                Rect crop2(binImg.cols / 2 + OFFSET_DIVIDE, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
-                Mat Right = binImg(crop2);
-		/*                
+void LaneProcessing(cv::Mat &colorImg, cv::Mat &binImg, int &xTam, int &yTam, bool &preLeft, bool &preRight, bool &oneLine, int preX, int preY, int &preLeftX, int &preLeftY, int &preRightX, int &preRightY)
+{
+    int marginLeftX, marginLeftY, marginRightX, marginRightY;
+    Rect crop1, crop2;
+    if (preLeft)
+    {
+        crop1 = creatCrop(binImg.cols, binImg.rows, preLeftX, preLeftY, marginLeftX, marginLeftY);
+    }
+    else
+    {
+        crop1 = Rect(0, 1 * binImg.rows / 2, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows / 2);
+        marginLeftX = 0;
+        marginLeftY = 1 * binImg.rows / 2;
+    }
+
+    if (preRight)
+    {
+        crop2 = creatCrop(binImg.cols, binImg.rows, preRightX, preRightY, marginRightX, marginRightY);
+    }
+    else
+    {
+        crop2 = Rect(binImg.cols / 2 + OFFSET_DIVIDE, 1 * binImg.rows / 2, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows / 2);
+        marginRightX = binImg.cols / 2 + OFFSET_DIVIDE;
+        marginRightY = 1 * binImg.rows / 2;
+    }
+    Mat Left = binImg(crop1);
+    Mat Right = binImg(crop2);
+    /*                
 		if (is_show_cam)
                 {
                     //imshow("LEFT",Left);
                     //imshow("RIGHT",Right);
                 }
 		*/
-                Mat dstLeft = keepLanes(Left, false);
-                //imshow("Keep_")
-                Mat dstRight = keepLanes(Right, false);
-               // imshow("KeeepLane_Left", dstLeft);
-                //Mat dst = keepLanes(binImg, false);
-                //imshow("dst", dst);
-                bool isLeft = false;
-                bool isRight = false;
-                Point pointLeft(0, 0);
-		Point pointRight(0, 0);
-                Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-		Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
-		if(isLeft){
-			// do nothing
-		} else {
-			pointLeft.x = preLeftX;
-		}
-                pointLeft.y += 3 * binImg.rows / 4;
-                
-		if(isRight){
-			pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
-		} else {
-			pointRight.x = preRightX;
-		}
-                pointRight.y += 3 * binImg.rows / 4;
-		if(pointRight.x-pointLeft.x<10 && pointRight.x-pointLeft.x>-10){
-			pointRight.x = preRightX;
-			pointLeft.x = preLeftX;
-		}
-                //circle(binImg, pointRight, 2, Scalar(255, 0, 255), 3);
-                //circle(binImg, pointLeft, 2, Scalar(255, 0, 255), 3);
-                preLeft = isLeft;
-                preRight = isRight;
-		preLeftX = pointLeft.x;
-		preRightX = pointRight.x;
-                imshow("LEFT", Left);
-                imshow("RIGHT", Right);
-                
+    Mat dstLeft = keepLanes(Left, false);
+    //imshow("Keep_")
+    Mat dstRight = keepLanes(Right, false);
+    // imshow("KeeepLane_Left", dstLeft);
+    //Mat dst = keepLanes(binImg, false);
+    //imshow("dst", dst);
+    bool isLeft = false;
+    bool isRight = false;
+    Point pointLeft(0, 0);
+    Point pointRight(0, 0);
+    Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
+    Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
+    // if (isLeft)
+    // {
+    //     // do nothing
+    // }
+    // else
+    // {
+    //     pointLeft.x = preLeftX;
+    // }
+    // pointLeft.y = pointLeft.y +  ;
 
-                
-                cout << "Left: " << isLeft << " Right: " << isRight << endl;
-                
+    // if (isRight)
+    // {
+    //     pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
+    // }
+    // else
+    // {
+    //     pointRight.x = preRightX;
+    // }
+    // pointRight.y += 3 * binImg.rows / 4;
 
+    if (pointRight.x - pointLeft.x < 10)
+    {
+        pointLeft.x = preLeftX;
+        pointLeft.y = preLeftY;
+        pointRight.x = preRightX;
+        pointRight.y = preRightY;
+        if(preLeft && !preRight){
+            pointLeft.x = pointLeft.x + marginLeftX; 
+            pointLeft.y = pointLeft.y + marginLeftY;
+        } else 
+        if(!preLeft && preRight){
+            pointRight.x = pointRight.x + marginRightX; 
+            pointRight.y = pointRight.y + marginRightY;
+        }
+        isLeft = preLeft;
+        isRight = preRight;
+    } else {
+        pointLeft.x = pointLeft.x + marginLeftX; 
+        pointLeft.y = pointLeft.y + marginLeftY;
+        pointRight.x = pointRight.x + marginRightX; 
+        pointRight.y = pointRight.y + marginRightY;
+    }
+    //circle(binImg, pointRight, 2, Scalar(255, 0, 255), 3);
+    //circle(binImg, pointLeft, 2, Scalar(255, 0, 255), 3);
+    preLeft = isLeft;
+    preRight = isRight;
+    preLeftX = pointLeft.x;
+    preLeftY = pointLeft.y;
+    preRightX = pointRight.x;
+    preRightY = pointRight.y;
+    imshow("LEFT", Left);
+    imshow("RIGHT", Right);
 
-                /*if (isLeft && isRight)
+    cout << "Left: " << isLeft << " Right: " << isRight << endl;
+
+    /*if (isLeft && isRight)
                 {
                     oneLine = false;
                     xTam = (pointLeft.x + pointRight.x) / 2;
@@ -184,7 +232,7 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                         road_width_set = true;
                     }
 		*/
-                /*}
+    /*}
                 else if (isLeft)
                 {
                     putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
@@ -209,21 +257,21 @@ void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& 
                     xTam = preX;
                     yTam = preY;
                 }*/
-		xTam = (pointLeft.x + pointRight.x) / 2;
-                yTam = (pointLeft.y + pointRight.y) / 2;
-		circle(binImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-                circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
-	        	circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
-		        imshow("color", colorImg);
+    xTam = (pointLeft.x + pointRight.x) / 2;
+    yTam = (pointLeft.y + pointRight.y) / 2;
+    circle(binImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
+    imshow("color", colorImg);
 }
 
 Mat remOutlier(const Mat &gray)
 {
     int esize = 1;
     Mat element = getStructuringElement(MORPH_RECT,
-                                                Size(2 * esize + 1, 2 * esize + 1),
-                                                Point(esize, esize));
+                                        Size(2 * esize + 1, 2 * esize + 1),
+                                        Point(esize, esize));
     erode(gray, gray, element);
     std::vector<std::vector<Point>> contours, polygons;
     std::vector<Vec4i> hierarchy;
@@ -243,7 +291,7 @@ Mat remOutlier(const Mat &gray)
     return poly;
 }
 
-void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &frame_color,/* Mat &depth_img,*/ Mat &color_img)
+void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &frame_color, /* Mat &depth_img,*/ Mat &color_img)
 {
     //DepthPixel *depth_img_data;
     RGB888Pixel *color_img_data;

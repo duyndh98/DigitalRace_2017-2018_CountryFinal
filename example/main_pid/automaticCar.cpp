@@ -104,8 +104,10 @@ int main(int argc, char *argv[])
 
     int road_width;
     bool road_width_set = false;
-    int preLefX = 0;
+    int preLeftX = 0;
     int preRightX = 0;
+    int preLefY = 0;
+    int preRightY = 0;
     //bool captureSign = true;
     while (true)
     {
@@ -237,7 +239,7 @@ int main(int argc, char *argv[])
             }
             int xTam = 0, yTam = 0;
             //Process Lane to get Point Center
-            LaneProcessing(colorImg, binImg, xTam, yTam, preLeft, preRight, oneLine, preX, preY, preLefX, preRightX);
+            LaneProcessing(colorImg, binImg, xTam, yTam, preLeft, preRight, oneLine, preX, preY, preLefX, preLeftY, preRightX, preRightY);
 
             preX = xTam;
             preY = yTam;
