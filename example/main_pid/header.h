@@ -64,6 +64,7 @@ using namespace cv::ml;
 #define SENSOR 165
 #define AREA_MIN 17000
 #define OFFSET_DIVIDE 0
+#define HEIGHT_LANE_CROP 0.25
 
 #define NO_SIGN 0
 #define SIGN_LEFT 1
@@ -76,7 +77,5 @@ using namespace cv::ml;
 
 #define THROTTLE_VAL1 35
 #define THROTTLE_VAL2 45
-
-#define HEIGHT_LANE_CROP 0.25
 
 #endif

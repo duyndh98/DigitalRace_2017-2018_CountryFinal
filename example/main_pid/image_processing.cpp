@@ -1,16 +1,16 @@
 #include "image_processing.h"
 
-void get_mask(const Mat &hsv, Mat &mask, string colors)
+void get_mask(const Mat &hsv, Mat &mask, bool blue, bool red, bool black)
 {
 	mask = Mat::zeros(hsv.rows, hsv.cols, CV_8UC1);
 
 	Mat tmp_mask(mask.rows, mask.cols, CV_8UC1);
-	if (colors.find("blue") != std::string::npos)
+	if (blue`)
 	{
 		inRange(hsv, LOW_HSV_BLUE, HIG_HSV_BLUE, tmp_mask);
 		bitwise_or(mask, tmp_mask, mask);
 	}
-	if (colors.find("red") != std::string::npos)
+	if (red)
 	{
 		Mat tmp_mask1(mask.rows, mask.cols, CV_8UC1);
 		Mat tmp_mask2(mask.rows, mask.cols, CV_8UC1);
@@ -19,12 +19,7 @@ void get_mask(const Mat &hsv, Mat &mask, string colors)
 		bitwise_or(tmp_mask1, tmp_mask2, tmp_mask);
 		bitwise_or(mask, tmp_mask, mask);
 	}
-	if (colors.find("green") != std::string::npos)
-	{
-		inRange(hsv, LOW_HSV_GREEN, HIG_HSV_GREEN, tmp_mask);
-		bitwise_or(mask, tmp_mask, mask);
-	}
-    if (colors.find("black") != std::string::npos)
+	if (black)
     {
         inRange(hsv, LOW_HSV_BLACK, HIG_HSV_BLACK, tmp_mask);
 		bitwise_or(mask, tmp_mask, mask);

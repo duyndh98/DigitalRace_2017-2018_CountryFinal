@@ -112,110 +112,56 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
 }
 
 
-void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) {
-		Rect crop1(0, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
-                Mat Left = binImg(crop1);
-                Rect crop2(binImg.cols / 2 + OFFSET_DIVIDE, 0, binImg.cols / 2 - OFFSET_DIVIDE, binImg.rows);
-                Mat Right = binImg(crop2);
-		/*                
-		if (is_show_cam)
-                {
-                    //imshow("LEFT",Left);
-                    //imshow("RIGHT",Right);
-                }
-		*/
-                Mat dstLeft = keepLanes(Left, false);
-                //imshow("Keep_")
-                Mat dstRight = keepLanes(Right, false);
-               // imshow("KeeepLane_Left", dstLeft);
-                //Mat dst = keepLanes(binImg, false);
-                //imshow("dst", dst);
-                bool isLeft = false;
-                bool isRight = false;
-                Point pointLeft(0, 0);
+void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) 
+{
+		Rect cropLeft(0, (1 - HEIGHT_LANE_CROP) * binImg.rows, binImg.cols / 2 - OFFSET_DIVIDE, HEIGHT_LANE_CROP * binImg);
+        Mat Left = binImg(cropLeft);
+        Rect cropRight(binImg.cols / 2 + OFFSET_DIVIDE, (1 - HEIGHT_LANE_CROP) * binImg.rows, binImg.cols / 2 - OFFSET_DIVIDE, HEIGHT_LANE_CROP * binImg.rows);
+        Mat Right = binImg(cropRight);
+        
+        Mat dstLeft = keepLanes(Left, false);
+        Mat dstRight = keepLanes(Right, false);
+        bool isLeft = false;
+        bool isRight = false;
+        Point pointLeft(0, 0);
 		Point pointRight(0, 0);
-                Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
+        
+        Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
 		Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
-		if(isLeft){
-			// do nothing
-		} else {
-			pointLeft.x = preLeftX;
-		}
-                pointLeft.y += 3 * binImg.rows / 4;
+		
+        if (isLeft)
+        ;
+        else 
+        	pointLeft.x = preLeftX;
+		pointLeft.y += 3 * binImg.rows / 4;
                 
-		if(isRight){
-			pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
-		} else {
-			pointRight.x = preRightX;
-		}
-                pointRight.y += 3 * binImg.rows / 4;
-		if(pointRight.x-pointLeft.x<10 && pointRight.x-pointLeft.x>-10){
+		if (isRight)
+        	pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
+		else 
+        	pointRight.x = preRightX;
+		pointRight.y += 3 * binImg.rows / 4;
+		
+        if (pointRight.x-pointLeft.x<10 && pointRight.x-pointLeft.x>-10)
+        {
 			pointRight.x = preRightX;
 			pointLeft.x = preLeftX;
 		}
-                //circle(binImg, pointRight, 2, Scalar(255, 0, 255), 3);
-                //circle(binImg, pointLeft, 2, Scalar(255, 0, 255), 3);
-                preLeft = isLeft;
-                preRight = isRight;
+        preLeft = isLeft;
+        preRight = isRight;
 		preLeftX = pointLeft.x;
 		preRightX = pointRight.x;
-                imshow("LEFT", Left);
-                imshow("RIGHT", Right);
+        imshow("LEFT", Left);
+        imshow("RIGHT", Right);
+        
+        cout << "Left: " << isLeft << " Right: " << isRight << endl;
                 
-
-                
-                cout << "Left: " << isLeft << " Right: " << isRight << endl;
-                
-
-
-                /*if (isLeft && isRight)
-                {
-                    oneLine = false;
-                    xTam = (pointLeft.x + pointRight.x) / 2;
-                    yTam = (pointLeft.y + pointRight.y) / 2;
-                  /*  
-			if (road_width_set)
-                    {
-                        road_width = (road_width + pointRight.x - pointLeft.x) / 2;
-                    }
-                    else
-                    {
-                        road_width = pointRight.x - pointLeft.x;
-                        road_width_set = true;
-                    }
-		*/
-                /*}
-                else if (isLeft)
-                {
-                    putText(colorImg, "one left", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
-                    oneLine = true;
-                    xTam = (binImg.cols + pointLeft.x) / 2; // binImg.cols / 2 + 150;
-                    yTam = pointLeft.y;
-			
-                    //std::cout << "angdiff: " << angDiff << std::endl;
-                    // theta = (0.00);
-                    //api_set_STEERING_control(pca9685, theta);
-                }
-                else if (isRight)
-                {
-                    putText(colorImg, "one right", Point(30, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 0, 0), 1, CV_AA);
-                    oneLine = true;
-                    xTam = pointRight.x / 2; // binImg.cols / 2 - 150;
-                    yTam = pointRight.y;
-                }
-                else
-                {
-                    //oneLine = false;
-                    xTam = preX;
-                    yTam = preY;
-                }*/
-		xTam = (pointLeft.x + pointRight.x) / 2;
-                yTam = (pointLeft.y + pointRight.y) / 2;
+        xTam = (pointLeft.x + pointRight.x) / 2;
+        yTam = (pointLeft.y + pointRight.y) / 2;
 		circle(binImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-                circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-		        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
-	        	circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
-		        imshow("color", colorImg);
+        circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
+        circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
+        imshow("color", colorImg);
 }
 
 Mat remOutlier(const Mat &gray)

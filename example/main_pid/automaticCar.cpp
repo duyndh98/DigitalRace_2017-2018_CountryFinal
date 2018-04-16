@@ -9,18 +9,12 @@
     Besure you set throttle val to 0 before end process. If not, you should stop the car by hand.
     In our experience, if you accidental end the processing and didn't stop the car, you may catch it and switch off the controller physically or run the code again (press up direction button then enter).
 **/
-//#include <thread>
-//#include <pthread.h>
 #include "header.h"
 #include "image_processing.h"
 #include "lane_detection.h"
 #include "sign.h"
 #include "control.h"
-//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZE;
 
-
-
-///////// utilitie functions  ///////////////////////////
 int main(int argc, char *argv[])
 {
     // Setup input
@@ -35,7 +29,7 @@ int main(int argc, char *argv[])
     
     usleep(10000);
 
-    /// Init OpenNI
+    // Init OpenNI
     Status rc;
     VideoStream color;
     Device device;
@@ -44,16 +38,16 @@ int main(int argc, char *argv[])
     VideoFrameRef frame_color;
     VideoStream *streams[] = {&color};
     
-    /// Init video writer and log files
-    bool is_save_file = true; // set is_save_file = true if you want to log video and i2c pwm coeffs.
+    // Init video writer and log files
+    bool is_save_file = true;
     
-    //VideoWriter depth_videoWriter;
+    // VideoWriter depth_videoWriter;
     VideoWriter color_videoWriter;
     VideoWriter gray_videoWriter;
 
     string gray_filename = "gray.avi";
     string color_filename = "color.avi";
-    //string depth_filename = "depth.avi";
+    // string depth_filename = "depth.avi";
 
     Mat /*depthImg,*/ colorImg, hsvImg, grayImg, binImg, signMask;
 
@@ -64,10 +58,10 @@ int main(int argc, char *argv[])
         
         gray_videoWriter.open(gray_filename, codec, 8, output_size, false);
         color_videoWriter.open(color_filename, codec, 8, output_size, true);
-        //depth_videoWriter.open(depth_filename, codec, 8, output_size, false);
+        // depth_videoWriter.open(depth_filename, codec, 8, output_size, false);
     }
     
-    Sign mySign;
+    // Init direction and ESC speed  //
     int set_throttle_val = 0, throttle_val = 0;
     double theta = 0;
     
@@ -76,14 +70,7 @@ int main(int argc, char *argv[])
     api_pwm_pca9685_init(pca9685);
     if (pca9685->error >= 0)
         api_set_FORWARD_control(pca9685, throttle_val);
-    
-    Rect roi1 = Rect(0, FRAME_HEIGHT * (1 - HEIGHT_LANE_CROP), FRAME_WIDTH, FRAME_HEIGHT * HEIGHT_LANE_CROP);
 
-    ////////  Init direction and ESC speed  ///////////////////////////
-    throttle_val = 0;
-    theta = 0;
-
-    // Argc == 2 eg ./test-autocar 27 means initial throttle is 27
     if (argc == 2)
         set_throttle_val = atoi(argv[1]);
 
@@ -92,34 +79,34 @@ int main(int argc, char *argv[])
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     Point prvPosition = carPosition;
 
+    // Car running status
     bool running = false, started = false, stopped = false;
 
+    // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
 
-    bool oneLine = false;
+    // Define a Sign object for using throughtout the program
+    Sign mySign;
     
-    int preX = 0;
-    int preY = 0;
-    bool preLeft = false;
-    bool preRight = false;
+    unsigned int bt_status = 0;
+    unsigned int sensor_status = 0;
+    char key;
 
-    int road_width;
-    bool road_width_set = false;
-	int preLefX = 0;
-	int preRightX = 0;
-    //bool captureSign = true;
+    // Use for lane detection
+    bool oneLine = false;    
+    int preX = 0, preY = 0;
+    bool preLeft = false, preRight = false;
+    int preLefX = 0, preRightX = 0;
+    int xTam = 0, yTam = 0;	    
+    
+    // Run loop
     while (true)
     {
         st = getTickCount();
-        char key = getkey();
-        unsigned int bt_status = 0;
+        
+        // Update status of physical buttons
         gpio->gpioGetValue(SW4_PIN, &bt_status);
-        unsigned int sensor_status = 0;
-        
-        gpio->gpioGetValue(SENSOR, &sensor_status);
-        cout << "sensor: " << sensor_status << endl;
-        
         if (!bt_status)
         {
             if (bt_status != sw4_stat)
@@ -128,7 +115,6 @@ int main(int argc, char *argv[])
                 sw4_stat = bt_status;
                 throttle_val = THROTTLE_VAL1;
                 set_throttle_val = THROTTLE_VAL1;
-                road_width_set = false;
                 oneLine = false;
             }
         }
@@ -144,31 +130,30 @@ int main(int argc, char *argv[])
                 sw1_stat = bt_status;
                 throttle_val = THROTTLE_VAL2;
                 set_throttle_val = THROTTLE_VAL2;
-                road_width_set = false;
                 oneLine = false;
             }
         }
         else
             sw1_stat = bt_status;
 
+        // Update status of distance-sensor
+        gpio->gpioGetValue(SENSOR, &sensor_status);
+        cout << "sensor: " << sensor_status << endl;
         
-
-
         if (sensor == 0 && sensor_status == 1)
         {
             running = true;
             throttle_val = set_throttle_val;
-            road_width_set = false;
             oneLine = false;
         }
         sensor = sensor_status;
         
+        // Check input from keyboard
+        key = getkey();
         if (key == 's')
         {
             running = !running;
             throttle_val = set_throttle_val;
-
-            road_width_set = false;
             oneLine = false;
         }
         if (key == 'f')
@@ -180,7 +165,7 @@ int main(int argc, char *argv[])
             break;
         }
 
-        // process
+        // Process
         if (running)
         {
             cout << "v = " << throttle_val << endl;
@@ -209,25 +194,26 @@ int main(int argc, char *argv[])
                 break;
             }
 
-            //depth.readFrame(&frame_depth);
+            // Load image
             color.readFrame(&frame_color);
-            //get image from openNI
-            analyzeFrame(frame_color,colorImg);
-            flip(colorImg, colorImg, 1);
+            //depth.readFrame(&frame_depth);
             
-            ////////// Detect Center Point ////////////////////////////////////
-            int x_Left, x_Right, y_ob, w_ob;
+            // Preprocessing
+            flip(colorImg, colorImg, 1);
+            analyzeFrame(frame_color,colorImg);
             hist_equalize(colorImg);
+
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
-            get_mask(hsvImg, binImg, "black");
-		
-		    get_mask(hsvImg, signMask, "blue,red");
+            
+            get_mask(hsvImg, binImg, false, false, true); // black
+		    get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
+
             imshow("binImg", binImg);
 	        imshow("signMask", signMask);		
                 
-	        //---------------------- define Sign Traffic
+	        // Traffic sign detection and recognition
             if(mySign.detect(signMask)) {
                 mySign.recognize(grayImg);
                 int signID = mySign.getClassID();
@@ -239,28 +225,23 @@ int main(int argc, char *argv[])
 			    else if(signID==3)
 				    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             }
-	        int xTam = 0, yTam = 0;
-		    //Process Lane to get Point Center
-            LaneProcessing(colorImg,binImg,xTam,yTam,preLeft,preRight,oneLine,preX,preY,preLefX,preRightX);
+	        // Process lane to get center pPoint
+            LaneProcessing(colorImg, binImg, xTam, yTam, preLeft, preRight, oneLine, preX, preY, preLefX, preRightX);
 		
             preX = xTam;
             preY = yTam;
                 
-		    double angDiff = 0;
-
-		    angDiff = getTheta(carPosition, Point(xTam, yTam));
-            cout<<"---------------------------"<<getTheta(carPosition, Point(xTam, yTam))<<endl;
+		    double angDiff = getTheta(carPosition, Point(xTam, yTam));
+            
+            cout<< "---------------------------" << getTheta(carPosition, Point(xTam, yTam)) <<endl;
             if (-20 < angDiff && angDiff < 20)
                 angDiff = 0;
             theta = -(angDiff * ALPHA);
                 
             std::cout << "angdiff: " << angDiff << std::endl;
             api_set_STEERING_control(pca9685, theta);
+            api_set_FORWARD_control(pca9685, throttle_val);
             
-
-            ////////////////////////////////////////////////////////////
-
-            int pwm2 = api_set_FORWARD_control(pca9685, throttle_val);
             et = getTickCount();
             fps = 1.0 / ((et - st) / freq);
             cerr << "FPS: " << fps << '\n';
