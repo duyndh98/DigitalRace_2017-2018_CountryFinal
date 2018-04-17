@@ -182,8 +182,6 @@ cv::Mat keepLanes(const cv::Mat &org, bool verbose = false) {
         cv::drawContours(draft, polys, i, cv::Scalar(255), CV_FILLED);
     for (size_t i = 0; i < joins.size(); ++i)
         cv::drawContours(draft, joins, i, cv::Scalar(255), CV_FILLED);
-    if (verbose)
-      //  cv::imshow("lanes", draft);
     return draft;
 }
 

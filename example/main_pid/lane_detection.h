@@ -4,8 +4,8 @@
 #include "header.h"
 #include "image_processing.h"
 
-cv::Mat filterLane(const cv::Mat &imgLane, bool &pop, Point &point, int check, bool &preState);
-void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX);
+cv::Mat filterLane(const cv::Mat &imgLane, Point &point, int check);
+void LaneProcessing(Mat& colorImg, Mat& binImg, int &centerX, int &centerLeftX, int &centerRightX);
 Mat remOutlier(const Mat &gray);
 void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &frame_color,/* Mat &depth_img,*/ Mat &color_img);
 double getTheta(Point car, Point dst);

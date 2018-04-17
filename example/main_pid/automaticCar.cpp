@@ -94,11 +94,8 @@ int main(int argc, char *argv[])
     char key;
 
     // Use for lane detection
-    bool oneLine = false;    
-    int preX = 0, preY = 0;
-    bool preLeft = false, preRight = false;
-    int preLefX = 0, preRightX = 0;
-    int xTam = 0, yTam = 0;	    
+    bool isOneLine = false;    
+    int centerLeftX = 0, centerRightX = 0;
     
     // Run loop
     while (true)
@@ -226,14 +223,14 @@ int main(int argc, char *argv[])
 				    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             }
 	        // Process lane to get center pPoint
-            LaneProcessing(colorImg, binImg, xTam, yTam, preLeft, preRight, oneLine, preX, preY, preLefX, preRightX);
-		
-            preX = xTam;
-            preY = yTam;
-                
-		    double angDiff = getTheta(carPosition, Point(xTam, yTam));
+            LaneProcessing(colorImg, binImg, centerX, centerLeftX, centerRightX);
             
-            cout<< "---------------------------" << getTheta(carPosition, Point(xTam, yTam)) <<endl;
+            Point centerPoint = Point(centerX, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows)
+            Point preCenterPoint = centerPoint;
+
+		    double angDiff = getTheta(centerPoint);
+            cout<< "---------------------------" << angDiff << endl;
+
             if (-20 < angDiff && angDiff < 20)
                 angDiff = 0;
             theta = -(angDiff * ALPHA);

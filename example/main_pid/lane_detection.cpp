@@ -1,9 +1,9 @@
 #include "lane_detection.h"
 
-/////// My function
-Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &preState)
+// My function
+Mat filterLane(const Mat &imgLane, bool &isLine, Point &point, int check)
 {
-    pop = false;
+    isLine = false;
     if (check==-1){
 		point.x = 0;
 		point.y = imgLane.rows/2;
@@ -48,7 +48,7 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
             if (point.x < contours[maxIndex][i].x)
                 point.x = contours[maxIndex][i].x;
         }	
-	} 
+	}
     else 
     {
 		point.x = imgLane.cols;
@@ -59,57 +59,59 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
         }	
 	}
 	point.y = imgLane.rows/2;
-    pop = true;
+    isLine = true;
     return result;
 }
 
-
-void LaneProcessing(Mat& colorImg, Mat& binImg, int& xTam, int& yTam, bool& preLeft, bool& preRight, bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) 
+void LaneProcessing(Mat& colorImg, Mat& binImg, int &centerX, int &centerLeftX, int &centerRightX) 
 {
+    // Define rect to crop binImg into Left and Right
     int xLeft = 0;
     int yLeft = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
     int xRight = (0.5 + 1 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
     int yRight = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
+    int rectWidth = RATIO_WIDTH_LANE_CROP * binImg.cols / 2;
+    int rectHeight = RATIO_HEIGHT_LANE_CROP * binImg.rows;
     
-    Rect cropLeft(xLeft, yLeft, RATIO_WIDTH_LANE_CROP * binImg.cols / 2, RATIO_HEIGHT_LANE_CROP * binImg.rows);
-    Rect cropRight(xRight, yRight, RATIO_WIDTH_LANE_CROP * binImg.cols / 2, RATIO_HEIGHT_LANE_CROP * binImg.rows);
-    Mat Left = binImg(cropLeft);
-    Mat Right = binImg(cropRight);
+    Rect rectLeft(xLeft, yLeft, rectWidth, rectHeight);
+    Rect rectRight(xRight, yRight, rectWidth, rectHeight);
+    Mat binLeft = binImg(rectLeft);
+    Mat binRight = binImg(rectRight);
     
-    Mat dstLeft = keepLanes(Left, false);
-    Mat dstRight = keepLanes(Right, false);
+    // Keep lanes
+    binLeft = keepLanes(binLeft, false);
+    binRight = keepLanes(binRight, false);
+
     bool isLeft = false;
     bool isRight = false;
-    Point pointLeft(0, 0);
-    Point pointRight(0, 0);
     
-    Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-    Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
+    // Filter lanes
+    Point centerLeft, centerRight;
+    binLeft = filterLane(binLeft, isLeft, centerLeft, -1);
+    binRight = filterLane(binRight, isRight, centerRight, 1);
     
     if (isLeft)
-        pointLeft.x += xLeft;
+        centerLeft.x += xLeft;
     else // Lose center point => get the previous
-        pointLeft.x = preLeftX;
-    pointLeft.y += yLeft;
+        centerLeft.x = centerX;
+    centerLeft.y += yLeft;
             
     if (isRight)
-        pointRight.x += xRight;
+        centerRight.x += xRight;
     else // Lose center point => get the previous
-        pointRight.x = preRightX;
-    pointRight.y += yRight;
+        centerRight.x = preRightX;
+    centerRight.y += yRight;
     
     // Backup
-    preLeft = isLeft;
-    preRight = isRight;
-    preLeftX = pointLeft.x;
-    preRightX = pointRight.x;
-    imshow("LEFT", Left);
-    imshow("RIGHT", Right);
+    centerLeftX = centerLeft.x;
+    centerRightX = centerRight.x;
+    imshow("LEFT", binLeft);
+    imshow("RIGHT", binRight);
     
     cout << "Left: " << isLeft << " Right: " << isRight << endl;
     
-    xTam = (pointLeft.x + pointRight.x) / 2;
-    yTam = (pointLeft.y + pointRight.y) / 2;
+    center.x = (centerLeft.x + centerRight.x) / 2;
+    center.y = (centerLeft.y + centerRight.y) / 2;
     
     // Draw center points
     circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
@@ -168,8 +170,9 @@ void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &fra
 }
 
 /// Return angle between veritcal line containing car and destination point in degree
-double getTheta(Point car, Point dst)
+double getTheta(Point dst)
 {
+    Point car(0, 0);
     if (dst.x == car.x)
         return 0;
     if (dst.y == car.y)
