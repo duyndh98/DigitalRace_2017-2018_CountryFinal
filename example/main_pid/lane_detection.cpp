@@ -4,9 +4,7 @@
 Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &preState)
 {
     pop = false;
-    //point.x = 0;
-    //point.y = 0;
-	if (check==-1){
+    if (check==-1){
 		point.x = 0;
 		point.y = imgLane.rows/2;
 	} else {
@@ -41,127 +39,83 @@ Mat filterLane(const Mat &imgLane, bool &pop, Point &point, int check, bool &pre
         return none;
     }
     int xMin = 0, yMin = 1000, xMax = 0, yMax = -1;
-    /*for (int i = 0; i < contours[maxIndex].size(); i++)
-    {
-        // if (contours[maxIndex][i].y > yMax)
-        // {
-        //     yMax = contours[maxIndex][i].y;
-        //     xMax = contours[maxIndex][i].x;
-        // }
-        // if (contours[maxIndex][i].y < yMin)
-        // {
-        //     yMin = contours[maxIndex][i].y;
-        //     xMin = contours[maxIndex][i].x;
-        // }
-        sumX += contours[maxIndex][i].x;
-        sumY += contours[maxIndex][i].y;
-    }
-	*/
-    //if((xMax>=xMin) && (check==1)){
     drawContours(result, contours, maxIndex, Scalar(255), CV_FILLED);
-    //point.x = sumX / contours[maxIndex].size();
-    //point.y = sumY / contours[maxIndex].size();
-	if(check==-1){
+    if (check == -1)
+    {
 		point.x = 0;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
-    		{
-			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
-				if (point.x < contours[maxIndex][i].x)
-					point.x = contours[maxIndex][i].x;
-			//}
-        	//sumX += contours[maxIndex][i].x;
-        	//sumY += contours[maxIndex][i].y;
-    		}	
-	} else {
+        {
+            if (point.x < contours[maxIndex][i].x)
+                point.x = contours[maxIndex][i].x;
+        }	
+	} 
+    else 
+    {
 		point.x = imgLane.cols;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
-    		{
-			//if(contours[maxIndex][i].y - imgLane.rows/2>-20 && contours[maxIndex][i].y - imgLane.rows/2<20){
-				if (point.x > contours[maxIndex][i].x)
-					point.x = contours[maxIndex][i].x;
-			//}
-        	//sumX += contours[maxIndex][i].x;
-        	//sumY += contours[maxIndex][i].y;
-    		}	
+        {
+            if (point.x > contours[maxIndex][i].x)
+                point.x = contours[maxIndex][i].x;
+        }	
 	}
 	point.y = imgLane.rows/2;
-
-    /*if ((point.x > imgLane.cols / 2) && (check == -1) && (preState == false))
-    {
-        //cout << "sum X: " << sumX << endl;
-        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-    if ((point.x < imgLane.cols / 2) && (check == 1) && (preState == false))
-    {
-        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }*/
-
     pop = true;
     return result;
-    // } else
-    // if((xMax<=xMin) && (check==-1)){
-    //     drawContours(result, contours, maxIndex, Scalar(255), CV_FILLED);
-    //     point.x = sumX / contours[maxIndex].size();
-    //     point.y = sumY / contours[maxIndex].size();
-    //     pop = true;
-    //     return result;
-    // }
-    // return result;
 }
 
 
-void LaneProcessing(cv::Mat& colorImg,cv::Mat& binImg,int& xTam,int& yTam,bool& preLeft,bool& preRight,bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) 
+void LaneProcessing(Mat& colorImg, Mat& binImg, int& xTam, int& yTam, bool& preLeft, bool& preRight, bool& oneLine,int preX,int preY, int &preLeftX, int &preRightX) 
 {
-		Rect cropLeft(0, (1 - HEIGHT_LANE_CROP) * binImg.rows, binImg.cols / 2 - OFFSET_DIVIDE, HEIGHT_LANE_CROP * binImg);
-        Mat Left = binImg(cropLeft);
-        Rect cropRight(binImg.cols / 2 + OFFSET_DIVIDE, (1 - HEIGHT_LANE_CROP) * binImg.rows, binImg.cols / 2 - OFFSET_DIVIDE, HEIGHT_LANE_CROP * binImg.rows);
-        Mat Right = binImg(cropRight);
-        
-        Mat dstLeft = keepLanes(Left, false);
-        Mat dstRight = keepLanes(Right, false);
-        bool isLeft = false;
-        bool isRight = false;
-        Point pointLeft(0, 0);
-		Point pointRight(0, 0);
-        
-        Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
-		Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
-		
-        if (isLeft)
-        ;
-        else 
-        	pointLeft.x = preLeftX;
-		pointLeft.y += 3 * binImg.rows / 4;
-                
-		if (isRight)
-        	pointRight.x += (binImg.cols / 2 + OFFSET_DIVIDE);
-		else 
-        	pointRight.x = preRightX;
-		pointRight.y += 3 * binImg.rows / 4;
-		
-        if (pointRight.x-pointLeft.x<10 && pointRight.x-pointLeft.x>-10)
-        {
-			pointRight.x = preRightX;
-			pointLeft.x = preLeftX;
-		}
-        preLeft = isLeft;
-        preRight = isRight;
-		preLeftX = pointLeft.x;
-		preRightX = pointRight.x;
-        imshow("LEFT", Left);
-        imshow("RIGHT", Right);
-        
-        cout << "Left: " << isLeft << " Right: " << isRight << endl;
-                
-        xTam = (pointLeft.x + pointRight.x) / 2;
-        yTam = (pointLeft.y + pointRight.y) / 2;
-		circle(binImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-        circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-        circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
-        circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
-        imshow("color", colorImg);
+    int xLeft = 0;
+    int yLeft = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
+    int xRight = (0.5 + 1 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
+    int yRight = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
+    
+    Rect cropLeft(xLeft, yLeft, RATIO_WIDTH_LANE_CROP * binImg.cols / 2, RATIO_HEIGHT_LANE_CROP * binImg.rows);
+    Rect cropRight(xRight, yRight, RATIO_WIDTH_LANE_CROP * binImg.cols / 2, RATIO_HEIGHT_LANE_CROP * binImg.rows);
+    Mat Left = binImg(cropLeft);
+    Mat Right = binImg(cropRight);
+    
+    Mat dstLeft = keepLanes(Left, false);
+    Mat dstRight = keepLanes(Right, false);
+    bool isLeft = false;
+    bool isRight = false;
+    Point pointLeft(0, 0);
+    Point pointRight(0, 0);
+    
+    Left = filterLane(dstLeft, isLeft, pointLeft, -1, preLeft);
+    Right = filterLane(dstRight, isRight, pointRight, 1, preRight);
+    
+    if (isLeft)
+        pointLeft.x += xLeft;
+    else // Lose center point => get the previous
+        pointLeft.x = preLeftX;
+    pointLeft.y += yLeft;
+            
+    if (isRight)
+        pointRight.x += xRight;
+    else // Lose center point => get the previous
+        pointRight.x = preRightX;
+    pointRight.y += yRight;
+    
+    // Backup
+    preLeft = isLeft;
+    preRight = isRight;
+    preLeftX = pointLeft.x;
+    preRightX = pointRight.x;
+    imshow("LEFT", Left);
+    imshow("RIGHT", Right);
+    
+    cout << "Left: " << isLeft << " Right: " << isRight << endl;
+    
+    xTam = (pointLeft.x + pointRight.x) / 2;
+    yTam = (pointLeft.y + pointRight.y) / 2;
+    
+    // Draw center points
+    circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
+    imshow("color", colorImg);
 }
 
 Mat remOutlier(const Mat &gray)
@@ -197,17 +151,14 @@ void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &fra
     int w = frame_color.getWidth();
     int h = frame_color.getHeight();
 
-    //depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
     color_img = Mat(h, w, CV_8UC3);
+    //depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
     //Mat depth_img_8u;
-
     //depth_img_data = (DepthPixel *)frame_depth.getData();
-
     //memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
-
     //normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
-
     //depth_img_8u.convertTo(depth_img_8u, CV_8U);
+
     color_img_data = (RGB888Pixel *)frame_color.getData();
 
     memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));

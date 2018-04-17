@@ -63,8 +63,8 @@ using namespace cv::ml;
 #define SW4_PIN 164
 #define SENSOR 165
 #define AREA_MIN 17000
-#define OFFSET_DIVIDE 0
-#define HEIGHT_LANE_CROP 0.25
+#define RATIO_WIDTH_LANE_CROP  1
+#define RATIO_HEIGHT_LANE_CROP 0.25
 
 #define NO_SIGN 0
 #define SIGN_LEFT 1
