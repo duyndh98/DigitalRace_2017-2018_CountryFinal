@@ -1,64 +1,62 @@
 #include "lane_detection.h"
 
 // My function
-Mat filterLane(const Mat &imgLane, bool &isLine, Point &point, int check)
+void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
 {
     isLine = false;
-    if (check==-1){
-		point.x = 0;
-		point.y = imgLane.rows/2;
-	} else {
-		point.x = imgLane.cols;
-		point.y = imgLane.rows/2;	
-	}
+    if (check == -1) // Left
+    	centerX = 0;
+	else // Right
+        centerX = imgLane.cols;
+
     std::vector<std::vector<Point>> contours;
     std::vector<Vec4i> hierarchy;
     findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
+    
     if (contours.size() == 0)
-    {
-        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-    Mat result = Mat::zeros(imgLane.size(), CV_8UC1);
-    int sumX = 0;
-    int sumY = 0;
-    int maxArea = 0;
-    int maxIndex = 0;
+        return;
+    
+    imgLane = zeros(imgLane.size(), CV_8UC1);
+    int area_max = 0;
+    int i_max = 0;
     for (int i = 0; i < (int)contours.size(); ++i)
     {
-        int s = contourArea(contours[i]);
-        if (s > maxArea)
+        int area = contourArea(contours[i]);
+        if (area > area_max)
         {
-            maxArea = s;
-            maxIndex = i;
+            area_max = area;
+            i_max = i;
         }
     }
-    if (contourArea(contours[maxIndex]) < 100)
+    
+    // No line found
+    if (contourArea(contours[i_max]) < AREA_MIN)
+        return;
+    
+    drawContours(imgLane, contours, i_max, Scalar(255), CV_FILLED);
+    if (check == -1) // Left
     {
-        Mat none = Mat::zeros(imgLane.size(), CV_8UC1);
-        return none;
-    }
-    int xMin = 0, yMin = 1000, xMax = 0, yMax = -1;
-    drawContours(result, contours, maxIndex, Scalar(255), CV_FILLED);
-    if (check == -1)
-    {
-		point.x = 0;
-		for (int i = 0; i < contours[maxIndex].size(); i++)
+		centerX = 0;
+        // Browse through all of max-contour vertices
+		for (int i = 0; i < contours[i_max].size(); i++)
         {
-            if (point.x < contours[maxIndex][i].x)
-                point.x = contours[maxIndex][i].x;
+            // Find the most right vertice (xmax)
+            if (centerX < contours[i_max][i].x)
+                centerX = contours[i_max][i].x;
         }	
 	}
-    else 
+    else // Right
     {
-		point.x = imgLane.cols;
+		centerPoint.x = imgLane.cols;
 		for (int i = 0; i < contours[maxIndex].size(); i++)
         {
-            if (point.x > contours[maxIndex][i].x)
-                point.x = contours[maxIndex][i].x;
+            // Find the most left vertice (xmin)
+            if (centerX > contours[maxIndex][i].x)
+                centerX = contours[maxIndex][i].x;
         }	
 	}
-	point.y = imgLane.rows/2;
+	
+    // Line found
     isLine = true;
     return result;
 }
@@ -66,15 +64,15 @@ Mat filterLane(const Mat &imgLane, bool &isLine, Point &point, int check)
 void LaneProcessing(Mat& colorImg, Mat& binImg, int &centerX, int &centerLeftX, int &centerRightX) 
 {
     // Define rect to crop binImg into Left and Right
-    int xLeft = 0;
-    int yLeft = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
-    int xRight = (0.5 + 1 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
-    int yRight = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
-    int rectWidth = RATIO_WIDTH_LANE_CROP * binImg.cols / 2;
-    int rectHeight = RATIO_HEIGHT_LANE_CROP * binImg.rows;
+    int xLeftRect = 0;
+    int yLeftRect = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
+    int xRightRect = (0.5 + 1 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
+    int yRightRect = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
+    int widthRect = RATIO_WIDTH_LANE_CROP * binImg.cols / 2;
+    int heightRect = RATIO_HEIGHT_LANE_CROP * binImg.rows;
     
-    Rect rectLeft(xLeft, yLeft, rectWidth, rectHeight);
-    Rect rectRight(xRight, yRight, rectWidth, rectHeight);
+    Rect rectLeft(xLeftRect, yLeftRect, widthRect, heightRect);
+    Rect rectRight(xRightRect, yRightRect, widthRect, heightRect);
     Mat binLeft = binImg(rectLeft);
     Mat binRight = binImg(rectRight);
     
@@ -86,32 +84,28 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, int &centerX, int &centerLeftX, 
     bool isRight = false;
     
     // Filter lanes
-    Point centerLeft, centerRight;
-    binLeft = filterLane(binLeft, isLeft, centerLeft, -1);
-    binRight = filterLane(binRight, isRight, centerRight, 1);
+    int newCenterLeftX, newCenterRightX;
+    filterLane(binLeft, isLeft, newCenterLeftX, -1);
+    filterLane(binRight, isRight, newCenterRightX, 1);
     
-    if (isLeft)
-        centerLeft.x += xLeft;
-    else // Lose center point => get the previous
-        centerLeft.x = centerX;
-    centerLeft.y += yLeft;
-            
-    if (isRight)
-        centerRight.x += xRight;
-    else // Lose center point => get the previous
-        centerRight.x = preRightX;
-    centerRight.y += yRight;
-    
-    // Backup
-    centerLeftX = centerLeft.x;
-    centerRightX = centerRight.x;
     imshow("LEFT", binLeft);
     imshow("RIGHT", binRight);
-    
     cout << "Left: " << isLeft << " Right: " << isRight << endl;
     
-    center.x = (centerLeft.x + centerRight.x) / 2;
-    center.y = (centerLeft.y + centerRight.y) / 2;
+    if (isLeft)
+        newCenterLeftX += xLeftRect;
+    else // Lose center point => get the previous
+        newCenterLeftX = centerLeftX;
+            
+    if (isRight)
+        newCenterRightX += xRightRect;
+    else // Lose center point => get the previous
+        newCenterRightX = centerRightX;
+    
+    // Backup
+    centerX = (newCenterLeftX + newCenterRightX) / 2;
+    centerLeftX = newCenterLeftX;
+    centerRightX = newCenterRightX;
     
     // Draw center points
     circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);

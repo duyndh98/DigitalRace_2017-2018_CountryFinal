@@ -94,7 +94,6 @@ int main(int argc, char *argv[])
     char key;
 
     // Use for lane detection
-    bool isOneLine = false;    
     int centerLeftX = 0, centerRightX = 0;
     
     // Run loop
@@ -223,11 +222,9 @@ int main(int argc, char *argv[])
 				    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             }
 	        // Process lane to get center pPoint
-            LaneProcessing(colorImg, binImg, centerX, centerLeftX, centerRightX);
+            Point centerPoint(0, (1 - CENTER_POINT_Y) * binImg.rows)
+            LaneProcessing(colorImg, binImg, centerPoint.x, centerLeftX, centerRightX);
             
-            Point centerPoint = Point(centerX, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows)
-            Point preCenterPoint = centerPoint;
-
 		    double angDiff = getTheta(centerPoint);
             cout<< "---------------------------" << angDiff << endl;
 

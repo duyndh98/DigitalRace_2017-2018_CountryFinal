@@ -65,6 +65,7 @@ using namespace cv::ml;
 #define AREA_MIN 17000
 #define RATIO_WIDTH_LANE_CROP  1
 #define RATIO_HEIGHT_LANE_CROP 0.25
+#define CENTER_POINT_Y 0.2
 
 #define NO_SIGN 0
 #define SIGN_LEFT 1
