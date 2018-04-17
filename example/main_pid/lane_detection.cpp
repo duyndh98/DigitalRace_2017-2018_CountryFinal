@@ -16,7 +16,7 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
     if (contours.size() == 0)
         return;
     
-    imgLane = zeros(imgLane.size(), CV_8UC1);
+    Mat result = Mat::zeros(imgLane.size(), CV_8UC1);
     int area_max = 0;
     int i_max = 0;
     for (int i = 0; i < (int)contours.size(); ++i)
@@ -33,7 +33,8 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
     if (contourArea(contours[i_max]) < AREA_MIN)
         return;
     
-    drawContours(imgLane, contours, i_max, Scalar(255), CV_FILLED);
+    drawContours(result, contours, i_max, Scalar(255), CV_FILLED);
+    
     if (check == -1) // Left
     {
 		centerX = 0;
@@ -47,21 +48,20 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
 	}
     else // Right
     {
-		centerPoint.x = imgLane.cols;
-		for (int i = 0; i < contours[maxIndex].size(); i++)
+		centerX = imgLane.cols;
+		for (int i = 0; i < contours[i_max].size(); i++)
         {
             // Find the most left vertice (xmin)
-            if (centerX > contours[maxIndex][i].x)
-                centerX = contours[maxIndex][i].x;
+            if (centerX > contours[i_max][i].x)
+                centerX = contours[i_max][i].x;
         }	
 	}
 	
     // Line found
     isLine = true;
-    return result;
 }
 
-void LaneProcessing(Mat& colorImg, Mat& binImg, int &centerX, int &centerLeftX, int &centerRightX) 
+void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight) 
 {
     // Define rect to crop binImg into Left and Right
     int xLeftRect = 0;
@@ -84,33 +84,32 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, int &centerX, int &centerLeftX, 
     bool isRight = false;
     
     // Filter lanes
-    int newCenterLeftX, newCenterRightX;
-    filterLane(binLeft, isLeft, newCenterLeftX, -1);
-    filterLane(binRight, isRight, newCenterRightX, 1);
+    Point preCenterLeft = centerLeft;
+    Point preCenterRight = centerRight;
+    filterLane(binLeft, isLeft, centerLeft.x, -1);
+    filterLane(binRight, isRight, centerRight.x, 1);
     
     imshow("LEFT", binLeft);
     imshow("RIGHT", binRight);
     cout << "Left: " << isLeft << " Right: " << isRight << endl;
     
     if (isLeft)
-        newCenterLeftX += xLeftRect;
+        centerLeft.x += xLeftRect;
     else // Lose center point => get the previous
-        newCenterLeftX = centerLeftX;
+        centerLeft.x = preCenterLeft.x;
             
     if (isRight)
-        newCenterRightX += xRightRect;
+        centerRight.x += xRightRect;
     else // Lose center point => get the previous
-        newCenterRightX = centerRightX;
+        centerRight.x = preCenterRight.x;
     
     // Backup
-    centerX = (newCenterLeftX + newCenterRightX) / 2;
-    centerLeftX = newCenterLeftX;
-    centerRightX = newCenterRightX;
+    centerPoint.x = (centerLeft.x + centerRight.x) / 2;
     
     // Draw center points
-    circle(colorImg, Point(xTam, yTam), 2, Scalar(255, 255, 0), 3);
-    circle(colorImg, Point(pointLeft.x, pointLeft.y), 2, Scalar(255, 255, 0), 3);
-    circle(colorImg, Point(pointRight.x, pointRight.y), 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, centerPoint, 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, centerLeft, 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, centerRight, 2, Scalar(255, 255, 0), 3);
     imshow("color", colorImg);
 }
 

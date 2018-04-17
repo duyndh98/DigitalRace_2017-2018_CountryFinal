@@ -5,7 +5,7 @@ void get_mask(const Mat &hsv, Mat &mask, bool blue, bool red, bool black)
 	mask = Mat::zeros(hsv.rows, hsv.cols, CV_8UC1);
 
 	Mat tmp_mask(mask.rows, mask.cols, CV_8UC1);
-	if (blue`)
+	if (blue)
 	{
 		inRange(hsv, LOW_HSV_BLUE, HIG_HSV_BLUE, tmp_mask);
 		bitwise_or(mask, tmp_mask, mask);

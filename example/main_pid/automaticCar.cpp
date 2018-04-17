@@ -94,7 +94,9 @@ int main(int argc, char *argv[])
     char key;
 
     // Use for lane detection
-    int centerLeftX = 0, centerRightX = 0;
+    Point centerPoint(0, (1 - CENTER_POINT_Y) * binImg.rows);
+    Point centerLeft(0, (1 - CENTER_POINT_Y) * binImg.rows);
+    Point centerRight(0, (1 - CENTER_POINT_Y) * binImg.rows);
     
     // Run loop
     while (true)
@@ -111,7 +113,6 @@ int main(int argc, char *argv[])
                 sw4_stat = bt_status;
                 throttle_val = THROTTLE_VAL1;
                 set_throttle_val = THROTTLE_VAL1;
-                oneLine = false;
             }
         }
         else
@@ -126,7 +127,6 @@ int main(int argc, char *argv[])
                 sw1_stat = bt_status;
                 throttle_val = THROTTLE_VAL2;
                 set_throttle_val = THROTTLE_VAL2;
-                oneLine = false;
             }
         }
         else
@@ -140,7 +140,6 @@ int main(int argc, char *argv[])
         {
             running = true;
             throttle_val = set_throttle_val;
-            oneLine = false;
         }
         sensor = sensor_status;
         
@@ -150,7 +149,6 @@ int main(int argc, char *argv[])
         {
             running = !running;
             throttle_val = set_throttle_val;
-            oneLine = false;
         }
         if (key == 'f')
         {
@@ -222,8 +220,7 @@ int main(int argc, char *argv[])
 				    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             }
 	        // Process lane to get center pPoint
-            Point centerPoint(0, (1 - CENTER_POINT_Y) * binImg.rows)
-            LaneProcessing(colorImg, binImg, centerPoint.x, centerLeftX, centerRightX);
+            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight);
             
 		    double angDiff = getTheta(centerPoint);
             cout<< "---------------------------" << angDiff << endl;
