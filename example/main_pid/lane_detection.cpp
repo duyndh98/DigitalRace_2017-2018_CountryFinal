@@ -11,7 +11,7 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
 
     std::vector<std::vector<Point>> contours;
     std::vector<Vec4i> hierarchy;
-    findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
+    findContours(imgLane, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     
     if (contours.size() == 0)
         return;
@@ -59,6 +59,7 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
 	
     // Line found
     isLine = true;
+    result.copyTo(imgLane);
 }
 
 void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight) 
@@ -66,7 +67,7 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     // Define rect to crop binImg into Left and Right
     int xLeftRect = 0;
     int yLeftRect = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
-    int xRightRect = (0.5 + 1 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
+    int xRightRect = (1.5 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
     int yRightRect = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
     int widthRect = RATIO_WIDTH_LANE_CROP * binImg.cols / 2;
     int heightRect = RATIO_HEIGHT_LANE_CROP * binImg.rows;
@@ -77,8 +78,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     Mat binRight = binImg(rectRight);
     
     // Keep lanes
-    binLeft = keepLanes(binLeft, false);
-    binRight = keepLanes(binRight, false);
+    //binLeft = keepLanes(binLeft, false);
+    //binRight = keepLanes(binRight, false);
 
     bool isLeft = false;
     bool isRight = false;

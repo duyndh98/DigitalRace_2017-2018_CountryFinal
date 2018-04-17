@@ -41,16 +41,11 @@ include_directories(
       ${CMAKE_CURRENT_SOURCE_DIR}/lane_detection/msac
       ${CMAKE_CURRENT_SOURCE_DIR}/peripheral_driver/i2c
       ${CMAKE_CURRENT_SOURCE_DIR}/peripheral_driver/uart
-      #${CMAKE_CURRENT_SOURCE_DIR}/ObjectDetection
-      #${CMAKE_CURRENT_SOURCE_DIR}/ObjectRecognition 
       ${CMAKE_CURRENT_SOURCE_DIR}/HAL	
       ${CMAKE_CURRENT_SOURCE_DIR}/multilane
-      #${CMAKE_CURRENT_SOURCE_DIR}/include
-      #${CMAKE_CURRENT_SOURCE_DIR}/sign_detection
-      #${CMAKE_CURRENT_SOURCE_DIR}/sign_recognize
       ${CMAKE_CURRENT_SOURCE_DIR}/radon
       ${CMAKE_CURRENT_SOURCE_DIR}/extract_info
-	${CMAKE_CURRENT_SOURCE_DIR}/openni2
+	    ${CMAKE_CURRENT_SOURCE_DIR}/openni2
 )
 
 link_directories( ${LIB_FREENECT_INSTALL_DIR}/lib
@@ -67,12 +62,8 @@ endif()
 add_subdirectory(stereo_vision)
 add_subdirectory(lane_detection)
 add_subdirectory(peripheral_driver)
-#add_subdirectory(ObjectRecognition)
-#add_subdirectory(ObjectDetection) 
 add_subdirectory(HAL)
 add_subdirectory(multilane)
-#add_subdirectory(sign_detection)
-#add_subdirectory(sign_recognize)
 add_subdirectory(radon)
 add_subdirectory(extract_info)
 add_subdirectory(openni2)

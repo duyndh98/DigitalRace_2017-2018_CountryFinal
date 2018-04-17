@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
         // Process
         if (running)
         {
-            cout << "v = " << throttle_val << endl;
+            //cout << "v = " << throttle_val << endl;
             throttle_val = set_throttle_val;
             // Check PCA9685 driver
             if (pca9685->error < 0)
@@ -205,13 +205,13 @@ int main(int argc, char *argv[])
             bitwise_not(binImg, binImg);
 
             imshow("binImg", binImg);
-	        imshow("signMask", signMask);		
+	        //imshow("signMask", signMask);		
                 
 	        // Traffic sign detection and recognition
             if(mySign.detect(signMask)) {
                 mySign.recognize(grayImg);
                 int signID = mySign.getClassID();
-			    cout << "signID: " << signID << endl;
+			    //cout << "signID: " << signID << endl;
 			    if (signID==1)
 			    	putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 		    	else if(signID==2)
@@ -223,7 +223,8 @@ int main(int argc, char *argv[])
             LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight);
             
 		    double angDiff = getTheta(centerPoint);
-            cout<< "---------------------------" << angDiff << endl;
+            cout<< "---------------------------\n";
+            cout << "angleDiff" << angDiff << endl;
 
             if (-20 < angDiff && angDiff < 20)
                 angDiff = 0;

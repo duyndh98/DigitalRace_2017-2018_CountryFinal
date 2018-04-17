@@ -86,7 +86,7 @@ void controlTurn(PCA9685 *&pca9685, int dir)
     {
         double theta = ALPHA * 78;
         api_set_STEERING_control(pca9685, theta);
-        cout << "Turn Left==================================================" << endl;
+        cout << "Turn Left=================================================" << endl;
         sleep(1);
         cout << "Normal" << endl;
     }
@@ -94,7 +94,7 @@ void controlTurn(PCA9685 *&pca9685, int dir)
     {
         double theta = -ALPHA * 78;
         api_set_STEERING_control(pca9685, theta);
-        cout << "Turn Right==================================================" << endl;
+        cout << "Turn Right=================================================" << endl;
         sleep(1);
         cout << "Normal" << endl;
     }
