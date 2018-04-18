@@ -167,6 +167,8 @@ mutex
 -
 pthread.h
 -
+math.h
+-
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.cpp
 image_processing.h
