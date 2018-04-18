@@ -74,26 +74,31 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     Point preCenterRight = centerRight;
     filterLane(binLeft, isLeft, centerLeft.x, -1);
     filterLane(binRight, isRight, centerRight.x, 1);
+
+    centerLeft.x += xLeftRect;
+    centerRight.x += xRightRect;
     
     imshow("LEFT", binLeft);
     imshow("RIGHT", binRight);
     cout << "Left: " << isLeft << " Right: " << isRight << endl;
     
-    if (isLeft)
-        centerLeft.x += xLeftRect;
-    else // Lose center point => get the previous
+    if (!isLeft && isRight) // Lost left lane
     {
         putText(colorImg, "No left", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        centerLeft.x = preCenterLeft.x;
+        centerLeft.x += centerRight.x - preCenterRight.x;
     }
-    if (isRight)
-        centerRight.x += xRightRect;
-    else // Lose center point => get the previous
+    else if (isLeft && !isRight) // Lost right lane
     {
         putText(colorImg, "No right", Point(200, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        centerRight.x += centerLeft.x - preCenterLeft.x;
+    }
+    else if (!isLeft && !isRight) // Lost both lane
+    {
+        putText(colorImg, "No left and right", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        centerLeft.x = preCenterLeft.x;
         centerRight.x = preCenterRight.x;
     }
-    
+
     // Backup
     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
     centerPoint.y = centerLeft.y = centerRight.y = (1 - CENTER_POINT_Y) * binImg.rows;

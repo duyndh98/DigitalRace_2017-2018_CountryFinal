@@ -19,6 +19,7 @@
 #include <thread>
 #include <mutex>
 #include <pthread.h>
+#include <math.h>
 
 using namespace openni;
 using namespace EmbeddedFramework;
