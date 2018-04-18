@@ -4,12 +4,11 @@
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/ml.hpp>
 
-#include <iostream>
-#include "real_camera.h"
+#include "header.h"
+#include "image_processing.h"
 
 using namespace cv;
 using namespace std;
-using namespace cv::ml;
 
 #define FRAME_WIDTH 320
 #define FRAME_HEIGHT 240
@@ -68,13 +67,53 @@ void on_high_v_thresh_trackbar(int, void *)
 	setTrackbarPos("High V", "Threshold Selection", high_v);
 }
 
+void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
+{
+    int w = frame_color.getWidth();
+    int h = frame_color.getHeight();
+
+    color_img = Mat(h, w, CV_8UC3);
+    RGB888Pixel *color_img_data = (RGB888Pixel *)frame_color.getData();
+    memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
+    cvtColor(color_img, color_img, COLOR_RGB2BGR);
+
+    return;
+}
+
 int main()
 {
-	Mat frame, hsv, mask, depth;
-	// VideoCapture cap(0);
+	// Init
+	Status rc;
+    Device device;
+    VideoStream color;
 
-	camera* p_camera = new real_camera();
+	rc = OpenNI::initialize();
+    if (rc != STATUS_OK)
+        return 0;
+    rc = device.open(ANY_DEVICE);
+    if (rc != STATUS_OK)
+        return 0;
+    if (!device.getSensorInfo(SENSOR_COLOR))
+		return 0;
+	rc = color.create(device, SENSOR_COLOR);
+	if (rc != STATUS_OK)
+		return 0;
+	
+	VideoMode color_mode = color.getVideoMode();
+	color_mode.setFps(30);
+	color_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
+	color_mode.setPixelFormat(PIXEL_FORMAT_RGB888);
+	color.setVideoMode(color_mode);
 
+	rc = color.start();
+	if (rc != STATUS_OK)
+		return 0;
+	
+	VideoFrameRef frame_color;
+    VideoStream *streams[] = {&color};
+
+	Mat frame, hsv, mask;
+	
 	namedWindow("Threshold Selection", WINDOW_NORMAL);
 
 	createTrackbar("Low H", "Threshold Selection", &low_h, 255, on_low_h_thresh_trackbar);
@@ -86,12 +125,9 @@ int main()
 	
 	while ((char)waitKey(1) != 'q')
 	{
-		// cap >> frame;
-		p_camera->read_frame(frame, depth);
-		if (frame.empty()) {
-			std::cerr << "No Frame" << std::endl;
-			break;
-		}
+		color.readFrame(&frame_color);
+		analyzeFrame(frame_color, frame);
+		flip(frame, frame, 1);
 
 		resize(frame, frame, Size(FRAME_WIDTH, FRAME_HEIGHT));
 		hist_equalize(frame);
@@ -103,8 +139,6 @@ int main()
 		imshow("frame", frame);
 		imshow("mask", mask);
 	}	
-
-	delete p_camera;
 
 	return 0;
 }

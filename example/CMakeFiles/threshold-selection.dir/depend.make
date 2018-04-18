@@ -165,9 +165,8 @@ CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: /home/ubun
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OniVersion.h
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/OpenNI.h
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: /home/ubuntu/Downloads/2-Linux/OpenNI-Linux-Arm-2.3/Include/Win32/OniPlatformWin32.h
-CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: main_pid/camera.h
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: main_pid/header.h
-CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: main_pid/real_camera.h
+CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: main_pid/image_processing.h
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: main_pid/thresholdSelection.cpp
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: /usr/local/include/opencv/cxcore.h
 CMakeFiles/threshold-selection.dir/main_pid/thresholdSelection.cpp.o: /usr/local/include/opencv2/calib3d.hpp

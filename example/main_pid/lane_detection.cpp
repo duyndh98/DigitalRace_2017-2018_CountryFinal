@@ -140,7 +140,7 @@ Mat remOutlier(const Mat &gray)
     return poly;
 }
 
-void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &frame_color,/* Mat &depth_img,*/ Mat &color_img)
+void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
 {
     int w = frame_color.getWidth();
     int h = frame_color.getHeight();
@@ -151,13 +151,6 @@ void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &fra
     cvtColor(color_img, color_img, COLOR_RGB2BGR);
 
     return;
-    //DepthPixel *depth_img_data;
-    //depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
-    //Mat depth_img_8u;
-    //depth_img_data = (DepthPixel *)frame_depth.getData();
-    //memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
-    //normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
-    //depth_img_8u.convertTo(depth_img_8u, CV_8U);
 }
 
 /// Return angle between veritcal line containing car and destination point in degree

@@ -25,33 +25,7 @@ bool OpenNI_init(Status &rc, Device &device, VideoStream &color)
     rc = device.open(ANY_DEVICE);
     if (rc != STATUS_OK)
         return 0;
-/*
-    // depth video stream init
-    if (device.getSensorInfo(SENSOR_DEPTH) != NULL)
-    {
-        rc = depth.create(device, SENSOR_DEPTH);
-        if (rc == STATUS_OK)
-        {
-            VideoMode depth_mode = depth.getVideoMode();
-            depth_mode.setFps(30);    
-            printf("Couldn't open device\n%s\n", OpenNI::getExtendedError());
 
-            depth_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
-            depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
-            depth.setVideoMode(depth_mode);
-
-            rc = depth.start();
-            if (rc != STATUS_OK)
-            {
-                printf("Couldn't start the color stream\n%s\n", OpenNI::getExtendedError());
-            }
-        }
-        else
-        {
-            printf("Couldn't create depth stream\n%s\n", OpenNI::getExtendedError());
-        }
-    }
-*/
     // color video stream init
     if (device.getSensorInfo(SENSOR_COLOR) != NULL)
     {
@@ -76,7 +50,6 @@ bool OpenNI_init(Status &rc, Device &device, VideoStream &color)
         }
     }
 
-    
     return 1;
 }
 

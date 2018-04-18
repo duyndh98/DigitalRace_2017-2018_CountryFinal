@@ -7,7 +7,7 @@
 void filterLane(const cv::Mat &imgLane, Point &point, int check);
 void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight);
 Mat remOutlier(const Mat &gray);
-void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &frame_color,/* Mat &depth_img,*/ Mat &color_img);
+void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img);
 double getTheta(Point dst);
 
 #endif

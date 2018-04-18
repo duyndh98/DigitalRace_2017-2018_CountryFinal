@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
         int codec = CV_FOURCC('M', 'J', 'P', 'G');
         Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
         
-        gray_videoWriter.open(gray_filename, codec, 8, output_size, false);
-        // color_videoWriter.open(color_filename, codec, 8, output_size, true);
+        //gray_videoWriter.open(gray_filename, codec, 8, output_size, false);
+        color_videoWriter.open(color_filename, codec, 8, output_size, true);
         // depth_videoWriter.open(depth_filename, codec, 8, output_size, false);
     }
     
@@ -193,8 +193,8 @@ int main(int argc, char *argv[])
             //depth.readFrame(&frame_depth);
             
             // Preprocessing
-            flip(colorImg, colorImg, 1);
             analyzeFrame(frame_color,colorImg);
+            flip(colorImg, colorImg, 1);
             hist_equalize(colorImg);
 
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
