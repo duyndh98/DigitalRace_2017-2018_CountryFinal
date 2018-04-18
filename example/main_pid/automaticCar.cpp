@@ -224,9 +224,9 @@ int main(int argc, char *argv[])
 			// 	    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             // }
 	        // Process lane to get center pPoint
-            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight);
+            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight,theta);
             
-		    theta = getTheta(carPosition, centerPoint);
+		    //theta = getTheta(carPosition, centerPoint);
 
             if (-20 < theta && theta < 20)
                 theta = 0;

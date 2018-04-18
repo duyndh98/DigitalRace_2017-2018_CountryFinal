@@ -183,6 +183,10 @@ image_processing.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.cpp
 lane_detection.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
+stdio.h
+-
+stdlib.h
+-
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
 header.h
