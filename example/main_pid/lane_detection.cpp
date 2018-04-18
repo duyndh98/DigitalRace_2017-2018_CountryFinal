@@ -4,7 +4,7 @@
 void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
 {
     isLine = false;
-    if (check == -1) // Left
+    if (check < 0) // Left
     	centerX = 0;
 	else // Right
         centerX = imgLane.cols;
@@ -17,48 +17,33 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
         return;
     
     Mat result = Mat::zeros(imgLane.size(), CV_8UC1);
-    int area_max = 0;
-    int i_max = 0;
+    
     for (int i = 0; i < (int)contours.size(); ++i)
     {
         int area = contourArea(contours[i]);
-        if (area > area_max)
+        if (area >= AREA_MIN)
         {
-            area_max = area;
-            i_max = i;
+            drawContours(result, contours, i, Scalar(255), CV_FILLED);
+            isLine = true;
+            if (check < 0) // Left
+            {
+                // Find the most right vertice (xmax)
+                for (int j = 0; j < contours[i].size(); ++j)
+                    if (contours[i][j].x > centerX)
+                        centerX = contours[i][j].x;
+            }
+            else // Right
+            {
+                for (int j = 0; j < contours[i].size(); ++j)
+                {
+                    // Find the most left vertice (xmin)
+                    if (contours[i][j].x < centerX)
+                        centerX = contours[i][j].x;
+                }	
+            }
         }
     }
-    
-    // No line found
-    if (contourArea(contours[i_max]) < AREA_MIN)
-        return;
-    
-    drawContours(result, contours, i_max, Scalar(255), CV_FILLED);
-
-    if (check == -1) // Left
-    {
-		centerX = 0;
-        // Browse through all of max-contour vertices
-		for (int i = 0; i < contours[i_max].size(); i++)
-        {
-            // Find the most right vertice (xmax)
-            if (centerX < contours[i_max][i].x)
-                centerX = contours[i_max][i].x;
-        }	
-	}
-    else // Right
-    {
-		centerX = imgLane.cols;
-		for (int i = 0; i < contours[i_max].size(); i++)
-        {
-            // Find the most left vertice (xmin)
-            if (centerX > contours[i_max][i].x)
-                centerX = contours[i_max][i].x;
-        }	
-	}
-	
     // Line found
-    isLine = true;
     result.copyTo(imgLane);
 }
 
@@ -97,12 +82,17 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     if (isLeft)
         centerLeft.x += xLeftRect;
     else // Lose center point => get the previous
+    {
+        putText(colorImg, "No left", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         centerLeft.x = preCenterLeft.x;
-            
+    }
     if (isRight)
         centerRight.x += xRightRect;
     else // Lose center point => get the previous
+    {
+        putText(colorImg, "No right", Point(200, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         centerRight.x = preCenterRight.x;
+    }
     
     // Backup
     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
@@ -110,8 +100,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
 
     // Draw center points
     circle(colorImg, centerPoint, 2, Scalar(255, 255, 0), 3);
-    circle(colorImg, centerLeft, 2, Scalar(255, 255, 0), 3);
-    circle(colorImg, centerRight, 2, Scalar(255, 255, 0), 3);
+    circle(colorImg, centerLeft, 2, Scalar(255, 0, 255), 3);
+    circle(colorImg, centerRight, 2, Scalar(0, 255, 255), 3);
     imshow("color", colorImg);
 }
 
@@ -154,9 +144,8 @@ void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
 }
 
 /// Return angle between veritcal line containing car and destination point in degree
-double getTheta(Point dst)
+double getTheta(Point car, Point dst)
 {
-    Point car(0, 0);
     if (dst.x == car.x)
         return 0;
     if (dst.y == car.y)

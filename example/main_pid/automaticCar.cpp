@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
     VideoWriter color_videoWriter;
     VideoWriter gray_videoWriter;
 
-    string gray_filename = "gray.avi";
     string color_filename = "color.avi";
+    //string gray_filename = "gray.avi";
     // string depth_filename = "depth.avi";
 
     Mat /*depthImg,*/ colorImg, hsvImg, grayImg, binImg, signMask;
@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
     char key;
 
     // Use for lane detection
+    Point car(FRAME_WIDTH / 2, FRAME_HEIGHT);
     Point centerPoint(0, (1 - CENTER_POINT_Y) * binImg.rows);
     Point centerLeft(0, (1 - CENTER_POINT_Y) * binImg.rows);
     Point centerRight(0, (1 - CENTER_POINT_Y) * binImg.rows);
@@ -148,6 +149,7 @@ int main(int argc, char *argv[])
         if (key == 's')
         {
             running = !running;
+            theta = 0;
             throttle_val = set_throttle_val;
         }
         if (key == 'f')
@@ -162,6 +164,7 @@ int main(int argc, char *argv[])
         // Process
         if (running)
         {
+            cout<< "---------------------------\n";
             //cout << "v = " << throttle_val << endl;
             throttle_val = set_throttle_val;
             // Check PCA9685 driver
@@ -208,28 +211,28 @@ int main(int argc, char *argv[])
 	        //imshow("signMask", signMask);		
                 
 	        // Traffic sign detection and recognition
-            if(mySign.detect(signMask)) {
-                mySign.recognize(grayImg);
-                int signID = mySign.getClassID();
-			    //cout << "signID: " << signID << endl;
-			    if (signID==1)
-			    	putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-		    	else if(signID==2)
-				    putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-			    else if(signID==3)
-				    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-            }
+            // if(mySign.detect(signMask)) {
+            //     mySign.recognize(grayImg);
+            //     int signID = mySign.getClassID();
+			//     //cout << "signID: " << signID << endl;
+			//     if (signID==1)
+			//     	putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+		    // 	else if(signID==2)
+			// 	    putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+			//     else if(signID==3)
+			// 	    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+            // }
 	        // Process lane to get center pPoint
             LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight);
             
-		    double angDiff = getTheta(centerPoint);
-            cout<< "---------------------------\n";
+		    theta = getTheta(carPosition, centerPoint);
 
-            if (-20 < angDiff && angDiff < 20)
-                angDiff = 0;
-            theta = -(angDiff * ALPHA);
+            if (-20 < theta && theta < 20)
+                theta = 0;
+            
+            cout << "angdiff: " << theta << endl;
+            theta = -(theta * ALPHA);
                 
-            std::cout << "angdiff: " << angDiff << std::endl;
             api_set_STEERING_control(pca9685, theta);
             api_set_FORWARD_control(pca9685, throttle_val);
             
@@ -241,8 +244,6 @@ int main(int argc, char *argv[])
             {
                 if (!colorImg.empty())
                     color_videoWriter.write(colorImg);
-                // if (!binImg.empty())
-                //     gray_videoWriter.write(binImg);
             }
             waitKey(1);
         }
