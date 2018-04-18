@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 
     // Init OpenNI
     Status rc;
-    VideoStream color;
     Device device;
+    VideoStream color;
     OpenNI_init(rc, device,color);
     
     VideoFrameRef frame_color;
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
         
         gray_videoWriter.open(gray_filename, codec, 8, output_size, false);
-        color_videoWriter.open(color_filename, codec, 8, output_size, true);
+        // color_videoWriter.open(color_filename, codec, 8, output_size, true);
         // depth_videoWriter.open(depth_filename, codec, 8, output_size, false);
     }
     
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
     // Define a Sign object for using throughtout the program
     Sign mySign;
-    
+
     unsigned int bt_status = 0;
     unsigned int sensor_status = 0;
     char key;
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
                 api_set_FORWARD_control(pca9685, throttle_val);
             }
             int readyStream = -1;
-            rc = OpenNI::waitForAnyStream(streams, 1, &readyStream, SAMPLE_READ_WAIT_TIMEOUT);
+            rc = OpenNI::waitForAnyStream(streams, 1, &readyStream, -1);
             if (rc != STATUS_OK)
             {
                 printf("Wait failed! (timeout is %d ms)\n%s\n", SAMPLE_READ_WAIT_TIMEOUT, OpenNI::getExtendedError());
@@ -224,7 +224,6 @@ int main(int argc, char *argv[])
             
 		    double angDiff = getTheta(centerPoint);
             cout<< "---------------------------\n";
-            cout << "angleDiff" << angDiff << endl;
 
             if (-20 < angDiff && angDiff < 20)
                 angDiff = 0;
@@ -242,8 +241,8 @@ int main(int argc, char *argv[])
             {
                 if (!colorImg.empty())
                     color_videoWriter.write(colorImg);
-                if (!binImg.empty())
-                    gray_videoWriter.write(binImg);
+                // if (!binImg.empty())
+                //     gray_videoWriter.write(binImg);
             }
             waitKey(1);
         }
@@ -264,8 +263,8 @@ int main(int argc, char *argv[])
     //////////  Release //////////////////////////////////////////////////////
     if (is_save_file)
     {
-        gray_videoWriter.release();
         color_videoWriter.release();
+        //gray_videoWriter.release();
         //depth_videoWriter.release();
     }
     return 0;

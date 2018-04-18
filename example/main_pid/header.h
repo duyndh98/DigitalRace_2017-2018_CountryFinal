@@ -49,7 +49,7 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
 
-#define SAMPLE_READ_WAIT_TIMEOUT 100
+#define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
 #define FRAME_HEIGHT 240
 #define TEST_DETECT_SIGN 0
@@ -62,7 +62,7 @@ using namespace cv::ml;
 #define SW3_PIN 163
 #define SW4_PIN 164
 #define SENSOR 165
-#define AREA_MIN 17000
+#define AREA_MIN 100
 #define RATIO_WIDTH_LANE_CROP 1
 #define RATIO_HEIGHT_LANE_CROP 0.35
 #define CENTER_POINT_Y 0.2

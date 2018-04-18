@@ -34,7 +34,7 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
         return;
     
     drawContours(result, contours, i_max, Scalar(255), CV_FILLED);
-    
+
     if (check == -1) // Left
     {
 		centerX = 0;
@@ -106,7 +106,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     
     // Backup
     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-    
+    centerPoint.y = centerLeft.y = centerRight.y = (1 - CENTER_POINT_Y) * binImg.rows;
+
     // Draw center points
     circle(colorImg, centerPoint, 2, Scalar(255, 255, 0), 3);
     circle(colorImg, centerLeft, 2, Scalar(255, 255, 0), 3);
@@ -141,26 +142,22 @@ Mat remOutlier(const Mat &gray)
 
 void analyzeFrame(/*const VideoFrameRef &frame_depth,*/ const VideoFrameRef &frame_color,/* Mat &depth_img,*/ Mat &color_img)
 {
-    //DepthPixel *depth_img_data;
-    RGB888Pixel *color_img_data;
-
     int w = frame_color.getWidth();
     int h = frame_color.getHeight();
 
     color_img = Mat(h, w, CV_8UC3);
+    RGB888Pixel *color_img_data = (RGB888Pixel *)frame_color.getData();
+    memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
+    cvtColor(color_img, color_img, COLOR_RGB2BGR);
+
+    return;
+    //DepthPixel *depth_img_data;
     //depth_img = Mat(h, w, CV_16U); ////////////////--------------------------------------------test
     //Mat depth_img_8u;
     //depth_img_data = (DepthPixel *)frame_depth.getData();
     //memcpy(depth_img.data, depth_img_data, h * w * sizeof(DepthPixel));
     //normalize(depth_img, depth_img_8u, 255, 0, NORM_MINMAX);
     //depth_img_8u.convertTo(depth_img_8u, CV_8U);
-
-    color_img_data = (RGB888Pixel *)frame_color.getData();
-
-    memcpy(color_img.data, color_img_data, h * w * sizeof(RGB888Pixel));
-
-    cvtColor(color_img, color_img, COLOR_RGB2BGR);
-    return;
 }
 
 /// Return angle between veritcal line containing car and destination point in degree
