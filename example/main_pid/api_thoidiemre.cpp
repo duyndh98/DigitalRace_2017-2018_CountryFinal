@@ -5,6 +5,7 @@
 #include <opencv2/ml.hpp>
 
 #include <iostream>
+
 using namespace std;
 using namespace cv;
 int upper__bound= 80, lower__bound=0;
@@ -32,6 +33,50 @@ void on_thresh_area_max_thresh_trackbar(int, void *)
     thresh_area_max = max(thresh_area_max, thresh_area_min + 1);
     setTrackbarPos("thresh_area_max", "Threshold Selection", thresh_area_max);
 }
+
+void
+mergeOverlappingBoxes(std::vector<cv::Rect> &inputBoxes,
+                      cv::Mat &image,
+                      std::vector<cv::Rect> &outputBoxes)
+{
+    cv::Mat mask = cv::Mat::zeros(image.size(), CV_8UC1); // Mask of original image
+    cv::Size scaleFactor(15,15);
+
+    for (int i = 0; i < inputBoxes.size(); i++)
+    {
+        cv::Rect box = inputBoxes.at(i) + scaleFactor;
+        cv::rectangle(mask, box, cv::Scalar(255), CV_FILLED); // Draw filled bounding boxes on mask
+    }
+
+    std::vector< std::vector< cv::Point> > contours;
+    // Find contours in mask
+    // If bounding boxes overlap, they will be joined by this function call
+    cv::findContours(mask, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    for (int j = 0; j < contours.size(); j++)
+    {
+        outputBoxes.push_back(cv::boundingRect(contours.at(j)));
+    }
+}
+
+void
+truncate(Mat &src, Mat &dst,
+         int lower_bound, int upper_bound)
+{
+    for(int y = 0; y < src.rows; y++)
+    {
+        for(int x = 0; x < src.cols; x++)
+        {
+            uchar &d = src.at<uchar>(y,x);
+            uchar &e = dst.at<uchar>(y,x);
+
+            if( d > lower_bound && d < upper_bound )
+                e = 255;
+            else
+                e = 0;
+        }
+    }
+}
+
 bool
 api_kinect_cv_get_obtacle_rect( Mat& depthMap,
                                 vector< Rect > &output_boxes,
@@ -112,6 +157,7 @@ api_kinect_cv_get_obtacle_rect( Mat& depthMap,
 if (contours.size() == 0 ) return false;
     return true;
 }
+
 void
 api_kinect_cv_center_rect_gen(
         vector< Rect > &rects,
@@ -142,6 +188,7 @@ api_kinect_cv_center_rect_gen(
         rects.push_back( roi );
     }
 }
+
 bool thoidiemre(Mat &depthMap)
 {
 	int slice_nb = 3;
@@ -207,9 +254,61 @@ bool thoidiemre(Mat &depthMap)
     cout <<"YEP";
     return true;
 }
+
+int
+api_kinect_cv_get_images(VideoCapture &capture,
+        Mat &depthMap,
+        Mat &grayImage)
+{
+    if( !capture.isOpened() )
+    {
+        cout << "Can not open a capture object." << endl;
+        return -1;
+    }
+
+    if( !capture.grab() )
+    {
+        cout << "Can not grab images." << endl;
+        return -1;
+    }
+    else
+    {
+        Mat depth;
+        if( capture.retrieve( depth, CV_CAP_OPENNI_DEPTH_MAP ) )
+        {
+            //depthMap = depth.clone();
+            const float scaleFactor = 0.05f;
+            depth.convertTo( depthMap, CV_8UC1, scaleFactor );
+        }
+        else
+        {
+            cout<< endl<< "Error: Cannot get depthMap image";
+            return -1;
+        }
+
+        if( !capture.retrieve( grayImage, CV_CAP_OPENNI_GRAY_IMAGE ) )
+        {
+            cout<< endl<< "Error: Cannot get gray image";
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 int main()
 {
-    Mat depthMap;
+    Mat depthMap,grayImage;
+	VideoCapture capture;
+	capture.open( CV_CAP_OPENNI2 );
+	if( !capture.isOpened() )
+    {
+        cout << "Can not open a capture object." << endl;
+        return -1;
+    }
+	capture.set( CV_CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE, CV_CAP_OPENNI_VGA_30HZ );
+    capture.set(CV_CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION, 0 );
+	
 
 	//call funtion get depthImg
 
@@ -220,6 +319,12 @@ int main()
     createTrackbar("thresh_area_max", "Threshold Selection", &thresh_area_max, 1000, on_thresh_area_max_thresh_trackbar);
     while ((char)waitKey(1) != 'q')
     {
+	api_kinect_cv_get_images( capture, depthMap, grayImage);
+			if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
+	        {
+	            cout<< endl<< "Error: Cannot bgr gray image";
+	            return -1;
+	        }
         thoidiemre(depthMap);
     }
 
