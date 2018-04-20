@@ -88,16 +88,16 @@ double getAngleLane(Mat &binImg,double preTheta)
     
     Rect laneBound = boundingRect(contours[i_max]);
     
-    int x_top;
-    int x_bottom;
+    int x_top = binImg.cols/2;
+    int x_bottom = binImg.cols/2;
     for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
     {
-        if (binImg.at<uchar>(laneBound.y + 1, x) != 0) 
+        if (binImg.at<uchar>(laneBound.y + 3, x) != 0) 
         {
             x_top = x;
             //break;
         }
-        if (binImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
+        if (binImg.at<uchar>(laneBound.y + laneBound.height - 3, x) != 0) 
         {
             x_bottom = x;
             //break;
@@ -151,8 +151,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     
     // if ((!isLeft && isRight) || (isLeft && !isRight)
     if (!isLeft || !isRight
-        || (abs(int(centerLeft.x - centerRight.x))< MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols) 
-        || (abs(int(centerLeft.x - centerRight.x)) > MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
+        || (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
+        //|| (abs(int(centerLeft.x - centerRight.x)) > MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
         // Lost one lane
     {
         // // Shift center point
@@ -176,8 +176,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
         // else // Has both lane but invalid -> get angle
         // {
             putText(colorImg, "Invalid distance", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-            Mat laneImg = binImg(Rect(binImg.cols/6, (1 - 0.45) * binImg.rows, 
-                               4*binImg.cols/6, 0.45 * binImg.rows));
+            Mat laneImg = binImg(Rect(binImg.cols/6, (1 - 0.35) * binImg.rows, 
+                               4*binImg.cols/6, 0.35 * binImg.rows));
 	
             theta = getAngleLane(laneImg,theta);
         
@@ -207,6 +207,7 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
     theta = -theta * ALPHA;
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+	cout << "---------- Theta: " << theta << endl;
 }
 
 Mat remOutlier(const Mat &gray)

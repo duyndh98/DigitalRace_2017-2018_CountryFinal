@@ -49,7 +49,7 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
-#define MIN_LANE_AREA 100
+#define MIN_LANE_AREA 600
 #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.1
 #define MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.8
 
@@ -68,7 +68,7 @@ using namespace cv::ml;
 #define SENSOR 165
 #define AREA_MIN 100
 #define RATIO_WIDTH_LANE_CROP 1
-#define RATIO_HEIGHT_LANE_CROP 0.45
+#define RATIO_HEIGHT_LANE_CROP 0.2
 #define CENTER_POINT_Y 0.2
 
 #define NO_SIGN 0
