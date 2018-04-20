@@ -59,7 +59,7 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA -1.5
+#define ALPHA 1.9
 
 #define SW1_PIN 160
 #define SW2_PIN 161

@@ -104,7 +104,7 @@ double getAngleLane(Mat &binImg)
         }
     }
 
-    //rectangle(binImg, Point(x_bottom, laneBound.y + laneBound.height), 3, Scalar(255,255,255));
+  //  rectangle(binImg, Point(x_bottom, laneBound.y + laneBound.height), 3, Scalar(255,255,255));
     return getTheta(Point(x_bottom, laneBound.y + laneBound.height), Point(x_top, laneBound.y));
 }
 
@@ -147,33 +147,38 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
         || (abs(int(centerLeft.x - centerRight.x)) > MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
         // Lost one lane
     {
-        // // Way 1st - get angle
+        // Way 1st - get angle
         // Mat laneImg = binImg(Rect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
         //                             binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows));
         // double theta1 = getAngleLane(laneImg);
         
         // Way 2rd - shift center point
-        putText(colorImg, "Case 1", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        putText(colorImg, "Case 1", Point(0, 15), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         if (!isLeft) // Lost left lane
         {
+            putText(colorImg, "Lost left", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             centerLeft.x = preCenterLeft.x + centerRight.x - preCenterRight.x;
             centerRight.x = centerRight.x;
+            centerPoint.x = (centerLeft.x + centerRight.x) / 2;
+            theta = getTheta(carPosition, centerPoint);
         }
-        else // Lost right lane
+        else if(!isRight) // Lost right lane
         {
+            putText(colorImg, "Lost right", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             centerLeft = centerLeft;
             centerRight.x = preCenterRight.x + centerLeft.x - preCenterLeft.x;
+            centerPoint.x = (centerLeft.x + centerRight.x) / 2;
+            theta = getTheta(carPosition, centerPoint);
         }
-        centerPoint.x = (centerLeft.x + centerRight.x) / 2;
 
-        theta = getTheta(carPosition, centerPoint);
-        //double theta2 = getTheta(carPosition, centerPoint);
-
-        // if (abs(theta1, preTheta) < abs(theta2, preTheta))
-        // if (true)
-        //     theta = theta1;
-        // else
-        //     theta = theta2;
+        else
+        {
+            putText(colorImg, "Invalid distance", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+            Mat laneImg = binImg(Rect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
+                               binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows));
+            theta= getAngleLane(laneImg);
+        }
+       
     }
     else if (!isLeft && !isRight) // Lost both lane
     {
@@ -186,6 +191,7 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     }
     else
     {
+        putText(colorImg, "Left Right", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
         theta = getTheta(carPosition, centerPoint);
     }
@@ -197,8 +203,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
 
-    theta = theta * ALPHA;
-    putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    theta = -theta * ALPHA;
+    putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 }
 
 Mat remOutlier(const Mat &gray)
