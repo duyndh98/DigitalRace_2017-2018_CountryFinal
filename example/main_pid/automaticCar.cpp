@@ -42,23 +42,22 @@ int main(int argc, char *argv[])
     bool is_save_file = true;
     
     // VideoWriter depth_videoWriter;
+    VideoWriter org_videoWriter;
     VideoWriter color_videoWriter;
     VideoWriter gray_videoWriter;
 
+    string org_filename = "org.avi";
     string color_filename = "color.avi";
-    //string gray_filename = "gray.avi";
-    // string depth_filename = "depth.avi";
-
-    Mat /*depthImg,*/ colorImg, hsvImg, grayImg, binImg, signMask;
+    
+    Mat orgImg, colorImg, hsvImg, grayImg, binImg, signMask;
 
     if (is_save_file)
     {
         int codec = CV_FOURCC('M', 'J', 'P', 'G');
         Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
         
-        //gray_videoWriter.open(gray_filename, codec, 8, output_size, false);
+        org_videoWriter.open(org_filename, codec, 8, output_size, true);
         color_videoWriter.open(color_filename, codec, 8, output_size, true);
-        // depth_videoWriter.open(depth_filename, codec, 8, output_size, false);
     }
     
     // Init direction and ESC speed  //
@@ -76,9 +75,6 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Initial throttle: %d\n", set_throttle_val);
     
-    Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
-    Point prvPosition = carPosition;
-
     // Car running status
     bool running = false, started = false, stopped = false;
 
@@ -94,10 +90,9 @@ int main(int argc, char *argv[])
     char key;
 
     // Use for lane detection
-    Point car(FRAME_WIDTH / 2, FRAME_HEIGHT);
-    Point centerPoint(0, (1 - CENTER_POINT_Y) * binImg.rows);
-    Point centerLeft(0, (1 - CENTER_POINT_Y) * binImg.rows);
-    Point centerRight(0, (1 - CENTER_POINT_Y) * binImg.rows);
+    Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
     bool isLeft, isRight;
     
     // Run loop
@@ -166,7 +161,6 @@ int main(int argc, char *argv[])
         if (running)
         {
             cout<< "---------------------------\n";
-            //cout << "v = " << throttle_val << endl;
             throttle_val = set_throttle_val;
             // Check PCA9685 driver
             if (pca9685->error < 0)
@@ -184,6 +178,7 @@ int main(int argc, char *argv[])
                 throttle_val = set_throttle_val;
                 api_set_FORWARD_control(pca9685, throttle_val);
             }
+            
             int readyStream = -1;
             rc = OpenNI::waitForAnyStream(streams, 1, &readyStream, -1);
             if (rc != STATUS_OK)
@@ -194,10 +189,11 @@ int main(int argc, char *argv[])
 
             // Load image
             color.readFrame(&frame_color);
-            //depth.readFrame(&frame_depth);
             
             // Preprocessing
-            analyzeFrame(frame_color,colorImg);
+            analyzeFrame(frame_color, colorImg);
+            colorImg.copyTo(orgImg);
+            
             flip(colorImg, colorImg, 1);
             hist_equalize(colorImg);
 
@@ -208,45 +204,28 @@ int main(int argc, char *argv[])
 		    get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
 
-            imshow("binImg", binImg);
-	        //imshow("signMask", signMask);		
-                
-	        // Traffic sign detection and recognition
-            // if(mySign.detect(signMask)) {
-            //     mySign.recognize(grayImg);
-            //     int signID = mySign.getClassID();
-			//     //cout << "signID: " << signID << endl;
-			//     if (signID==1)
-			//     	putText(colorImg, "TURN LEFT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-		    // 	else if(signID==2)
-			// 	    putText(colorImg, "TURN RIGHT", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-			//     else if(signID==3)
-			// 	    putText(colorImg, "STOP", Point(60, 60), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-            // }
-	        // Process lane to get center pPoint
-            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight,theta);
+            // Process lane to get center pPoint
+            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta);
             
-		    //theta = getTheta(carPosition, centerPoint);
-
-            if (-20 < theta && theta < 20)
-                theta = 0;
-            
-            cout << "angdiff: " << theta << endl;
-            theta = -(theta * ALPHA);
+            imshow("bin", binImg);
+            imshow("color", colorImg);            
                 
             api_set_STEERING_control(pca9685, theta);
             api_set_FORWARD_control(pca9685, throttle_val);
             
-            et = getTickCount();
-            fps = 1.0 / ((et - st) / freq);
-            cerr << "FPS: " << fps << '\n';
 
             if (is_save_file)
             {
+                if (!orgImg.empty())
+                    org_videoWriter.write(orgImg);
                 if (!colorImg.empty())
                     color_videoWriter.write(colorImg);
             }
             waitKey(1);
+            
+            et = getTickCount();
+            fps = 1.0 / ((et - st) / freq);
+            cerr << "FPS: " << fps << '\n';
         }
         else
         {
@@ -265,9 +244,8 @@ int main(int argc, char *argv[])
     //////////  Release //////////////////////////////////////////////////////
     if (is_save_file)
     {
+        org_videoWriter.release();
         color_videoWriter.release();
-        //gray_videoWriter.release();
-        //depth_videoWriter.release();
     }
     return 0;
 }
