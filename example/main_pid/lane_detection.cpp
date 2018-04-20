@@ -64,7 +64,7 @@ double getTheta(Point car, Point dst)
     return atan(dx / dy) * 180 / pi;
 }
 
-double getAngleLane(Mat &binImg, Mat &colorImg) 
+double getAngleLane(Mat &binImg) 
 {
     vector<Vec4i> hierarchy;
     vector<vector<Point>> contours;
@@ -84,7 +84,7 @@ double getAngleLane(Mat &binImg, Mat &colorImg)
     }
     
     if (i_max == -1) 
-        return 0f; // not lane noisy
+        return 0.0; // not lane noisy
     
     Rect laneBound = boundingRect(contours[i_max]);
     
@@ -104,9 +104,8 @@ double getAngleLane(Mat &binImg, Mat &colorImg)
         }
     }
 
-    rectangle(colorImg, Point(x_bottom, laneBound.y + laneBound.height), 3, Scalar(255,255,255));
-    circle(colorImg, Point(x_top, laneBound.y), 5, Scalar(255,255,255));
-    return getTheta(Point(x_bottom, laneBound.y + boundingRect.height), Point(x_top, boundingRect.y));
+    //rectangle(binImg, Point(x_bottom, laneBound.y + laneBound.height), 3, Scalar(255,255,255));
+    return getTheta(Point(x_bottom, laneBound.y + laneBound.height), Point(x_top, laneBound.y));
 }
 
 void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta) 
@@ -144,34 +143,37 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     
     if ((!isLeft && isRight) || (isLeft && !isRight)
-        || (int(centerLeft.x - centerRight.x) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols) 
-        || (int(centerLeft.x - centerRight.x) > MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
+        || (abs(int(centerLeft.x - centerRight.x))< MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols) 
+        || (abs(int(centerLeft.x - centerRight.x)) > MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
         // Lost one lane
     {
-        // Way 1st - get angle
-        double theta1 = getAngleLane(binImg(Rect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
-                                    binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows)));
+        // // Way 1st - get angle
+        // Mat laneImg = binImg(Rect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
+        //                             binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows));
+        // double theta1 = getAngleLane(laneImg);
         
         // Way 2rd - shift center point
+        putText(colorImg, "Case 1", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         if (!isLeft) // Lost left lane
         {
-            centerLeft = preCenterLeft.x + centerRight.x - preCenterRight.x;
-            centerRight = centerRight;
+            centerLeft.x = preCenterLeft.x + centerRight.x - preCenterRight.x;
+            centerRight.x = centerRight.x;
         }
         else // Lost right lane
         {
             centerLeft = centerLeft;
-            centerRight = preCenterRight.x + centerLeft.x - preCenterLeft.x;
+            centerRight.x = preCenterRight.x + centerLeft.x - preCenterLeft.x;
         }
-        centerPoint.x = (centerLeft + centerRight) / 2;
-        centerPoint.y = centerLeft.y = centerRight.y = (1 - CENTER_POINT_Y) * binImg.rows;
+        centerPoint.x = (centerLeft.x + centerRight.x) / 2;
 
-        double theta2 = getTheta(carPosition, centerPoint);
+        theta = getTheta(carPosition, centerPoint);
+        //double theta2 = getTheta(carPosition, centerPoint);
 
-        if (fabs(theta1, preTheta) < fabs(theta2, preTheta))
-            theta = theta1;
-        else
-            theta = theta2;
+        // if (abs(theta1, preTheta) < abs(theta2, preTheta))
+        // if (true)
+        //     theta = theta1;
+        // else
+        //     theta = theta2;
     }
     else if (!isLeft && !isRight) // Lost both lane
     {
@@ -179,17 +181,23 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
         centerLeft.x = preCenterLeft.x;
         centerRight.x = preCenterRight.x;
 
-        centerPoint.x = (centerLeft + centerRight) / 2;
-        centerPoint.y = centerLeft.y = centerRight.y = (1 - CENTER_POINT_Y) * binImg.rows;
-
+        centerPoint.x = (centerLeft.x + centerRight.x) / 2;
         theta = getTheta(carPosition, centerPoint);
     }
-        
+    else
+    {
+        centerPoint.x = (centerLeft.x + centerRight.x) / 2;
+        theta = getTheta(carPosition, centerPoint);
+    }
     // Draw center points
-    circle(colorImg, centerPoint, 2, Scalar(255, 255, 0), 3);
-    circle(colorImg, centerLeft, 2, Scalar(255, 0, 255), 3);
-    circle(colorImg, centerRight, 2, Scalar(0, 255, 255), 3);
+    circle(colorImg, centerPoint, 2, Scalar(255, 0, 0), 3);
+    line(colorImg,carPosition,centerPoint,Scalar(255,0,0),3);
+    putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 0, 255), 1, CV_AA);
+    putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 255, 0), 1, CV_AA);
+    circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
+    circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
 
+    theta = theta * ALPHA;
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 }
 

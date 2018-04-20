@@ -82,9 +82,6 @@ int main(int argc, char *argv[])
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
 
-    // Define a Sign object for using throughtout the program
-    Sign mySign;
-
     unsigned int bt_status = 0;
     unsigned int sensor_status = 0;
     char key;
@@ -204,15 +201,18 @@ int main(int argc, char *argv[])
 		    get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
 
-            // Process lane to get center pPoint
+          //  Process lane to get center pPoint
             LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta);
             
+            et = getTickCount();
+            fps = 1.0 / ((et - st) / freq);
+            cerr << "FPS: " << fps << '\n';
+
             imshow("bin", binImg);
             imshow("color", colorImg);            
                 
             api_set_STEERING_control(pca9685, theta);
             api_set_FORWARD_control(pca9685, throttle_val);
-            
 
             if (is_save_file)
             {
@@ -223,9 +223,6 @@ int main(int argc, char *argv[])
             }
             waitKey(1);
             
-            et = getTickCount();
-            fps = 1.0 / ((et - st) / freq);
-            cerr << "FPS: " << fps << '\n';
         }
         else
         {
