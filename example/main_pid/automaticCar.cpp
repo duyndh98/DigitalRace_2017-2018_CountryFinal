@@ -189,9 +189,9 @@ int main(int argc, char *argv[])
             
             // Preprocessing
             analyzeFrame(frame_color, colorImg);
+            flip(colorImg, colorImg, 1);
             colorImg.copyTo(orgImg);
             
-            flip(colorImg, colorImg, 1);
             hist_equalize(colorImg);
 
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
@@ -201,18 +201,11 @@ int main(int argc, char *argv[])
 		    get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
 
-          //  Process lane to get center pPoint
+            // Process lane to get center Point
             LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta);
             
-            et = getTickCount();
-            fps = 1.0 / ((et - st) / freq);
-            cerr << "FPS: " << fps << '\n';
-
-            imshow("bin", binImg);
-            imshow("color", colorImg);            
-                
-            api_set_STEERING_control(pca9685, theta);
             api_set_FORWARD_control(pca9685, throttle_val);
+            api_set_STEERING_control(pca9685, theta);
 
             if (is_save_file)
             {
@@ -221,8 +214,15 @@ int main(int argc, char *argv[])
                 if (!colorImg.empty())
                     color_videoWriter.write(colorImg);
             }
-            waitKey(1);
+
+            imshow("bin", binImg);
+            imshow("color", colorImg);
             
+            et = getTickCount();
+            fps = 1.0 / ((et - st) / freq);
+            cerr << "FPS: " << fps << '\n';
+
+            waitKey(1);            
         }
         else
         {

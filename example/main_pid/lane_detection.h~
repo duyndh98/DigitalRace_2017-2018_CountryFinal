@@ -5,7 +5,7 @@
 #include "image_processing.h"
 
 double getTheta(Point car, Point dst);
-double getAngleLane(Mat &binImg, double preTheta);
+double getAngleLane(Mat &binImg);
 void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check);
 void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta); 
 Mat remOutlier(const Mat &gray);

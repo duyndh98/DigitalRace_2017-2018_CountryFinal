@@ -64,7 +64,7 @@ double getTheta(Point car, Point dst)
     return atan(dx / dy) * 180 / pi;
 }
 
-double getAngleLane(Mat &binImg,double preTheta) 
+double getAngleLane(Mat &binImg) 
 {
     vector<Vec4i> hierarchy;
     vector<vector<Point>> contours;
@@ -84,7 +84,7 @@ double getAngleLane(Mat &binImg,double preTheta)
     }
     
     if (i_max == -1) 
-        return preTheta; // not lane noisy
+        return 0.0; // not lane noisy
     
     Rect laneBound = boundingRect(contours[i_max]);
     
@@ -179,7 +179,7 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
             Mat laneImg = binImg(Rect(binImg.cols/6, (1 - 0.45) * binImg.rows, 
                                4*binImg.cols/6, 0.45 * binImg.rows));
 	
-            theta = getAngleLane(laneImg,theta);
+            theta = getAngleLane(laneImg);
         
     }
     // else if (!isLeft && !isRight) // Lost both lane
@@ -205,6 +205,7 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 255, 0), 1, CV_AA);
     circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
+	preTheta = theta;
     theta = -theta * ALPHA;
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 }
