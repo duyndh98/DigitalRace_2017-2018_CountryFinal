@@ -112,7 +112,7 @@ void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst)
 	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
 }
 
-void cropBirdEye(Mat &binLaneImg)
+void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
 {
 	Point2f src_vertices[4];
 	src_vertices[0] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
@@ -128,8 +128,13 @@ void cropBirdEye(Mat &binLaneImg)
 
 	Mat result(binLaneImg.rows, binLaneImg.cols, CV_8UC1);
 	transform(src_vertices, dst_vertices, binLaneImg, result);
-
+   
     result.copyTo(binLaneImg);
+
+    line(colorLaneImg, src_vertices[0], src_vertices[1], Scalar(0, 0, 255), 3);
+    line(colorLaneImg, src_vertices[1], src_vertices[2], Scalar(0, 0, 255), 3);
+    line(colorLaneImg, src_vertices[2], src_vertices[3], Scalar(0, 0, 255), 3);
+    line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
 }
 
 void LaneProcessing() 
@@ -137,13 +142,19 @@ void LaneProcessing()
     Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
     Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
     Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    
     bool isLeft = true, isRight = true;
 
-    Mat binLaneImg = binImg(Rect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
-                            binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows));
-    cropBirdEye(binLaneImg);
-    imshow("binLaneImg", binLaneImg);
+    Rect laneRect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
+                            binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows);
     
+    Mat binLaneImg = binImg(laneRect);
+    Mat colorLaneImg = colorImg(laneRect);
+    
+    cropBirdEye(binLaneImg, colorLaneImg);
+    imshow("binLaneImg", binLaneImg);
+    imshow("colorLaneImg", colorLaneImg);
+
     // Define rects to crop left and right windows from binary-lane after creating bird-view
     int xLeftRect = 0;
     int yLeftRect = 0;
@@ -199,11 +210,11 @@ void LaneProcessing()
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
     
     theta = -theta * ALPHA;
-    if (theta > -20 && theta < 20)
+    if (theta > -10 && theta < 10)
 	    theta = 0;
     
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    cout << "Theta: " << theta << endl;
+    printf("Theta: %f.2\n", theta);
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)

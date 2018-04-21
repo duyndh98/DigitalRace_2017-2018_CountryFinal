@@ -42,14 +42,13 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 180)
+#define HIG_HSV_BLACK Scalar(255, 255, 100)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
-
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
@@ -68,8 +67,8 @@ using namespace cv::ml;
 #define AREA_MIN 100
 #define MIN_LANE_AREA 200
 #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
-#define RATIO_WIDTH_LANE_CROP 0.75
-#define RATIO_HEIGHT_LANE_CROP 0.5
+#define RATIO_WIDTH_LANE_CROP 0.4
+#define RATIO_HEIGHT_LANE_CROP 0.4
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
 #define CENTER_POINT_Y 0.2
 

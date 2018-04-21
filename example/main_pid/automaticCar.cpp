@@ -23,6 +23,7 @@ char key;
 
 int main(int argc, char *argv[])
 {
+    printf("\n");
     // Init hardware
     GPIO_init();
     OpenNI_init();
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
     // Run loop
     while (true)
     {
-        cout<< "---------------------------\n";
+        printf("---------------------------\n");
         st = getTickCount();
         
         updateButtonStatus();
@@ -95,8 +96,8 @@ int main(int argc, char *argv[])
             flip(colorImg, colorImg, 1);
             colorImg.copyTo(orgImg);
             
-            hist_equalize(colorImg);
-
+            //hist_equalize(colorImg);
+            medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             

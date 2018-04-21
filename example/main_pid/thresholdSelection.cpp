@@ -130,8 +130,9 @@ int main()
 		flip(frame, frame, 1);
 
 		resize(frame, frame, Size(FRAME_WIDTH, FRAME_HEIGHT));
-		hist_equalize(frame);
+		//hist_equalize(frame);
 
+		medianBlur(frame, frame, 3);
 		cvtColor(frame, hsv, COLOR_BGR2HSV);
 
 		inRange(hsv, Scalar(low_h, low_s, low_v), Scalar(high_h, high_s, high_v), mask);
