@@ -49,7 +49,7 @@ void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check)
     result.copyTo(imgLane);
 }
 
-/// Return angle between veritcal line containing car and destination point in degree
+// Return angle between veritcal line containing car and destination point in degree
 double getTheta(Point car, Point dst)
 {
     if (dst.x == car.x)
@@ -93,50 +93,77 @@ double getAngleLane(Mat &binImg,double preTheta)
     for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
     {
         if (binImg.at<uchar>(laneBound.y + 1, x) != 0) 
-        {
             x_top = x;
-            //break;
-        }
         if (binImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
-        {
             x_bottom = x;
-            //break;
-        }
     }
-	
-	cout << "top: ( " << x_top << ", " << laneBound.y << ")" << endl;
-	cout << "bottom ( " << x_bottom << ", " << laneBound.y + laneBound.height << ")" << endl;
+     
+    cout << "top: ( " << x_top << ", " << laneBound.y << ")" << endl;
+    cout << "bottom ( " << x_bottom << ", " << laneBound.y + laneBound.height << ")" << endl;
  
-	//circle(binImg, Point(x_top, laneBound.y), 2, Scalar(255, 255, 255), 10);
-	//circle(binImg, Point(x_bottom, laneBound.y + laneBound.height), 2, Scalar(255, 255, 255), 10);
-	imshow("lane", binImg);
+    imshow("lane", binImg);
 	
-  //  rectangle(binImg, Point(x_bottom, laneBound.y + laneBound.height), 3, Scalar(255,255,255));
+    // rectangle(binImg, Point(x_bottom, laneBound.y + laneBound.height), 3, Scalar(255,255,255));
     return getTheta(Point(x_bottom, laneBound.y + laneBound.height), Point(x_top, laneBound.y));
 }
 
-void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta, double &preTheta) 
+void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst) 
+{
+	Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
+	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
+}
+
+void cropBirdEye(Mat &binImg, Mat &laneimg)
+{
+	Point2f src_vertices[4];
+	src_vertices[0] = Point(binImg.cols / 4, binImg.rows / 2);
+	src_vertices[1] = Point(binImg.cols * 3 / 4, binImg.rows / 2);
+	src_vertices[2] = Point(binImg.cols, binImg.rows);
+	src_vertices[3] = Point(0, binImg.rows);
+
+	Point2f dst_vertices[4];
+	dst_vertices[0] = Point(0, 0);
+	dst_vertices[1] = Point(src.cols, 0);
+	dst_vertices[2] = Point(src.cols, src.rows);
+	dst_vertices[3] = Point(0, src.rows);
+
+	/*circle(src, src_vertices[0], 5, Scalar(0, 0, 255));
+	circle(src, src_vertices[1], 5, Scalar(0, 0, 255));
+	circle(src, src_vertices[2], 5, Scalar(0, 0, 255));
+	circle(src, src_vertices[3], 5, Scalar(0, 0, 255));*/
+
+	Mat dst(src.rows, src.cols, CV_8UC3);
+	transform(src_vertices, dst_vertices, src, dst);
+
+	return dst;
+}
+
+void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta) 
 {
     // Define rect to crop binImg into Left and Right
+    Mat laneImg(RATIO_HEIGHT_LANE_CROP * binImg.rows, RATIO_WIDTH_LANE_CROP * binImg.cols, CV_8UC1);
+    cropBirdEye(binImg, laneImg);
+    
     int xLeftRect = 0;
-    int yLeftRect = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
-    int xRightRect = (1.5 - RATIO_WIDTH_LANE_CROP) * binImg.cols;
-    int yRightRect = (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows;
-    int widthRect = RATIO_WIDTH_LANE_CROP * binImg.cols / 2;
-    int heightRect = RATIO_HEIGHT_LANE_CROP * binImg.rows;
+    int yLeftRect = 0;
+    int xRightRect = (1 - RATIO_LEFT_RIGHT_WIDTH_LANE_CROP) * laneImg.cols;
+    int yRightRect = 0;
+    int widthRect = RATIO_LEFT_RIGHT_WIDTH_LANE_CROP * laneImg.cols;
+    int heightRect = laneImg.rows;
     
     // Crop
     Rect rectLeft(xLeftRect, yLeftRect, widthRect, heightRect);
     Rect rectRight(xRightRect, yRightRect, widthRect, heightRect);
-    Mat binLeft = binImg(rectLeft);
-    Mat binRight = binImg(rectRight);
+    Mat binLeft = laneImg(rectLeft);
+    Mat binRight = laneImg(rectRight);
 
     // Backup
     Point preCenterLeft = centerLeft;
     Point preCenterRight = centerRight;
     bool preIsLeft = isLeft;
     bool preIsRight = isRight;
-
+    double preTheta = theta;
+	
     // Filter lanes
     filterLane(binLeft, isLeft, centerLeft.x, -1);
     filterLane(binRight, isRight, centerRight.x, 1);
@@ -148,48 +175,12 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
 
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     
-    // if ((!isLeft && isRight) || (isLeft && !isRight)
-    if (!isLeft || !isRight
-        || (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
-        //|| (abs(int(centerLeft.x - centerRight.x)) > MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binImg.cols)) 
+    if (!isLeft || !isRight || (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * laneImg.cols)) 
         // Lost one lane
     {
-        // // Shift center point
-        // putText(colorImg, "Case 1", Point(0, 15), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        // if (!isLeft) // Lost left lane
-        // {
-        //     putText(colorImg, "Lost left", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        //     centerLeft.x = preCenterLeft.x;// + centerRight.x - preCenterRight.x;
-        //     centerRight.x = centerRight.x;
-        //     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-        //     theta = getTheta(carPosition, centerPoint);
-        // }
-        // else if(!isRight) // Lost right lane
-        // {
-        //     putText(colorImg, "Lost right", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        //     centerLeft = centerLeft;
-        //     centerRight.x = preCenterRight.x;// + centerLeft.x - preCenterLeft.x;
-        //     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-        //     theta = getTheta(carPosition, centerPoint);
-        // }
-        // else // Has both lane but invalid -> get angle
-        // {
-            putText(colorImg, "Invalid distance", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-            Mat laneImg = binImg(Rect(binImg.cols/6, (1 - 0.42) * binImg.rows, 
-                               4*binImg.cols/6, 0.42 * binImg.rows));
-	
-            theta = getAngleLane(laneImg,preTheta);
-        
+        putText(colorImg, "Invalid distance", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);	
+        theta = getAngleLane(laneImg, preTheta);       
     }
-    // else if (!isLeft && !isRight) // Lost both lane
-    // {
-    //     putText(colorImg, "No left and right", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    //     centerLeft.x = preCenterLeft.x;
-    //     centerRight.x = preCenterRight.x;
-
-    //     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-    //     theta = getTheta(carPosition, centerPoint);
-    // } // has both lane
     else
     {
         putText(colorImg, "Left Right", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
@@ -204,13 +195,16 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 255, 0), 1, CV_AA);
     circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
-	preTheta = theta;
+    
     theta = -theta * ALPHA;
+    if(theta>-20 && theta<20)
+	theta = 0;    
+    
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-	cout << "---------- Theta: " << theta << endl;
+    cout << "---------- Theta: " << theta << endl;
 }
 
-Mat remOutlier(const Mat &gray)
+void remOutlier(const Mat &gray)
 {
     int esize = 1;
     Mat element = getStructuringElement(MORPH_RECT,
@@ -232,7 +226,7 @@ Mat remOutlier(const Mat &gray)
         Scalar color = Scalar(255, 255, 255);
         drawContours(poly, polygons, i, color, CV_FILLED);
     }
-    return poly;
+    poly.copyTo(gray);
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)

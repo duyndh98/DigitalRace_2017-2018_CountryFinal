@@ -1,0 +1,46 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+
+void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst) {
+	Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
+	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
+}
+
+int main() {
+	Mat src = imread("test.png");
+
+	int width = 640, height = 480;
+	resize(src, src, Size(width, height));
+
+	Point2f src_vertices[4];
+	src_vertices[0] = Point(width / 4, height / 2);
+	src_vertices[1] = Point(width * 3 / 4, height / 2);
+	src_vertices[2] = Point(width, 7*height/8);
+	src_vertices[3] = Point(0, 7*height/8);
+
+	Point2f dst_vertices[4];
+	dst_vertices[0] = Point(0, 0);
+	dst_vertices[1] = Point(width, 0);
+	dst_vertices[2] = Point(width, height);
+	dst_vertices[3] = Point(0, height);
+
+	circle(src, src_vertices[0], 5, Scalar(0, 0, 255));
+	circle(src, src_vertices[1], 5, Scalar(0, 0, 255));
+	circle(src, src_vertices[2], 5, Scalar(0, 0, 255));
+	circle(src, src_vertices[3], 5, Scalar(0, 0, 255));
+
+	Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
+	Mat dst(480, 640, CV_8UC3);
+	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
+
+	Mat dst2(480, 640, CV_8UC3);
+	transform(src_vertices, dst_vertices, src, dst2);
+
+	imshow("src", src);
+
+	imshow("dst", dst);
+	imshow("dst2", dst2);
+	waitKey();
+}
+

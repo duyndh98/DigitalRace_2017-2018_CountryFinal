@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     
     // Init direction and ESC speed  //
     int set_throttle_val = 0, throttle_val = 0;
-    double theta = 0, preTheta = 0;
+    double theta = 0;
     
     //  Init PCA9685 driver
     PCA9685 *pca9685 = new PCA9685();
@@ -201,8 +201,10 @@ int main(int argc, char *argv[])
 		    get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
 
+
+	    imshow("bin", binImg);
             // Process lane to get center Point
-            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta, preTheta);
+            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta);
             
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
@@ -215,7 +217,7 @@ int main(int argc, char *argv[])
                     color_videoWriter.write(colorImg);
             }
 
-            imshow("bin", binImg);
+            
             imshow("color", colorImg);
             
             et = getTickCount();
