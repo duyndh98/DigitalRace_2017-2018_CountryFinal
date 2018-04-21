@@ -41,8 +41,8 @@ using namespace cv::ml;
 #define GREEN_MIN Scalar(34, 138, 12)
 #define GREEN_MAX Scalar(83, 246, 124)
 
-#define LOW_HSV_BLACK Scalar(78, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 127)
+#define LOW_HSV_BLACK Scalar(0, 0, 0)
+#define HIG_HSV_BLACK Scalar(255, 255, 180)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32

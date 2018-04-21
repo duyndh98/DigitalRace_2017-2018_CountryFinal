@@ -126,23 +126,22 @@ void cropBirdEye(Mat &binImg)
 	dst_vertices[1] = Point(binImg.cols, 0);
 	dst_vertices[2] = Point(binImg.cols, binImg.rows);
 	dst_vertices[3] = Point(0, binImg.rows);
-    
-    for (int i = 0; i < 4; i++)
-        line(dst, dst_vertices[i], dst_vertices[i + 1], Scalar(0, 0, 255), 3);
-	line(dst, dst_vertices[3], dst_vertices[0], Scalar(0, 0, 255), 3);
 
-	Mat dst(binImg.rows, binImg.cols, CV_8UC1);
-	transform(src_vertices, dst_vertices, binImg, result);
+	Mat result(binImg.rows, binImg.cols, CV_8UC1);
+	//transform(src_vertices, dst_vertices, binImg, result);
 
     result.copyTo(binImg);
+
+    for (int i = 0; i < 4; i++)
+        line(binImg, dst_vertices[i], dst_vertices[i + 1], Scalar(0, 0, 255), 3);
+	line(binImg, dst_vertices[3], dst_vertices[0], Scalar(0, 0, 255), 3);
 }
 
 void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta) 
 {
     Mat laneImg(RATIO_HEIGHT_LANE_CROP * binImg.rows, binImg.cols, CV_8UC1);
-    cropBirdEye(laneImg);
-    
     imshow("laneImg", laneImg);
+    //cropBirdEye(laneImg);
     
     int xLeftRect = 0;
     int yLeftRect = 0;

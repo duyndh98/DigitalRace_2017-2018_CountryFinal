@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     int sw3_stat = 1;
     int sw4_stat = 1;
     int sensor = 0;
-    
+
     GPIO *gpio = new GPIO();
     GPIO_init(gpio);
     
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     string org_filename = "org.avi";
     string color_filename = "color.avi";
     
-    Mat orgImg, colorImg, hsvImg, grayImg, binImg, signMask;
+    Mat orgImg, colorImg, hsvImg, grayImg, binImg;
 
     if (is_save_file)
     {
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             
             get_mask(hsvImg, binImg, false, false, true); // black
-		    get_mask(hsvImg, signMask, true, true, false); // blue + red
+		    //get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
 
             // Process lane to get center Point
