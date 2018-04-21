@@ -41,15 +41,15 @@ using namespace cv::ml;
 #define GREEN_MIN Scalar(34, 138, 12)
 #define GREEN_MAX Scalar(83, 246, 124)
 
-#define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 135)
+#define LOW_HSV_BLACK Scalar(78, 0, 0)
+#define HIG_HSV_BLACK Scalar(255, 255, 127)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
-#define MIN_LANE_AREA 600
+#define MIN_LANE_AREA 200
 #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.1
 #define MAX_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.8
 

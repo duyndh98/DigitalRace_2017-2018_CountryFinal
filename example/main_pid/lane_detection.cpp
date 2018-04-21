@@ -92,12 +92,12 @@ double getAngleLane(Mat &binImg,double preTheta)
     int x_bottom = binImg.cols/2;
     for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
     {
-        if (binImg.at<uchar>(laneBound.y + 3, x) != 0) 
+        if (binImg.at<uchar>(laneBound.y + 1, x) != 0) 
         {
             x_top = x;
             //break;
         }
-        if (binImg.at<uchar>(laneBound.y + laneBound.height - 3, x) != 0) 
+        if (binImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
         {
             x_bottom = x;
             //break;
@@ -115,7 +115,7 @@ double getAngleLane(Mat &binImg,double preTheta)
     return getTheta(Point(x_bottom, laneBound.y + laneBound.height), Point(x_top, laneBound.y));
 }
 
-void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta) 
+void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta, double &preTheta) 
 {
     // Define rect to crop binImg into Left and Right
     int xLeftRect = 0;
@@ -136,7 +136,6 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     Point preCenterRight = centerRight;
     bool preIsLeft = isLeft;
     bool preIsRight = isRight;
-    double preTheta = theta;
 
     // Filter lanes
     filterLane(binLeft, isLeft, centerLeft.x, -1);
@@ -176,10 +175,10 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
         // else // Has both lane but invalid -> get angle
         // {
             putText(colorImg, "Invalid distance", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-            Mat laneImg = binImg(Rect(binImg.cols/6, (1 - 0.35) * binImg.rows, 
-                               4*binImg.cols/6, 0.35 * binImg.rows));
+            Mat laneImg = binImg(Rect(binImg.cols/6, (1 - 0.42) * binImg.rows, 
+                               4*binImg.cols/6, 0.42 * binImg.rows));
 	
-            theta = getAngleLane(laneImg,theta);
+            theta = getAngleLane(laneImg,preTheta);
         
     }
     // else if (!isLeft && !isRight) // Lost both lane
@@ -205,6 +204,7 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 255, 0), 1, CV_AA);
     circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
+	preTheta = theta;
     theta = -theta * ALPHA;
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
 	cout << "---------- Theta: " << theta << endl;
