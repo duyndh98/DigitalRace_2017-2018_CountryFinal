@@ -159,6 +159,7 @@ int main(int argc, char *argv[])
         {
             cout<< "---------------------------\n";
             throttle_val = set_throttle_val;
+            
             // Check PCA9685 driver
             if (pca9685->error < 0)
             {
@@ -201,8 +202,6 @@ int main(int argc, char *argv[])
 		    get_mask(hsvImg, signMask, true, true, false); // blue + red
             bitwise_not(binImg, binImg);
 
-
-	    imshow("bin", binImg);
             // Process lane to get center Point
             LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta);
             
@@ -217,7 +216,7 @@ int main(int argc, char *argv[])
                     color_videoWriter.write(colorImg);
             }
 
-            
+	        imshow("bin", binImg);
             imshow("color", colorImg);
             
             et = getTickCount();

@@ -113,36 +113,36 @@ void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst)
 	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
 }
 
-void cropBirdEye(Mat &binImg, Mat &laneimg)
+void cropBirdEye(Mat &binImg)
 {
-	Point2f src_vertices[4];
-	src_vertices[0] = Point(binImg.cols / 4, binImg.rows / 2);
-	src_vertices[1] = Point(binImg.cols * 3 / 4, binImg.rows / 2);
+	Point src_vertices[4];
+	src_vertices[0] = Point((1 - RATIO_WIDTH_LANE_CROP) * binImg.cols / 2, 0);
+	src_vertices[1] = Point((1 + RATIO_HEIGHT_LANE_CROP / 2) * binImg.cols, 0);
 	src_vertices[2] = Point(binImg.cols, binImg.rows);
 	src_vertices[3] = Point(0, binImg.rows);
 
-	Point2f dst_vertices[4];
+	Point dst_vertices[5];
 	dst_vertices[0] = Point(0, 0);
-	dst_vertices[1] = Point(src.cols, 0);
-	dst_vertices[2] = Point(src.cols, src.rows);
-	dst_vertices[3] = Point(0, src.rows);
+	dst_vertices[1] = Point(binImg.cols, 0);
+	dst_vertices[2] = Point(binImg.cols, binImg.rows);
+	dst_vertices[3] = Point(0, binImg.rows);
+    
+    for (int i = 0; i < 4; i++)
+        line(dst, dst_vertices[i], dst_vertices[i + 1], Scalar(0, 0, 255), 3);
+	line(dst, dst_vertices[3], dst_vertices[0], Scalar(0, 0, 255), 3);
 
-	/*circle(src, src_vertices[0], 5, Scalar(0, 0, 255));
-	circle(src, src_vertices[1], 5, Scalar(0, 0, 255));
-	circle(src, src_vertices[2], 5, Scalar(0, 0, 255));
-	circle(src, src_vertices[3], 5, Scalar(0, 0, 255));*/
+	Mat dst(binImg.rows, binImg.cols, CV_8UC1);
+	transform(src_vertices, dst_vertices, binImg, result);
 
-	Mat dst(src.rows, src.cols, CV_8UC3);
-	transform(src_vertices, dst_vertices, src, dst);
-
-	return dst;
+    result.copyTo(binImg);
 }
 
 void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta) 
 {
-    // Define rect to crop binImg into Left and Right
-    Mat laneImg(RATIO_HEIGHT_LANE_CROP * binImg.rows, RATIO_WIDTH_LANE_CROP * binImg.cols, CV_8UC1);
-    cropBirdEye(binImg, laneImg);
+    Mat laneImg(RATIO_HEIGHT_LANE_CROP * binImg.rows, binImg.cols, CV_8UC1);
+    cropBirdEye(laneImg);
+    
+    imshow("laneImg", laneImg);
     
     int xLeftRect = 0;
     int yLeftRect = 0;
@@ -197,8 +197,8 @@ void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &cente
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
     
     theta = -theta * ALPHA;
-    if(theta>-20 && theta<20)
-	theta = 0;    
+    if (theta > -20 && theta < 20)
+	    theta = 0;    
     
     putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
     cout << "---------- Theta: " << theta << endl;
