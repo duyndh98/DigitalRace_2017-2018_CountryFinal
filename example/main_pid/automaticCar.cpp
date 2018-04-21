@@ -15,16 +15,26 @@
 #include "sign.h"
 #include "control.h"
 
+
+bool running, started, stopped;
+unsigned int bt_status, sensor_status;
+VideoWriter org_videoWriter, color_videoWriter;
+char key;
+
 int main(int argc, char *argv[])
 {
     // Init hardware
     GPIO_init();
     OpenNI_init();
-    pca9685_init();
+    PCA9685_init();
+
+    running = false, started = false, stopped = false;
+    bt_status = sensor_status = 0;
+    theta = 0;
 
     // Log
-    org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, (FRAME_WIDTH, FRAME_HEIGHT), true);
-    color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, (FRAME_WIDTH, FRAME_HEIGHT), true);
+    org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
+    color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
@@ -37,8 +47,23 @@ int main(int argc, char *argv[])
         st = getTickCount();
         
         updateButtonStatus();
-        updateSensorStatus()
-        updateKeyBoardInput();
+        updateSensorStatus();
+        // Check input from keyboard
+        key = getkey();
+        if (key == 's')
+        {
+            running = !running;
+            theta = 0;
+            throttle_val = set_throttle_val;
+        }
+        if (key == 'f')
+        {
+            fprintf(stderr, "End process.\n");
+            theta = 0;
+            throttle_val = 0;
+            api_set_FORWARD_control(pca9685, throttle_val);
+            break;
+        }
         
         if (running)
         {

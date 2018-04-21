@@ -1,8 +1,28 @@
 #include "control.h"
 
+Status rc;
+Device device;
+VideoStream colorStream;
+VideoStream *streams[1];
+VideoFrameRef frame_color;
+
+string org_filename, color_filename;
+GPIO *gpio;
+PCA9685* pca9685;
+int sw1_stat, sw2_stat, sw3_stat, sw4_stat;
+int sensor;
+int set_throttle_val, throttle_val;
+
 void GPIO_init()
 {
     printf("GPIO init...\n");
+    // Switch input
+    sw1_stat = 1;
+    sw2_stat = 1;
+    sw3_stat = 1;
+    sw4_stat = 1;
+    sensor = 0;
+    
     gpio = new GPIO();
     gpio->gpioExport(SW1_PIN);
     gpio->gpioExport(SW2_PIN);
@@ -20,7 +40,14 @@ void GPIO_init()
 void OpenNI_init()
 {
     printf("OpenNI init...\n");
+    
+    streams[0] = {&colorStream};
+
     rc = OpenNI::initialize();
+
+    org_filename = "org.avi";
+    color_filename = "color.avi";
+
     if (rc != STATUS_OK)
     {
         printf("Failed\n%s\n", OpenNI::getExtendedError());
@@ -33,16 +60,16 @@ void OpenNI_init()
     // color video stream init
     if (device.getSensorInfo(SENSOR_COLOR) != NULL)
     {
-        rc = color.create(device, SENSOR_COLOR);
+        rc = colorStream.create(device, SENSOR_COLOR);
         if (rc == STATUS_OK)
         {
-            VideoMode color_mode = color.getVideoMode();
+            VideoMode color_mode = colorStream.getVideoMode();
             color_mode.setFps(30);
             color_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
             color_mode.setPixelFormat(PIXEL_FORMAT_RGB888);
-            color.setVideoMode(color_mode);
+            colorStream.setVideoMode(color_mode);
 
-            rc = color.start();
+            rc = colorStream.start();
             if (rc != STATUS_OK)
                 printf("Couldn't start the color stream\n%s\n", OpenNI::getExtendedError());
         }
@@ -51,9 +78,10 @@ void OpenNI_init()
     }
 }
 
-void pca9685_init()
+void PCA9685_init()
 {
     printf("PCA9685 init...\n");
+    set_throttle_val = throttle_val = 0;
     pca9685 = new PCA9685;
     api_pwm_pca9685_init(pca9685);
     if (pca9685->error >= 0)
@@ -105,53 +133,33 @@ void updateSensorStatus()
     sensor = sensor_status;    
 }
 
-void updateKeyBoardInput()
-{
-    // Check input from keyboard
-    key = getkey();
-    if (key == 's')
-    {
-        running = !running;
-        theta = 0;
-        throttle_val = set_throttle_val;
-    }
-    if (key == 'f')
-    {
-        fprintf(stderr, "End process.\n");
-        theta = 0;
-        throttle_val = 0;
-        api_set_FORWARD_control(pca9685, throttle_val);
-        break;
-    }
-}
+// void controlTurn(PCA9685 *&pca9685, int dir)
+// {
+//     if (dir == SIGN_LEFT)
+//     {
+//         double theta = ALPHA * 78;
+//         api_set_STEERING_control(pca9685, theta);
+//         cout << "Turn Left <<<<<<<<<<<<<<<<<<<<\n";
+//         sleep(1);
+//         cout << "Normal" << endl;
+//     }
+//     else if (dir == SIGN_RIGHT)
+//     {
+//         double theta = -ALPHA * 78;
+//         api_set_STEERING_control(pca9685, theta);
+//         cout << "Turn Right >>>>>>>>>>>>>>>>>>>>\n";
+//         sleep(1);
+//         cout << "Normal" << endl;
+//     }
+// }
 
-void controlTurn(PCA9685 *&pca9685, int dir)
-{
-    if (dir == SIGN_LEFT)
-    {
-        double theta = ALPHA * 78;
-        api_set_STEERING_control(pca9685, theta);
-        cout << "Turn Left <<<<<<<<<<<<<<<<<<<<\n";
-        sleep(1);
-        cout << "Normal" << endl;
-    }
-    else if (dir == SIGN_RIGHT)
-    {
-        double theta = -ALPHA * 78;
-        api_set_STEERING_control(pca9685, theta);
-        cout << "Turn Right >>>>>>>>>>>>>>>>>>>>\n";
-        sleep(1);
-        cout << "Normal" << endl;
-    }
-}
-
-double PID(double fps, int xCar, int xCenter, double &previous_error, double &intergral)
-{
-    double dt = 1.0/fps;
-    double error = xCenter - xCar;
-    intergral = intergral + (dt * error);
-    double derivative = (error - previous_error) / dt;
-    double output = (KP * error) + (KI * intergral)+ (KD * derivative);
-    previous_error = error;
-    return output + xCar;
-}
+// double PID(double fps, int xCar, int xCenter, double &previous_error, double &intergral)
+// {
+//     double dt = 1.0/fps;
+//     double error = xCenter - xCar;
+//     intergral = intergral + (dt * error);
+//     double derivative = (error - previous_error) / dt;
+//     double output = (KP * error) + (KI * intergral)+ (KD * derivative);
+//     previous_error = error;
+//     return output + xCar;
+// }

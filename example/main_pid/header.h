@@ -86,52 +86,42 @@ using namespace cv::ml;
 #define THROTTLE_VAL2 45
 
 // Global variables
-Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+extern Mat orgImg, colorImg, hsvImg, grayImg, binImg;
 
 // Switch input
-int sw1_stat = 1;
-int sw2_stat = 1;
-int sw3_stat = 1;
-int sw4_stat = 1;
-int sensor = 0;
-GPIO *gpio;
+extern int sw1_stat;
+extern int sw2_stat;
+extern int sw3_stat;
+extern int sw4_stat;
+extern int sensor;
+extern GPIO *gpio;
 
 // PCA9685
-PCA9685* pca9685;
+extern PCA9685* pca9685;
 
 // OpenNI
-Status rc;
-Device device;
-VideoStream colorStream;
+extern Status rc;
+extern Device device;
+extern VideoStream colorStream;
 
-VideoFrameRef frame_color;
-VideoStream *streams[] = {&colorStream};
+extern VideoFrameRef frame_color;
+extern VideoStream *streams[1];
 
 // Log    
-VideoWriter org_videoWriter;
-VideoWriter color_videoWriter;
-string org_filename = "org.avi";
-string color_filename = "color.avi";
+extern string org_filename, color_filename;
+extern VideoWriter org_videoWriter;
+extern VideoWriter color_videoWriter;
 
 // Speed and direction
-int set_throttle_val = 0, throttle_val = 0;
-double theta = 0;
+extern int set_throttle_val, throttle_val;
+extern double theta;
     
 // Car running status
-bool running = false, started = false, stopped = false;
+extern bool running, started, stopped;
 
 // Status
-unsigned int bt_status = 0;
-unsigned int sensor_status = 0;
-char key;
-
-// Use for lane detection
-Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-bool isLeft = true, isRight = true;
-
-
-
+extern unsigned int bt_status;
+extern unsigned int sensor_status;
+extern char key;
 
 #endif

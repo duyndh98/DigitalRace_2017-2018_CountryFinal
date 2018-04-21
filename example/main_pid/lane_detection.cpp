@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+double theta;
+
 // My function
 void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
 {
@@ -103,7 +106,7 @@ double getAngleLane(Mat &binImg, double preTheta)
     return getTheta(bottom, top);
 }
 
-void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst) 
+void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst) 
 {
 	Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
 	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
@@ -111,13 +114,13 @@ void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst)
 
 void cropBirdEye(Mat &binLaneImg)
 {
-	Point src_vertices[4];
+	Point2f src_vertices[4];
 	src_vertices[0] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
 	src_vertices[1] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
 	src_vertices[2] = Point(binLaneImg.cols, binLaneImg.rows);
 	src_vertices[3] = Point(0, binLaneImg.rows);
 
-	Point dst_vertices[5];
+	Point2f dst_vertices[5];
 	dst_vertices[0] = Point(0, 0);
 	dst_vertices[1] = Point(binLaneImg.cols, 0);
 	dst_vertices[2] = Point(binLaneImg.cols, binLaneImg.rows);
@@ -131,8 +134,13 @@ void cropBirdEye(Mat &binLaneImg)
 
 void LaneProcessing() 
 {
-    Mat binLaneImg = binImg(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
-                            binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows, CV_8UC1);
+    Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    bool isLeft = true, isRight = true;
+
+    Mat binLaneImg = binImg(Rect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
+                            binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows));
     cropBirdEye(binLaneImg);
     imshow("binLaneImg", binLaneImg);
     
@@ -206,27 +214,27 @@ void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
     cvtColor(color_img, color_img, COLOR_RGB2BGR);
 }
 
-void remOutlier(Mat &gray)
-{
-    int esize = 1;
-    Mat element = getStructuringElement(MORPH_RECT,
-                                                Size(2 * esize + 1, 2 * esize + 1),
-                                                Point(esize, esize));
-    erode(gray, gray, element);
-    std::vector<std::vector<Point>> contours, polygons;
-    std::vector<Vec4i> hierarchy;
-    findContours(gray, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-    for (size_t i = 0; i < contours.size(); ++i)
-    {
-        std::vector<Point> p;
-        approxPolyDP(Mat(contours[i]), p, 2, true);
-        polygons.push_back(p);
-    }
-    gray = Mat::zeros(gray.size(), CV_8UC3);
-    for (size_t i = 0; i < polygons.size(); ++i)
-    {
-        Scalar color = Scalar(255, 255, 255);
-        drawContours(gray, polygons, i, color, CV_FILLED);
-    }
-}
+// void remOutlier(Mat &gray)
+// {
+//     int esize = 1;
+//     Mat element = getStructuringElement(MORPH_RECT,
+//                                                 Size(2 * esize + 1, 2 * esize + 1),
+//                                                 Point(esize, esize));
+//     erode(gray, gray, element);
+//     std::vector<std::vector<Point>> contours, polygons;
+//     std::vector<Vec4i> hierarchy;
+//     findContours(gray, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+//     for (size_t i = 0; i < contours.size(); ++i)
+//     {
+//         std::vector<Point> p;
+//         approxPolyDP(Mat(contours[i]), p, 2, true);
+//         polygons.push_back(p);
+//     }
+//     gray = Mat::zeros(gray.size(), CV_8UC3);
+//     for (size_t i = 0; i < polygons.size(); ++i)
+//     {
+//         Scalar color = Scalar(255, 255, 255);
+//         drawContours(gray, polygons, i, color, CV_FILLED);
+//     }
+// }
 
