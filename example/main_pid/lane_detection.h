@@ -4,10 +4,13 @@
 #include "header.h"
 #include "image_processing.h"
 
+void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check);
 double getTheta(Point car, Point dst);
 double getAngleLane(Mat &binImg, double preTheta);
-void filterLane(const Mat &imgLane, bool &isLine, int &centerX, int check);
-void LaneProcessing(Mat& colorImg, Mat& binImg, Point &centerPoint, Point &centerLeft, Point &centerRight, bool &isLeft, bool &isRight, double& theta); 
-void remOutlier(const Mat &gray);
+void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst);
+void cropBirdEye(Mat &binLaneImg);
+void LaneProcessing();
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img);
+void remOutlier(Mat &gray);
+
 #endif

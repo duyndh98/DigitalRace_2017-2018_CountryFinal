@@ -17,157 +17,33 @@
 
 int main(int argc, char *argv[])
 {
-    // Setup input
-    int sw1_stat = 1;
-    int sw2_stat = 1;
-    int sw3_stat = 1;
-    int sw4_stat = 1;
-    int sensor = 0;
+    // Init hardware
+    GPIO_init();
+    OpenNI_init();
+    pca9685_init();
 
-    GPIO *gpio = new GPIO();
-    GPIO_init(gpio);
-    
-    usleep(10000);
-
-    // Init OpenNI
-    Status rc;
-    Device device;
-    VideoStream color;
-    OpenNI_init(rc, device,color);
-    
-    VideoFrameRef frame_color;
-    VideoStream *streams[] = {&color};
-    
-    // Init video writer and log files
-    bool is_save_file = true;
-    
-    // VideoWriter depth_videoWriter;
-    VideoWriter org_videoWriter;
-    VideoWriter color_videoWriter;
-    VideoWriter gray_videoWriter;
-
-    string org_filename = "org.avi";
-    string color_filename = "color.avi";
-    
-    Mat orgImg, colorImg, hsvImg, grayImg, binImg;
-
-    if (is_save_file)
-    {
-        int codec = CV_FOURCC('M', 'J', 'P', 'G');
-        Size output_size(FRAME_WIDTH, FRAME_HEIGHT);
-        
-        org_videoWriter.open(org_filename, codec, 8, output_size, true);
-        color_videoWriter.open(color_filename, codec, 8, output_size, true);
-    }
-    
-    // Init direction and ESC speed  //
-    int set_throttle_val = 0, throttle_val = 0;
-    double theta = 0;
-    
-    //  Init PCA9685 driver
-    PCA9685 *pca9685 = new PCA9685();
-    api_pwm_pca9685_init(pca9685);
-    if (pca9685->error >= 0)
-        api_set_FORWARD_control(pca9685, throttle_val);
-
-    if (argc == 2)
-        set_throttle_val = atoi(argv[1]);
-
-    fprintf(stderr, "Initial throttle: %d\n", set_throttle_val);
-    
-    // Car running status
-    bool running = false, started = false, stopped = false;
+    // Log
+    org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, (FRAME_WIDTH, FRAME_HEIGHT), true);
+    color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, (FRAME_WIDTH, FRAME_HEIGHT), true);
 
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
 
-    unsigned int bt_status = 0;
-    unsigned int sensor_status = 0;
-    char key;
-
-    // Use for lane detection
-    Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    bool isLeft, isRight;
-    
     // Run loop
     while (true)
     {
+        cout<< "---------------------------\n";
         st = getTickCount();
         
-        // Update status of physical buttons
-        gpio->gpioGetValue(SW4_PIN, &bt_status);
-        if (!bt_status)
-        {
-            if (bt_status != sw4_stat)
-            {
-                running = !running;
-                sw4_stat = bt_status;
-                throttle_val = THROTTLE_VAL1;
-                set_throttle_val = THROTTLE_VAL1;
-            }
-        }
-        else
-            sw4_stat = bt_status;
-
-        gpio->gpioGetValue(SW1_PIN, &bt_status);
-        if (!bt_status)
-        {
-            if (bt_status != sw1_stat)
-            {
-                running = !running;
-                sw1_stat = bt_status;
-                throttle_val = THROTTLE_VAL2;
-                set_throttle_val = THROTTLE_VAL2;
-            }
-        }
-        else
-            sw1_stat = bt_status;
-
-        // Update status of distance-sensor
-        gpio->gpioGetValue(SENSOR, &sensor_status);
-        cout << "sensor: " << sensor_status << endl;
+        updateButtonStatus();
+        updateSensorStatus()
+        updateKeyBoardInput();
         
-        if (sensor == 0 && sensor_status == 1)
-        {
-            running = true;
-            throttle_val = set_throttle_val;
-        }
-        sensor = sensor_status;
-        
-        // Check input from keyboard
-        key = getkey();
-        if (key == 's')
-        {
-            running = !running;
-            theta = 0;
-            throttle_val = set_throttle_val;
-        }
-        if (key == 'f')
-        {
-            fprintf(stderr, "End process.\n");
-            theta = 0;
-            throttle_val = 0;
-            api_set_FORWARD_control(pca9685, throttle_val);
-            break;
-        }
-
-        // Process
         if (running)
         {
-            cout<< "---------------------------\n";
+            // Update throttle val
             throttle_val = set_throttle_val;
-            
-            // Check PCA9685 driver
-            if (pca9685->error < 0)
-            {
-                cout << endl
-                     << "Error: PWM driver" << endl
-                     << flush;
-                break;
-            }
             if (!started)
             {
                 fprintf(stderr, "ON\n");
@@ -177,6 +53,7 @@ int main(int argc, char *argv[])
                 api_set_FORWARD_control(pca9685, throttle_val);
             }
             
+            // Update stream
             int readyStream = -1;
             rc = OpenNI::waitForAnyStream(streams, 1, &readyStream, -1);
             if (rc != STATUS_OK)
@@ -186,10 +63,10 @@ int main(int argc, char *argv[])
             }
 
             // Load image
-            color.readFrame(&frame_color);
+            colorStream.readFrame(&frame_color);
+            analyzeFrame(frame_color, colorImg);
             
             // Preprocessing
-            analyzeFrame(frame_color, colorImg);
             flip(colorImg, colorImg, 1);
             colorImg.copyTo(orgImg);
             
@@ -199,23 +76,21 @@ int main(int argc, char *argv[])
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             
             get_mask(hsvImg, binImg, false, false, true); // black
-		    //get_mask(hsvImg, signMask, true, true, false); // blue + red
-            bitwise_not(binImg, binImg);
+		    bitwise_not(binImg, binImg);
 
-            // Process lane to get center Point
-            LaneProcessing(colorImg, binImg, centerPoint, centerLeft, centerRight, isLeft, isRight, theta);
+            // Process lane to get theta
+            LaneProcessing();
             
+            // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
 
-            if (is_save_file)
-            {
-                if (!orgImg.empty())
-                    org_videoWriter.write(orgImg);
-                if (!colorImg.empty())
-                    color_videoWriter.write(colorImg);
-            }
-
+            // Log video
+            if (!orgImg.empty())
+                org_videoWriter.write(orgImg);
+            if (!colorImg.empty())
+                color_videoWriter.write(colorImg);
+            
 	        imshow("bin", binImg);
             imshow("color", colorImg);
             
@@ -223,7 +98,7 @@ int main(int argc, char *argv[])
             fps = 1.0 / ((et - st) / freq);
             cerr << "FPS: " << fps << '\n';
 
-            waitKey(1);            
+            waitKey(1);
         }
         else
         {
@@ -239,11 +114,9 @@ int main(int argc, char *argv[])
             sleep(1);
         }
     }
-    //////////  Release //////////////////////////////////////////////////////
-    if (is_save_file)
-    {
-        org_videoWriter.release();
-        color_videoWriter.release();
-    }
+    // Release
+    org_videoWriter.release();
+    color_videoWriter.release();
+
     return 0;
 }

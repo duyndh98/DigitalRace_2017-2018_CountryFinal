@@ -49,8 +49,7 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
-#define MIN_LANE_AREA 200
-#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
+
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
@@ -65,7 +64,10 @@ using namespace cv::ml;
 #define SW3_PIN 163
 #define SW4_PIN 164
 #define SENSOR 165
+
 #define AREA_MIN 100
+#define MIN_LANE_AREA 200
+#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
 #define RATIO_WIDTH_LANE_CROP 0.75
 #define RATIO_HEIGHT_LANE_CROP 0.5
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
@@ -82,5 +84,54 @@ using namespace cv::ml;
 
 #define THROTTLE_VAL1 35
 #define THROTTLE_VAL2 45
+
+// Global variables
+Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+
+// Switch input
+int sw1_stat = 1;
+int sw2_stat = 1;
+int sw3_stat = 1;
+int sw4_stat = 1;
+int sensor = 0;
+GPIO *gpio;
+
+// PCA9685
+PCA9685* pca9685;
+
+// OpenNI
+Status rc;
+Device device;
+VideoStream colorStream;
+
+VideoFrameRef frame_color;
+VideoStream *streams[] = {&colorStream};
+
+// Log    
+VideoWriter org_videoWriter;
+VideoWriter color_videoWriter;
+string org_filename = "org.avi";
+string color_filename = "color.avi";
+
+// Speed and direction
+int set_throttle_val = 0, throttle_val = 0;
+double theta = 0;
+    
+// Car running status
+bool running = false, started = false, stopped = false;
+
+// Status
+unsigned int bt_status = 0;
+unsigned int sensor_status = 0;
+char key;
+
+// Use for lane detection
+Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+bool isLeft = true, isRight = true;
+
+
+
 
 #endif
