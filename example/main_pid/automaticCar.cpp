@@ -99,21 +99,23 @@ int main(int argc, char *argv[])
             flip(colorImg, colorImg, 1);
             // colorImg.copyTo(orgImg);
             
-            //hist_equalize(colorImg);
+            hist_equalize(colorImg);
             medianBlur(colorImg, colorImg, KERNEL_SIZE);
             
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
-            cvtColor(colorImg, grayImg, CV_BGR2GRAY);
+            //cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             
             get_mask(hsvImg, binImg, false, false, true); // black
 	        bitwise_not(binImg, binImg);
 
-            imshow("colorImg", colorImg);
-	        imshow("binImg", binImg);
-            
+
             // Process lane to get theta
             LaneProcessing();
-	        printf("theta: %d\n", int(theta));            
+	    printf("theta: %d\n", int(theta));            
+
+            imshow("colorImg", colorImg);
+	    imshow("binImg", binImg);
+            
 
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
@@ -130,7 +132,7 @@ int main(int argc, char *argv[])
             fps = 1.0 / ((et - st) / freq);
             printf("FPS: %lf\n", fps);
 
-            waitKey(1);
+            waitKey(10);
         }
         else
         {

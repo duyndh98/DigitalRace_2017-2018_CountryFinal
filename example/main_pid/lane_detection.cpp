@@ -10,7 +10,7 @@ Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
 Mat binLaneImg, colorLaneImg;
 bool isLeft, isRight;
 
-int findLargestContour(vector<vector<Point>> &contours)
+int findLargestContour(vector< vector<Point> > &contours)
 {
     int i_max = -1;
     float maxArea = MIN_LANE_AREA;
@@ -23,7 +23,7 @@ int findLargestContour(vector<vector<Point>> &contours)
             maxArea = area;
         }
     }
-    return i_max
+    return i_max;
 }
 
 // My function
@@ -35,7 +35,7 @@ void filterLane(Mat &binLaneImg, bool &isLane, int &centerX, int check)
 	else // Right
         centerX = binLaneImg.cols;
 
-    vector<vector<Point>> contours;
+    vector< vector<Point> > contours;
     vector<Vec4i> hierarchy;
     findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     
@@ -69,21 +69,12 @@ double getTheta(Point car, Point dst)
 double getAngleLane() 
 {
     vector<Vec4i> hierarchy;
-    vector<vector<Point>> contours;
+    vector< vector<Point> > contours;
 
     findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
     double maxArea = MIN_LANE_AREA;
-    int i_max = -1;
-
-    for (int i = 0; i < contours.size(); i++) 
-    {
-        double area = contourArea(contours[i]);
-        if (maxArea < area) {
-            maxArea = area;
-            i_max = i;
-        }
-    }
+    int i_max = findLargestContour(contours);
     
     if (i_max == -1) 
         return preTheta; // not lane noisy
@@ -102,7 +93,7 @@ double getAngleLane()
             bottom.x = x;
     }
      
-    printf("top: (%d, %d)\n)", top.x, top.y);
+    printf("top: (%d, %d)\n", top.x, top.y);
     printf("bottom: (%d, %d)\n", bottom.x, bottom.y);
  
     return getTheta(bottom, top);
@@ -114,13 +105,13 @@ void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst)
 	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
 }
 
-void birdEye(Mat &binLaneImg, Mat &colorLaneImg)
+void birdEye()
 {
 	Point2f src_vertices[4];
-	src_vertices[0] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
-	src_vertices[1] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
-	src_vertices[2] = Point(binLaneImg.cols, binLaneImg.rows);
-	src_vertices[3] = Point(0, binLaneImg.rows);
+	src_vertices[0] = Point(0, 0);
+	src_vertices[1] = Point(binLaneImg.cols, 0);
+	src_vertices[2] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, binLaneImg.rows);
+	src_vertices[3] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, binLaneImg.rows);
 
 	Point2f dst_vertices[4];
 	dst_vertices[0] = Point(0, 0);
@@ -129,13 +120,19 @@ void birdEye(Mat &binLaneImg, Mat &colorLaneImg)
 	dst_vertices[3] = Point(0, binLaneImg.rows);
 
 	Mat result(binLaneImg.rows, binLaneImg.cols, CV_8UC1);
-	transform(src_vertices, dst_vertices, binLaneImg, result);
-    result.copyTo(binLaneImg);
-
+	transform(dst_vertices, src_vertices, binLaneImg, result);
+	result.copyTo(binLaneImg);
+	
+	Mat result_(colorLaneImg.rows, colorLaneImg.cols, CV_8UC3);
+	transform(dst_vertices, src_vertices, colorLaneImg, result);
+    	result.copyTo(colorLaneImg);
+/*
     line(colorLaneImg, src_vertices[0], src_vertices[1], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[1], src_vertices[2], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[2], src_vertices[3], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
+  */  
+
 }
 
 void LaneProcessing()
@@ -146,22 +143,22 @@ void LaneProcessing()
     binLaneImg = binImg(laneRect);
     colorLaneImg = colorImg(laneRect);
     
-    birdEye(binLaneImg, colorLaneImg);
-    
-    imshow("binLaneImg", binLaneImg);
-    imshow("colorLaneImage", colorLaneImage);
+    birdEye();
+	imshow("colorLaneImg", colorLaneImg);
+	imshow("binLaneImg", binLaneImg);
 
     // Define rects to crop left and right windows from binary-lane after creating bird-view
     int xLeftRect = 0;
     int yLeftRect = 0;
-    int xRightRect = (1 - RATIO_LEFT_RIGHT_WIDTH_LANE_CROP) * FRAME_WIDTH;
+    int xRightRect = (1 - RATIO_LEFT_RIGHT_WIDTH_LANE_CROP) * binLaneImg.cols;
     int yRightRect = 0;
-    int widthRect = RATIO_LEFT_RIGHT_WIDTH_LANE_CROP * FRAME_WIDTH;
-    int heightRect = FRAME_HEIGHT;
+    int widthRect = RATIO_LEFT_RIGHT_WIDTH_LANE_CROP * binLaneImg.cols;
+    int heightRect = binLaneImg.rows;
     
     // Crop
     Rect rectLeft(xLeftRect, yLeftRect, widthRect, heightRect);
     Rect rectRight(xRightRect, yRightRect, widthRect, heightRect);
+
     Mat binLeft = binLaneImg(rectLeft);
     Mat binRight = binLaneImg(rectRight);
 
@@ -211,7 +208,6 @@ void LaneProcessing()
     putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
     
     imshow("binLaneImg", binLaneImg);
-    imshow("colorLaneImg", colorLaneImg);
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)

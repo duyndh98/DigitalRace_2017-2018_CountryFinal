@@ -42,7 +42,7 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 100)
+#define HIG_HSV_BLACK Scalar(255, 255, 170)
 
 #define KERNEL_SIZE 5
 #define SIGN_SIZE 32
@@ -50,7 +50,7 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
 
-#define RATIO_WIDTH_LANE_CROP 0.5
+#define RATIO_WIDTH_LANE_CROP 0.6
 #define RATIO_HEIGHT_LANE_CROP 0.4
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
@@ -59,7 +59,7 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA -2.0
+#define ALPHA -3
 
 #define SW1_PIN 160
 #define SW2_PIN 161
@@ -129,6 +129,6 @@ extern Point centerPoint;
 extern Point centerLeft;
 extern Point centerRight;
 
-extern bool isLeft = true, isRight = true;
+extern bool isLeft, isRight;
 
 #endif

@@ -24,7 +24,7 @@ void hist_equalize(Mat &img)
 	vector<Mat> chanels(3);
 	split(ycrcb, chanels);
 
-	Ptr<CLAHE> clahe = createCLAHE(2.0, Size(8, 8));
+	Ptr<CLAHE> clahe = createCLAHE(2.0, Size(4, 4));
 	clahe->apply(chanels[0], chanels[0]);
 
 	merge(chanels, ycrcb);
