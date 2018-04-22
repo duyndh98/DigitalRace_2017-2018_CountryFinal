@@ -42,16 +42,13 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 190)
+#define HIG_HSV_BLACK Scalar(255, 255, 100)
 
-#define KERNEL_SIZE 5
+#define KERNEL_SIZE 3
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
-
-#define RATIO_WIDTH_LANE_CROP 0.6
-#define RATIO_HEIGHT_LANE_CROP 0.4
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
@@ -59,7 +56,7 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA -3
+#define ALPHA 1.9
 
 #define SW1_PIN 160
 #define SW2_PIN 161
@@ -67,9 +64,11 @@ using namespace cv::ml;
 #define SW4_PIN 164
 #define SENSOR 165
 
+#define AREA_MIN 100
 #define MIN_LANE_AREA 200
-#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.1
-
+#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
+#define RATIO_WIDTH_LANE_CROP 0.5
+#define RATIO_HEIGHT_LANE_CROP 0.5
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
 #define CENTER_POINT_Y 0.2
 
@@ -83,11 +82,10 @@ using namespace cv::ml;
 #define KD 0.01
 
 #define THROTTLE_VAL1 35
-#define THROTTLE_VAL2 28
+#define THROTTLE_VAL2 45
 
 // Global variables
 extern Mat orgImg, colorImg, hsvImg, grayImg, binImg;
-extern Mat binLaneImg, colorLaneImg;
 
 // Switch input
 extern int sw1_stat;
@@ -115,7 +113,7 @@ extern VideoWriter color_videoWriter;
 
 // Speed and direction
 extern int set_throttle_val, throttle_val;
-extern double theta, preTheta;
+extern double theta;
     
 // Car running status
 extern bool running, started, stopped;
@@ -124,11 +122,6 @@ extern bool running, started, stopped;
 extern unsigned int bt_status;
 extern unsigned int sensor_status;
 extern char key;
-
-extern Point centerPoint;
-extern Point centerLeft;
-extern Point centerRight;
-
-extern bool isLeft, isRight;
+extern Point preCenterPoint;
 
 #endif

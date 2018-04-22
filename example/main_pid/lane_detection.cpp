@@ -3,52 +3,139 @@
 #include <stdlib.h>
 
 Mat orgImg, colorImg, hsvImg, grayImg, binImg;
-double theta, preTheta;
-Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-Mat binLaneImg, colorLaneImg;
-bool isLeft, isRight;
-
-int findLargestContour(vector< vector<Point> > &contours)
-{
-    int i_max = -1;
-    float maxArea = MIN_LANE_AREA;
-    for (int i = 0; i < (int)contours.size(); ++i)
-    {
-        int area = contourArea(contours[i]);
-        if (area > maxArea)
-        {
-            i_max = i;
-            maxArea = area;
-        }
-    }
-    return i_max;
-}
-
+double theta;
+Point preCenterPoint;
 // My function
-void filterLane(Mat &binLaneImg, bool &isLane, int &centerX, int check)
+/*
+void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
 {
-    isLane = false;
+    isLine = false;
     if (check < 0) // Left
     	centerX = 0;
 	else // Right
         centerX = binLaneImg.cols;
 
-    vector< vector<Point> > contours;
-    vector<Vec4i> hierarchy;
+    std::vector<std::vector<Point>> contours;
+    std::vector<Vec4i> hierarchy;
     findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     
-    int i_max = findLargestContour(contours);
-    if (i_max != -1) // found !
+    if (contours.size() == 0)
+        return;
+    
+    binLaneImg = Mat::zeros(binLaneImg.size(), CV_8UC1);
+    
+    for (int i = 0; i < (int)contours.size(); ++i)
     {
-        isLane = true;
-        Rect contourRect = boundingRect(contours[i_max]);
-        if (check < 0) // Left
-            centerX = contourRect.x + contourRect.width;
-        else
-            centerX = contourRect.x;
-    }    
+        int area = contourArea(contours[i]);
+        if (area >= AREA_MIN)
+        {
+            drawContours(binLaneImg, contours, i, Scalar(255), CV_FILLED);
+            isLine = true;
+            if (check < 0) // Left
+            {
+                // Find the most right vertice (xmax)
+                for (int j = 0; j < contours[i].size(); ++j)
+                    if (contours[i][j].x > centerX)
+                        centerX = contours[i][j].x;
+            }
+            else // Right
+            {
+                for (int j = 0; j < contours[i].size(); ++j)
+                {
+                    // Find the most left vertice (xmin)
+                    if (contours[i][j].x < centerX)
+                        centerX = contours[i][j].x;
+                }	
+            }
+        }
+    }
+}
+*/
+
+void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point &centerLeft, Point &centerRight, bool &isLane)
+{
+    isLane = false;
+    std::vector<std::vector<Point>> contours;
+    std::vector<Vec4i> hierarchy;
+    findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+    if (contours.size() == 0)
+        return;
+
+    binLaneImg = Mat::zeros(binLaneImg.size(), CV_8UC1);
+    bool fLane = false;
+    for (int i = 0; i < (int)contours.size(); ++i)
+    {
+        int area = contourArea(contours[i]);
+        if (area >= AREA_MIN)
+        {
+            int check = 0;
+            fLane = true;
+            Point pMin(binLaneImg.cols,0);
+            Point pMax(0,0);
+            drawContours(binLaneImg, contours, i, Scalar(255), CV_FILLED);
+            Rect contourBoundingRect = boundingRect(contours[i]);
+            Point p1(0,0);
+            Point p2(0,0);
+            int countUp = 0;
+            int countDown = 0;
+            for (int j = 0; j < contours[i].size(); ++j){
+                if (contours[i][j].y < contourBoundingRect.y+contourBoundingRect.height/2){
+                    p1.x += contours[i][j].x;
+                    p1.y += contours[i][j].y;
+                    countUp++;
+                } else {
+                    p2.x += contours[i][j].x;
+                    p2.y += contours[i][j].y;
+                    countDown++;
+                }
+                if(contours[i][j].x>pMax.x)
+                    pMax = contours[i][j];
+                if(contours[i][j].x<pMin.x)
+                    pMin = contours[i][j];
+            }
+            p1.x = p1.x/countUp;
+            p1.y = p1.y/countUp;
+            p2.x = p2.x/countDown;
+            p2.y = p2.y/countDown;
+            line(colorLaneImg, p1, p2, Scalar(0, 0, 255), 3);
+            int pA, pB;
+            bool vg = false;
+            if(p1.x==p2.x){
+                vg = true;
+                check = p1.x;
+            } else {
+                vg = false;
+                pA = (p1.y-p2.y)/(p1.x-p2.x);
+                pB = (p1.x*p2.y-p1.y*p2.x)/(p1.x-p2.x);
+                check = (preCenterPoint.y-pB)/pA;
+            }
+            if(check>preCenterPoint.x){
+                if(vg){
+                    check = pMin.x;
+                } else {
+                    pB = pMin.y-pA*pMin.x;
+                    check = (preCenterPoint.y-pB)/pA;
+                }
+                if(centerRight.x>check){
+                    centerRight.x = check;
+                }
+            } else {
+                if(vg){
+                    check = pMax.x;
+                } else {
+                    pB = pMax.y-pA*pMax.x;
+                    check = (preCenterPoint.y-pB)/pA;
+                }
+                if(centerLeft.x<check){
+                    centerLeft.x = check;
+                }
+            }
+        }
+    }
+    if(!fLane)
+    isLane = false;
+    
 }
 
 // Return angle between veritcal line containing car and destination point in degree
@@ -66,148 +153,190 @@ double getTheta(Point car, Point dst)
     return atan(dx / dy) * 180 / pi;
 }
 
-double getAngleLane() 
+double getAngleLane(Mat &binImg, double preTheta)
 {
     vector<Vec4i> hierarchy;
-    vector< vector<Point> > contours;
+    vector<vector<Point>> contours;
 
-    findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
+    findContours(binImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
     double maxArea = MIN_LANE_AREA;
-    int i_max = findLargestContour(contours);
-    
-    if (i_max == -1) 
+    int i_max = -1;
+
+    for (int i = 0; i < contours.size(); i++)
+    {
+        double area = contourArea(contours[i]);
+        if (maxArea < area)
+        {
+            maxArea = area;
+            i_max = i;
+        }
+    }
+
+    if (i_max == -1)
         return preTheta; // not lane noisy
-    
+
     Rect laneBound = boundingRect(contours[i_max]);
-    rectangle(colorLaneImg, Point(laneBound.x, laneBound.y), Point(laneBound.x + laneBound.width, laneBound.y + laneBound.height), Scalar(255, 0, 0));    
-   
+
     Point top(binImg.cols / 2, laneBound.y);
     Point bottom(binImg.cols / 2, laneBound.y + laneBound.height);
-    
+
     for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
     {
-        if (binLaneImg.at<uchar>(laneBound.y, x) != 0) 
+        if (binImg.at<uchar>(laneBound.y, x) != 0)
             top.x = x;
-        if (binLaneImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
+        if (binImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0)
             bottom.x = x;
     }
-     
-    printf("top: (%d, %d)\n", top.x, top.y);
+
+    printf("top: (%d, %d)\n)", top.x, top.y);
     printf("bottom: (%d, %d)\n", bottom.x, bottom.y);
- 
+
     return getTheta(bottom, top);
 }
 
-void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst) 
+void transform(Point2f *src_vertices, Point2f *dst_vertices, Mat &src, Mat &dst)
 {
-	Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
-	warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
+    Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
+    warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
 }
 
-void birdEye()
+void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
 {
-	Point2f src_vertices[4];
-	src_vertices[0] = Point(0, 0);
-	src_vertices[1] = Point(binLaneImg.cols, 0);
-	src_vertices[2] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, binLaneImg.rows);
-	src_vertices[3] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, binLaneImg.rows);
+    Point2f src_vertices[4];
+    src_vertices[0] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
+    src_vertices[1] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
+    src_vertices[2] = Point(binLaneImg.cols, 3 * binLaneImg.rows / 4);
+    src_vertices[3] = Point(0, 3 * binLaneImg.rows / 4);
 
-	Point2f dst_vertices[4];
-	dst_vertices[0] = Point(0, 0);
-	dst_vertices[1] = Point(binLaneImg.cols, 0);
-	dst_vertices[2] = Point(binLaneImg.cols, binLaneImg.rows);
-	dst_vertices[3] = Point(0, binLaneImg.rows);
+    Point2f dst_vertices[5];
+    dst_vertices[0] = Point(0, 0);
+    dst_vertices[1] = Point(binLaneImg.cols, 0);
+    dst_vertices[2] = Point(binLaneImg.cols, binLaneImg.rows);
+    dst_vertices[3] = Point(0, binLaneImg.rows);
 
-	Mat result(binLaneImg.rows, binLaneImg.cols, CV_8UC1);
-	transform(dst_vertices, src_vertices, binLaneImg, result);
-	result.copyTo(binLaneImg);
-	
-	Mat result_(colorLaneImg.rows, colorLaneImg.cols, CV_8UC3);
-	transform(dst_vertices, src_vertices, colorLaneImg, result);
-    	result.copyTo(colorLaneImg);
-/*
+    Mat result(binLaneImg.rows, binLaneImg.cols, CV_8UC1);
+    transform(src_vertices, dst_vertices, binLaneImg, result);
+
+    result.copyTo(binLaneImg);
+
     line(colorLaneImg, src_vertices[0], src_vertices[1], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[1], src_vertices[2], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[2], src_vertices[3], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
-  */  
-
 }
 
 void LaneProcessing()
-{   
-    Rect laneRect(0, (1 - RATIO_HEIGHT_LANE_CROP) * FRAME_HEIGHT, 
-                            FRAME_WIDTH, RATIO_HEIGHT_LANE_CROP * FRAME_HEIGHT);
-    
-    binLaneImg = binImg(laneRect);
-    colorLaneImg = colorImg(laneRect);
-    
-    birdEye();
-	imshow("colorLaneImg", colorLaneImg);
-	imshow("binLaneImg", binLaneImg);
+{
+    bool isLane;
+    Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+    Point centerRight(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+
+    //bool isLeft = true, isRight = true;
+
+    Rect laneRect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows,
+        binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows);
+
+    Mat binLaneImg = binImg(laneRect);
+    Mat colorLaneImg = colorImg(laneRect);
+
+    cropBirdEye(binLaneImg, colorLaneImg);
 
     // Define rects to crop left and right windows from binary-lane after creating bird-view
-    int xLeftRect = 0;
-    int yLeftRect = 0;
-    int xRightRect = (1 - RATIO_LEFT_RIGHT_WIDTH_LANE_CROP) * binLaneImg.cols;
-    int yRightRect = 0;
-    int widthRect = RATIO_LEFT_RIGHT_WIDTH_LANE_CROP * binLaneImg.cols;
-    int heightRect = binLaneImg.rows;
-    
-    // Crop
-    Rect rectLeft(xLeftRect, yLeftRect, widthRect, heightRect);
-    Rect rectRight(xRightRect, yRightRect, widthRect, heightRect);
+    // int xLeftRect = 0;
+    // int yLeftRect = 0;
+    // int xRightRect = (1 - RATIO_LEFT_RIGHT_WIDTH_LANE_CROP) * binLaneImg.cols;
+    // int yRightRect = 0;
+    // int widthRect = RATIO_LEFT_RIGHT_WIDTH_LANE_CROP * binLaneImg.cols;
+    // int heightRect = binLaneImg.rows;
 
-    Mat binLeft = binLaneImg(rectLeft);
-    Mat binRight = binLaneImg(rectRight);
+    // Crop
+    // Rect rectLeft(xLeftRect, yLeftRect, widthRect, heightRect);
+    // Rect rectRight(xRightRect, yRightRect, widthRect, heightRect);
+    // Mat binLeft = binLaneImg(rectLeft);
+    // Mat binRight = binLaneImg(rectRight);
+
+    // Backup
+    // Point preCenterLeft = centerLeft;
+    // Point preCenterRight = centerRight;
+
+    // bool preIsLeft = isLeft;
+    // bool preIsRight = isRight;
+    //double preTheta = theta;
 
     // Filter lanes
-    filterLane(binLeft, isLeft, centerLeft.x, -1);
-    filterLane(binRight, isRight, centerRight.x, 1);
-    centerLeft.x += xLeftRect;
-    centerRight.x += xRightRect;
-    
-    imshow("Left", binLeft);
-    imshow("Right", binRight);
+    // filterLane(binLeft, isLeft, centerLeft.x, -1);
+    // filterLane(binRight, isRight, centerRight.x, 1);
+    filterLane(colorLaneImg,binLaneImg, preCenterPoint, centerLeft, centerRight, isLane);
+    imshow("binLaneImg", binLaneImg);
+    imshow("colorLaneImg", colorLaneImg);
+    // centerLeft.x += xLeftRect;
+    // centerRight.x += xRightRect;
+
+    // imshow("Left", binLeft);
+    // imshow("Right", binRight);
 
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
-    
-    if (!isLeft && !isRight)
+
+    // if (!isLeft && !isRight)
+    // {
+    //     putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    //     theta = 0;
+    // }
+    // else if (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binLaneImg.cols)
+    // {
+    //     putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    //     theta = getAngleLane(binLaneImg, preTheta);
+    // }
+    // else
+    // {
+    //     if (!isLeft)
+    //     {
+    //         putText(colorImg, "Lost left", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    //         centerLeft = preCenterLeft + centerRight - preCenterRight;
+    //     }
+    //     else if (!isRight)
+    //     {
+    //         putText(colorImg, "Lost right", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    //         centerRight= preCenterRight + centerLeft - preCenterLeft;
+    //     }
+    //     else
+    //         putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+
+    //     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
+    //     theta = getTheta(carPosition, centerPoint);
+    // }
+    if (isLane)
     {
-        putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        theta = preTheta;
-    }
-    else if (!isLeft || !isRight || abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * FRAME_WIDTH)
-    {
-        putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);	
-        theta = getAngleLane() * ALPHA;
+        putText(colorImg, "Has Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        centerPoint.x = (centerLeft.x + centerRight.x) / 2;
+        centerPoint.y = (centerLeft.y + centerRight.y) / 2;
+        circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
+        circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
     }
     else
     {
-        putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-        theta = getTheta(carPosition, centerPoint) * ALPHA;
+        putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        centerPoint = preCenterPoint;
     }
-    
-    // Backup
-    preTheta = theta;
-	
-    // Draw center points
-    circle(colorImg,  centerPoint, 2, Scalar(0, 0, 255), 2);
-    line(colorImg, carPosition, centerPoint,Scalar(0, 0, 255), 2);
-    
-    putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
-    putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
-    circle(colorImg, centerLeft, 2, Scalar(0, 255, 0), 2);
-    circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 2);
 
-    if (theta > -10 && theta < 10)
-	    theta = 0;
-    
-    putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    
-    imshow("binLaneImg", binLaneImg);
+    theta = getTheta(carPosition, centerPoint);
+
+    // Draw center points
+    circle(colorImg, centerPoint, 2, Scalar(0, 0, 255), 3);
+    line(colorImg, carPosition, centerPoint, Scalar(0, 0, 255), 3);
+
+    // putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 0, 0), 1, CV_AA);
+    // putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
+
+    theta = -theta * ALPHA;
+    if (theta > -20 && theta < 20)
+        theta = 0;
+
+    putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    printf("theta: %d\n", int(theta));
+    preCenterPoint = centerPoint;
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
@@ -217,3 +346,27 @@ void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
     memcpy(color_img.data, color_img_data, FRAME_HEIGHT * FRAME_WIDTH * sizeof(RGB888Pixel));
     cvtColor(color_img, color_img, COLOR_RGB2BGR);
 }
+
+// void remOutlier(Mat &gray)
+// {
+//     int esize = 1;
+//     Mat element = getStructuringElement(MORPH_RECT,
+//                                                 Size(2 * esize + 1, 2 * esize + 1),
+//                                                 Point(esize, esize));
+//     erode(gray, gray, element);
+//     std::vector<std::vector<Point>> contours, polygons;
+//     std::vector<Vec4i> hierarchy;
+//     findContours(gray, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+//     for (size_t i = 0; i < contours.size(); ++i)
+//     {
+//         std::vector<Point> p;
+//         approxPolyDP(Mat(contours[i]), p, 2, true);
+//         polygons.push_back(p);
+//     }
+//     gray = Mat::zeros(gray.size(), CV_8UC3);
+//     for (size_t i = 0; i < polygons.size(); ++i)
+//     {
+//         Scalar color = Scalar(255, 255, 255);
+//         drawContours(gray, polygons, i, color, CV_FILLED);
+//     }
+// }

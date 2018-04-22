@@ -4,12 +4,11 @@
 #include "header.h"
 #include "image_processing.h"
 
-int findLargestContour(vector<vector<Point>> &contours);
-void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check);
+void filterLane(Mat binLaneImg, Point &preCenterPoint, Point &centerLeft, Point &centerRight, bool &isLane);
 double getTheta(Point car, Point dst);
-double getAngleLane();
+double getAngleLane(Mat &binImg, double preTheta);
 void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst);
-void birdEye();
+void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg);
 void LaneProcessing();
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img);
 void remOutlier(Mat &gray);
