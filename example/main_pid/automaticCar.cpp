@@ -30,6 +30,9 @@ int main(int argc, char *argv[])
     OpenNI_init();
     PCA9685_init();
 
+	if( argc == 2)
+		set_throttle_val = atoi(argv[1]);
+
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
@@ -41,8 +44,6 @@ int main(int argc, char *argv[])
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
-	if(argc==2)
-		 set_throttle_val = atoi(argv[1]);
     // Run loop
     while (true)
     {
@@ -96,19 +97,23 @@ int main(int argc, char *argv[])
             
             // Preprocessing
             flip(colorImg, colorImg, 1);
-            colorImg.copyTo(orgImg);
+            // colorImg.copyTo(orgImg);
             
             //hist_equalize(colorImg);
             medianBlur(colorImg, colorImg, KERNEL_SIZE);
+            
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             
             get_mask(hsvImg, binImg, false, false, true); // black
-	    bitwise_not(binImg, binImg);
+	        bitwise_not(binImg, binImg);
 
+            imshow("colorImg", colorImg);
+	        imshow("binImg", binImg);
+            
             // Process lane to get theta
             LaneProcessing();
-	    printf("theta: %d\n", int(theta));            
+	        printf("theta: %d\n", int(theta));            
 
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
@@ -120,12 +125,10 @@ int main(int argc, char *argv[])
             if (!colorImg.empty())
                 color_videoWriter.write(colorImg);
             
-	    imshow("bin", binImg);
-            imshow("color", colorImg);
             
             et = getTickCount();
             fps = 1.0 / ((et - st) / freq);
-            cerr << "FPS: " << fps << '\n';
+            printf("FPS: %lf\n", fps);
 
             waitKey(1);
         }

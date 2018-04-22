@@ -44,7 +44,7 @@ using namespace cv::ml;
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
 #define HIG_HSV_BLACK Scalar(255, 255, 100)
 
-#define KERNEL_SIZE 3
+#define KERNEL_SIZE 5
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
@@ -59,7 +59,7 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA 1.9
+#define ALPHA -2.0
 
 #define SW1_PIN 160
 #define SW2_PIN 161
@@ -68,7 +68,7 @@ using namespace cv::ml;
 #define SENSOR 165
 
 #define MIN_LANE_AREA 200
-#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.2
+#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.1
 
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
 #define CENTER_POINT_Y 0.2
@@ -128,5 +128,7 @@ extern char key;
 extern Point centerPoint;
 extern Point centerLeft;
 extern Point centerRight;
+
+extern bool isLeft = true, isRight = true;
 
 #endif
