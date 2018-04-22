@@ -56,9 +56,9 @@ CMAKE_BINARY_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
 # Target rules for target CMakeFiles/test-autocar.dir
 
 # All Build rule for target.
-CMakeFiles/test-autocar.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
-CMakeFiles/test-autocar.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 CMakeFiles/test-autocar.dir/all: stereo_vision/CMakeFiles/kinect-cv2.dir/all
+CMakeFiles/test-autocar.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
+CMakeFiles/test-autocar.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
 CMakeFiles/test-autocar.dir/all: peripheral_driver/uart/CMakeFiles/uart.dir/all
 CMakeFiles/test-autocar.dir/all: HAL/CMakeFiles/HAL.dir/all
 CMakeFiles/test-autocar.dir/all: multilane/CMakeFiles/multilane.dir/all
@@ -96,9 +96,9 @@ clean: CMakeFiles/test-autocar.dir/clean
 # Target rules for target CMakeFiles/threshold-selection.dir
 
 # All Build rule for target.
-CMakeFiles/threshold-selection.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
-CMakeFiles/threshold-selection.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
 CMakeFiles/threshold-selection.dir/all: stereo_vision/CMakeFiles/kinect-cv2.dir/all
+CMakeFiles/threshold-selection.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
+CMakeFiles/threshold-selection.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
 CMakeFiles/threshold-selection.dir/all: peripheral_driver/uart/CMakeFiles/uart.dir/all
 CMakeFiles/threshold-selection.dir/all: HAL/CMakeFiles/HAL.dir/all
 CMakeFiles/threshold-selection.dir/all: multilane/CMakeFiles/multilane.dir/all

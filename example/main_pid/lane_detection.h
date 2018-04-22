@@ -6,7 +6,7 @@
 
 void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check);
 double getTheta(Point car, Point dst);
-double getAngleLane(Mat &binImg, double preTheta);
+double getAngleLane();
 void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst);
 void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg);
 void LaneProcessing();

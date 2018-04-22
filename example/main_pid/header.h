@@ -50,6 +50,9 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 1800
 
+#define RATIO_WIDTH_LANE_CROP 0.5
+#define RATIO_HEIGHT_LANE_CROP 0.4
+
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
 #define FRAME_HEIGHT 240
@@ -64,11 +67,9 @@ using namespace cv::ml;
 #define SW4_PIN 164
 #define SENSOR 165
 
-#define AREA_MIN 100
 #define MIN_LANE_AREA 200
-#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
-#define RATIO_WIDTH_LANE_CROP 0.4
-#define RATIO_HEIGHT_LANE_CROP 0.4
+#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.2
+
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
 #define CENTER_POINT_Y 0.2
 
@@ -82,10 +83,11 @@ using namespace cv::ml;
 #define KD 0.01
 
 #define THROTTLE_VAL1 35
-#define THROTTLE_VAL2 45
+#define THROTTLE_VAL2 28
 
 // Global variables
 extern Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+extern Mat binLaneImg, colorLaneImg;
 
 // Switch input
 extern int sw1_stat;
@@ -113,7 +115,7 @@ extern VideoWriter color_videoWriter;
 
 // Speed and direction
 extern int set_throttle_val, throttle_val;
-extern double theta;
+extern double theta, preTheta;
     
 // Car running status
 extern bool running, started, stopped;
@@ -122,5 +124,9 @@ extern bool running, started, stopped;
 extern unsigned int bt_status;
 extern unsigned int sensor_status;
 extern char key;
+
+extern Point centerPoint;
+extern Point centerLeft;
+extern Point centerRight;
 
 #endif

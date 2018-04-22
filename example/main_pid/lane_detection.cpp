@@ -3,7 +3,11 @@
 #include <stdlib.h>
 
 Mat orgImg, colorImg, hsvImg, grayImg, binImg;
-double theta;
+double theta, preTheta;
+Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
+Mat binLaneImg, colorLaneImg;
 
 // My function
 void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
@@ -26,7 +30,7 @@ void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
     for (int i = 0; i < (int)contours.size(); ++i)
     {
         int area = contourArea(contours[i]);
-        if (area >= AREA_MIN)
+        if (area >= MIN_LANE_AREA)
         {
             drawContours(binLaneImg, contours, i, Scalar(255), CV_FILLED);
             isLine = true;
@@ -65,12 +69,12 @@ double getTheta(Point car, Point dst)
     return atan(dx / dy) * 180 / pi;
 }
 
-double getAngleLane(Mat &binImg, double preTheta) 
+double getAngleLane() 
 {
     vector<Vec4i> hierarchy;
     vector<vector<Point>> contours;
 
-    findContours(binImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
+    findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
     double maxArea = MIN_LANE_AREA;
     int i_max = -1;
@@ -88,15 +92,16 @@ double getAngleLane(Mat &binImg, double preTheta)
         return preTheta; // not lane noisy
     
     Rect laneBound = boundingRect(contours[i_max]);
-    
+    rectangle(colorLaneImg, Point(laneBound.x, laneBound.y), Point(laneBound.x + laneBound.width, laneBound.y + laneBound.height), Scalar(255, 0, 0));    
+   
     Point top(binImg.cols / 2, laneBound.y);
     Point bottom(binImg.cols / 2, laneBound.y + laneBound.height);
     
     for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
     {
-        if (binImg.at<uchar>(laneBound.y, x) != 0) 
+        if (binLaneImg.at<uchar>(laneBound.y, x) != 0) 
             top.x = x;
-        if (binImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
+        if (binLaneImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
             bottom.x = x;
     }
      
@@ -138,22 +143,16 @@ void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
 }
 
 void LaneProcessing() 
-{
-    Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    
+{    
     bool isLeft = true, isRight = true;
 
     Rect laneRect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows, 
                             binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows);
     
-    Mat binLaneImg = binImg(laneRect);
-    Mat colorLaneImg = colorImg(laneRect);
+    binLaneImg = binImg(laneRect);
+    colorLaneImg = colorImg(laneRect);
     
     cropBirdEye(binLaneImg, colorLaneImg);
-    imshow("binLaneImg", binLaneImg);
-    imshow("colorLaneImg", colorLaneImg);
 
     // Define rects to crop left and right windows from binary-lane after creating bird-view
     int xLeftRect = 0;
@@ -174,7 +173,6 @@ void LaneProcessing()
     Point preCenterRight = centerRight;
     // bool preIsLeft = isLeft;
     // bool preIsRight = isRight;
-    double preTheta = theta;
 	
     // Filter lanes
     filterLane(binLeft, isLeft, centerLeft.x, -1);
@@ -190,15 +188,16 @@ void LaneProcessing()
     if (!isLeft && !isRight)
     {
         putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        theta = 0;
+        theta = preTheta;
     }
-    else if (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binLaneImg.cols)
+    else if (!isLeft || !isRight || abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binLaneImg.cols)
     {
         putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);	
-        theta = getAngleLane(binLaneImg, preTheta);
+        theta = getAngleLane();
     }
     else
     {
+/*
         if (!isLeft)
         {
             putText(colorImg, "Lost left", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
@@ -209,7 +208,7 @@ void LaneProcessing()
             putText(colorImg, "Lost right", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
             centerRight= preCenterRight + centerLeft - preCenterLeft;
         }
-        else
+        else*/
             putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
@@ -217,20 +216,22 @@ void LaneProcessing()
     }
     
     // Draw center points
-    circle(colorImg,  centerPoint, 2, Scalar(0, 0, 255), 3);
-    line(colorImg, carPosition, centerPoint,Scalar(0, 0, 255),3);
+    circle(colorImg,  centerPoint, 2, Scalar(0, 0, 255), 2);
+    line(colorImg, carPosition, centerPoint,Scalar(0, 0, 255), 2);
     
-    // putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 0, 0), 1, CV_AA);
-    // putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
-    circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
-    circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
-    
+    putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
+    putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
+    circle(colorImg, centerLeft, 2, Scalar(0, 255, 0), 2);
+    circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 2);
+    preTheta = theta;
     theta = -theta * ALPHA;
     if (theta > -20 && theta < 20)
 	    theta = 0;
     
     putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    printf("theta: %d\n", int(theta));
+    
+    imshow("binLaneImg", binLaneImg);
+    imshow("colorLaneImg", colorLaneImg);
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)

@@ -23,6 +23,7 @@ char key;
 
 int main(int argc, char *argv[])
 {
+	
     printf("\n");
     // Init hardware
     GPIO_init();
@@ -40,7 +41,8 @@ int main(int argc, char *argv[])
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
-
+	if(argc==2)
+		 set_throttle_val = atoi(argv[1]);
     // Run loop
     while (true)
     {
@@ -102,22 +104,23 @@ int main(int argc, char *argv[])
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             
             get_mask(hsvImg, binImg, false, false, true); // black
-		    bitwise_not(binImg, binImg);
+	    bitwise_not(binImg, binImg);
 
             // Process lane to get theta
             LaneProcessing();
-            
+	    printf("theta: %d\n", int(theta));            
+
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
 
             // Log video
-            if (!orgImg.empty())
-                org_videoWriter.write(orgImg);
+            //if (!orgImg.empty())
+                //org_videoWriter.write(orgImg);
             if (!colorImg.empty())
                 color_videoWriter.write(colorImg);
             
-	        imshow("bin", binImg);
+	    imshow("bin", binImg);
             imshow("color", colorImg);
             
             et = getTickCount();
