@@ -42,7 +42,7 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 170)
+#define HIG_HSV_BLACK Scalar(255, 255, 190)
 
 #define KERNEL_SIZE 5
 #define SIGN_SIZE 32
