@@ -170,8 +170,8 @@ void LaneProcessing()
     Mat binRight = binLaneImg(rectRight);
 
     // Backup
-    // Point preCenterLeft = centerLeft;
-    // Point preCenterRight = centerRight;
+    Point preCenterLeft = centerLeft;
+    Point preCenterRight = centerRight;
     // bool preIsLeft = isLeft;
     // bool preIsRight = isRight;
     double preTheta = theta;
@@ -187,34 +187,50 @@ void LaneProcessing()
 
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     
-    if (!isLeft || !isRight || (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binLaneImg.cols)) 
-        // Lost one lane
+    if (!isLeft && !isRight)
     {
-        putText(colorImg, "Invalid distance", Point(20, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);	
-        theta = getAngleLane(binLaneImg, preTheta);       
+        putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        theta = 0;
+    }
+    else if (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binLaneImg.cols)
+    {
+        putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);	
+        theta = getAngleLane(binLaneImg, preTheta);
     }
     else
     {
-        putText(colorImg, "Left Right", Point(60, 100), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        if (!isLeft)
+        {
+            putText(colorImg, "Lost left", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+            centerLeft = preCenterLeft + centerRight - preCenterRight;
+        }
+        else if (!isRight)
+        {
+            putText(colorImg, "Lost right", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+            centerRight= preCenterRight + centerLeft - preCenterLeft;
+        }
+        else
+            putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
         theta = getTheta(carPosition, centerPoint);
     }
     
     // Draw center points
-    circle(colorImg,  centerPoint, 2, Scalar(255, 0, 0), 3);
-    line(colorImg, carPosition, centerPoint,Scalar(255,0,0),3);
+    circle(colorImg,  centerPoint, 2, Scalar(0, 0, 255), 3);
+    line(colorImg, carPosition, centerPoint,Scalar(0, 0, 255),3);
     
-    putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 0, 255), 1, CV_AA);
-    putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0, 255, 0), 1, CV_AA);
+    // putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 0, 0), 1, CV_AA);
+    // putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
     circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
     
     theta = -theta * ALPHA;
-    if (theta > -10 && theta < 10)
+    if (theta > -20 && theta < 20)
 	    theta = 0;
     
-    putText(colorImg, "theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    printf("Theta: %f.2\n", theta);
+    putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    printf("theta: %d\n", int(theta));
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
