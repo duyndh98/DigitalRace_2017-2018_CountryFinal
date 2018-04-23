@@ -168,8 +168,8 @@ void LaneProcessing()
     centerLeft.x += xLeftRect;
     centerRight.x += xRightRect;
     
-    imshow("Left", binLeft);
-    imshow("Right", binRight);
+    // imshow("Left", binLeft);
+    // imshow("Right", binRight);
 
     Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     

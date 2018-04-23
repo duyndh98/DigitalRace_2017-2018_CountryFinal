@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
             // colorImg.copyTo(orgImg);
             
             hist_equalize(colorImg);
-            medianBlur(colorImg, colorImg, KERNEL_SIZE);
+            //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             //cvtColor(colorImg, grayImg, CV_BGR2GRAY);
