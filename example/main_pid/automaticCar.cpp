@@ -20,6 +20,7 @@ bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter org_videoWriter, color_videoWriter;
 char key;
+Point preCenterPoint;
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
-
+    preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     // Run loop
     while (true)
     {

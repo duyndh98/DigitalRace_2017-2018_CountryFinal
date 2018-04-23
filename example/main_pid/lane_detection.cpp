@@ -4,7 +4,7 @@
 
 Mat orgImg, colorImg, hsvImg, grayImg, binImg;
 double theta;
-Point preCenterPoint;
+//Point preCenterPoint;
 // My function
 /*
 void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
@@ -69,7 +69,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point 
         int area = contourArea(contours[i]);
         if (area >= AREA_MIN)
         {
-            int check = 0;
+            double check = 0;
             fLane = true;
             Point pMin(binLaneImg.cols,0);
             Point pMax(0,0);
@@ -98,24 +98,31 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point 
             p1.y = p1.y/countUp;
             p2.x = p2.x/countDown;
             p2.y = p2.y/countDown;
-            line(colorLaneImg, p1, p2, Scalar(0, 0, 255), 3);
-            int pA, pB;
+            line(colorLaneImg, p1, p2, Scalar(0, 255, 255), 3);
+            circle(colorLaneImg, pMin, 2, Scalar(25, 255, 255), 3);
+            circle(colorLaneImg, pMax, 2, Scalar(255, 0, 255), 3);
+            double pA, pB;
             bool vg = false;
             if(p1.x==p2.x){
                 vg = true;
                 check = p1.x;
             } else {
                 vg = false;
-                pA = (p1.y-p2.y)/(p1.x-p2.x);
-                pB = (p1.x*p2.y-p1.y*p2.x)/(p1.x-p2.x);
-                check = (preCenterPoint.y-pB)/pA;
+                pA = (double)(p1.y-p2.y)/(p1.x-p2.x);
+                pB = (double)(p1.x*p2.y-p1.y*p2.x)/(p1.x-p2.x);
+                check = (double)(preCenterPoint.y-pB)/pA;
+                if(pA==0)
+                    continue;
+                cout << "min(" << pMin.x << "," << pMin.y << "), max" << pMax.x  << pMax.y << ")" << endl;
+                circle(colorLaneImg, Point(check,preCenterPoint.y), 2, Scalar(255, 255, 255), 3);
+                cout << "p1(" << p1.x << "," << p1.y << "),p2(" << p2.x << "," << p2.y<< ") check: " << check << endl;
             }
             if(check>preCenterPoint.x){
                 if(vg){
                     check = pMin.x;
                 } else {
-                    pB = pMin.y-pA*pMin.x;
-                    check = (preCenterPoint.y-pB)/pA;
+                    pB = (double)pMin.y-pA*pMin.x;
+                    check = (double)(preCenterPoint.y-pB)/pA;
                 }
                 if(centerRight.x>check){
                     centerRight.x = check;
@@ -124,18 +131,20 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point 
                 if(vg){
                     check = pMax.x;
                 } else {
-                    pB = pMax.y-pA*pMax.x;
-                    check = (preCenterPoint.y-pB)/pA;
+                    pB = (double)pMax.y-pA*pMax.x;
+                    check = (double)(preCenterPoint.y-pB)/pA;
                 }
                 if(centerLeft.x<check){
                     centerLeft.x = check;
                 }
             }
+            cout << "check: " << check << endl;
         }
     }
+    cout << "center point: " << preCenterPoint.y << endl;
     if(!fLane)
     isLane = false;
-    
+    isLane = true;
 }
 
 // Return angle between veritcal line containing car and destination point in degree
@@ -229,9 +238,6 @@ void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
 void LaneProcessing()
 {
     bool isLane;
-    Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
-    Point centerRight(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
 
     //bool isLeft = true, isRight = true;
 
@@ -242,6 +248,9 @@ void LaneProcessing()
     Mat colorLaneImg = colorImg(laneRect);
 
     cropBirdEye(binLaneImg, colorLaneImg);
+    Point centerPoint(binLaneImg.cols / 2, (1 - CENTER_POINT_Y) * binLaneImg.rows);
+    Point centerLeft(0, (1 - CENTER_POINT_Y) * binLaneImg.rows);
+    Point centerRight(binLaneImg.cols, (1 - CENTER_POINT_Y) * binLaneImg.rows);
 
     // Define rects to crop left and right windows from binary-lane after creating bird-view
     // int xLeftRect = 0;
@@ -268,7 +277,7 @@ void LaneProcessing()
     // Filter lanes
     // filterLane(binLeft, isLeft, centerLeft.x, -1);
     // filterLane(binRight, isRight, centerRight.x, 1);
-    filterLane(colorLaneImg,binLaneImg, preCenterPoint, centerLeft, centerRight, isLane);
+    filterLane(colorLaneImg, binLaneImg, preCenterPoint, centerLeft, centerRight, isLane);
     imshow("binLaneImg", binLaneImg);
     imshow("colorLaneImg", colorLaneImg);
     // centerLeft.x += xLeftRect;
@@ -311,9 +320,10 @@ void LaneProcessing()
     {
         putText(colorImg, "Has Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-        centerPoint.y = (centerLeft.y + centerRight.y) / 2;
+        centerPoint.y = (centerLeft.y + centerRight.y) / 2 + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
         circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
-        circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 3);
+        circle(colorImg, centerRight, 2, Scalar(0, 0, 255), 3);
+        cout << "left: " << centerLeft.x << " right: " << centerRight.x << endl;
     }
     else
     {
