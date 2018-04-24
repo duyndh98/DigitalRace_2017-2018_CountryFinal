@@ -82,17 +82,37 @@ double getAngleLane()
     Rect laneBound = boundingRect(contours[i_max]);
     rectangle(colorLaneImg, Point(laneBound.x, laneBound.y), Point(laneBound.x + laneBound.width, laneBound.y + laneBound.height), Scalar(255, 0, 0));    
    
-    Point top(binImg.cols / 2, laneBound.y);
-    Point bottom(binImg.cols / 2, laneBound.y + laneBound.height);
+    Point top(binImg.cols / 2, laneBound.y), topLeft(binImg.cols / 2, laneBound.y), topRight(binImg.cols / 2, laneBound.y);
+    Point bottom(binImg.cols / 2, laneBound.y + laneBound.height), bottomLeft(binImg.cols / 2, laneBound.y + laneBound.height), bottomRight(binImg.cols / 2, laneBound.y + laneBound.height);
     
     for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
-    {
         if (binLaneImg.at<uchar>(laneBound.y, x) != 0) 
-            top.x = x;
+        {
+            topLeft.x = x;
+            break;
+        }
+    for (int x = laneBound.x + laneBound.width - 1; x >= laneBound.x; x--)
+        if (binLaneImg.at<uchar>(laneBound.y, x) != 0) 
+        {
+            topRight.x = x;
+            break;
+        }
+    top.x = (topLeft.x + topRight.x) / 2;
+
+    for (int x = laneBound.x; x < laneBound.x + laneBound.width; x++)
         if (binLaneImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
-            bottom.x = x;
-    }
-     
+        {
+            bottomLeft.x = x;
+            break;
+        }
+    for (int x = laneBound.x + laneBound.width - 1; x >= laneBound.x; x--)
+        if (binLaneImg.at<uchar>(laneBound.y + laneBound.height - 1, x) != 0) 
+        {
+            bottomRight.x = x;
+            break;        
+        }
+    bottom.x = (bottomLeft.x + bottomRight.x) / 2;
+
     printf("top: (%d, %d)\n", top.x, top.y);
     printf("bottom: (%d, %d)\n", bottom.x, bottom.y);
  
@@ -126,12 +146,12 @@ void birdEye()
 	Mat result_(colorLaneImg.rows, colorLaneImg.cols, CV_8UC3);
 	transform(dst_vertices, src_vertices, colorLaneImg, result);
     	result.copyTo(colorLaneImg);
-/*
+
     line(colorLaneImg, src_vertices[0], src_vertices[1], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[1], src_vertices[2], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[2], src_vertices[3], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
-  */  
+   
 
 }
 
@@ -192,7 +212,9 @@ void LaneProcessing()
     
     // Backup
     preTheta = theta;
-	
+	if (theta > -10 && theta < 10)
+	     theta = 0;
+
     // Draw center points
     circle(colorImg,  centerPoint, 2, Scalar(0, 0, 255), 2);
     line(colorImg, carPosition, centerPoint,Scalar(0, 0, 255), 2);
@@ -202,8 +224,7 @@ void LaneProcessing()
     circle(colorImg, centerLeft, 2, Scalar(0, 255, 0), 2);
     circle(colorImg, centerRight, 2, Scalar(0, 255, 0), 2);
 
-    if (theta > -10 && theta < 10)
-	    theta = 0;
+    
     
     putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
     

@@ -42,7 +42,7 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 100)
+#define HIG_HSV_BLACK Scalar(255, 255, 150)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
@@ -83,7 +83,7 @@ using namespace cv::ml;
 #define KD 0.01
 
 #define THROTTLE_VAL1 35
-#define THROTTLE_VAL2 28
+#define THROTTLE_VAL2 40
 
 // Global variables
 extern Mat orgImg, colorImg, hsvImg, grayImg, binImg;
