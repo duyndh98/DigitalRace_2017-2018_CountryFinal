@@ -191,7 +191,7 @@ api_kinect_cv_center_rect_gen(
 
 bool thoidiemre(Mat &depthMap)
 {
-	int slice_nb = 3;
+    int slice_nb = 3;
     int lower_slice_idx = 3;
     int upper_slice_idx = lower_slice_idx + slice_nb;
     //int lower__bound = DIST_MIN + lower_slice_idx * SLICE_DEPTH;
@@ -298,19 +298,19 @@ api_kinect_cv_get_images(VideoCapture &capture,
 
 int main()
 {
-    Mat depthMap,grayImage;
-	VideoCapture capture;
-	capture.open( CV_CAP_OPENNI2 );
-	if( !capture.isOpened() )
+    Mat depthMap,grayImage,bgrImage;
+    VideoCapture capture;
+    capture.open( CV_CAP_OPENNI2 );
+    if( !capture.isOpened() )
     {
         cout << "Can not open a capture object." << endl;
         return -1;
     }
-	capture.set( CV_CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE, CV_CAP_OPENNI_VGA_30HZ );
+    capture.set( CV_CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE, CV_CAP_OPENNI_VGA_30HZ );
     capture.set(CV_CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION, 0 );
-	
+    
 
-	//call funtion get depthImg
+    //call funtion get depthImg
 
     namedWindow("Threshold Selection", WINDOW_NORMAL);
     createTrackbar("lower__bound", "Threshold Selection", &lower__bound, 1000, on_lower__bound_thresh_trackbar);
@@ -319,12 +319,12 @@ int main()
     createTrackbar("thresh_area_max", "Threshold Selection", &thresh_area_max, 1000, on_thresh_area_max_thresh_trackbar);
     while ((char)waitKey(1) != 'q')
     {
-	api_kinect_cv_get_images( capture, depthMap, grayImage);
-			if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
-	        {
-	            cout<< endl<< "Error: Cannot bgr gray image";
-	            return -1;
-	        }
+    api_kinect_cv_get_images( capture, depthMap, grayImage);
+            if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
+            {
+                cout<< endl<< "Error: Cannot bgr gray image";
+                return -1;
+            }
         thoidiemre(depthMap);
     }
 
