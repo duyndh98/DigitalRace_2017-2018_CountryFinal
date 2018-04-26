@@ -346,7 +346,7 @@ void LaneProcessing()
 
     putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
     printf("theta: %d\n", int(theta));
-    preCenterPoint = centerPoint;
+    preCenterPoint.y = centerPoint.y - colorImg.rows*RATIO_HEIGHT_LANE_CROP;
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
