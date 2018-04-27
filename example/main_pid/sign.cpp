@@ -18,10 +18,10 @@ bool Sign::detect()
 {
 	vector< vector<Point> > contours;
 	vector<Vec4i> hierarchy;
-	findContours(binSignImg, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0));
+	findContours(binSignImg, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	// set default is no sign found
-	double max_area = 0;
+	double max_area = MIN_SIGN_AREA;
 	_sign_ROI = Rect(0, 0, 0, 0);
 
 	for (int i = 0; i < contours.size(); i++)
@@ -33,14 +33,13 @@ bool Sign::detect()
 
 		// constraints
 		double ellipse_area = (3.14f * (double)(bound.width / 2) * (double)(bound.height / 2));
-		if (contour_area >= MIN_SIGN_AREA)
-			if ((1 - DIF_RATIO_SIGN_WIDTH_PER_HEIGHT < (float)bound.width / bound.height) && ((float)bound.width / bound.height < 1 + DIF_RATIO_SIGN_WIDTH_PER_HEIGHT))
-				if ((1 - DIF_RATIO_SIGN_AREA < ((double)contour_area / ellipse_area)) && ((double)contour_area / ellipse_area < 1 + DIF_RATIO_SIGN_AREA))
-				{
-					// update max sign
-					_sign_ROI = bound;
-					max_area = contour_area;
-				}
+		if ((1 - DIF_RATIO_SIGN_WIDTH_PER_HEIGHT < (float)bound.width / bound.height) && ((float)bound.width / bound.height < 1 + DIF_RATIO_SIGN_WIDTH_PER_HEIGHT))
+			if ((1 - DIF_RATIO_SIGN_AREA < ((double)contour_area / ellipse_area)) && ((double)contour_area / ellipse_area < 1 + DIF_RATIO_SIGN_AREA))
+			{
+				// update max sign
+				_sign_ROI = bound;
+				max_area = contour_area;
+			}
 	}
 	return _sign_ROI != Rect(0, 0, 0, 0);
 }
@@ -79,6 +78,11 @@ void Sign::classify(Mat &graySignImg)
 int Sign::getClassID()
 {
 	return _class_id;
+}
+
+void Sign::resetClassID()
+{
+	_class_id = NO_SIGN;
 }
 
 Rect Sign::getROI()

@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
-    
+    hasSign = false;
+
     // Run loop
     while (true)
     {

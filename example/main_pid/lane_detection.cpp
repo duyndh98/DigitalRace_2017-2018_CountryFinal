@@ -8,7 +8,7 @@ Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
 Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
 Point centerRight(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
 Mat binLaneImg, colorLaneImg;
-bool isLeft, isRight;
+bool isLeft, isRight, hasSign;
 
 int findLargestContour(vector< vector<Point> > &contours)
 {
@@ -207,8 +207,7 @@ void laneProcessing()
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
         theta = getTheta(carPosition, centerPoint) * ALPHA;
     }
-    
-    // Backup
+    /*
     if (theta > 90)
         theta = 90;
     if (theta < -90)
@@ -216,7 +215,8 @@ void laneProcessing()
 
 	if (theta > -10 && theta < 10)
 	     theta = 0;
-
+    */
+    // Backup
     preTheta = theta;
     
     // Draw center points

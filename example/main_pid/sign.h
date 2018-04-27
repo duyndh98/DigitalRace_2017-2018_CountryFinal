@@ -18,6 +18,7 @@ public:
 	void recognize();
 	void classify(Mat &graySignimg);
 	int getClassID();
+	void resetClassID();
 	Rect getROI();
 };
 

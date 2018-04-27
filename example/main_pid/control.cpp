@@ -136,23 +136,38 @@ void updateSensorStatus()
 
 void signProcessing()
 {
+    int signID = mySign.getClassID();
+    if (signID == SIGN_LEFT)
+        putText(colorImg, "Sign left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    else if (signID == SIGN_RIGHT)
+        putText(colorImg, "Sign right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    else if (signID == SIGN_STOP)
+        putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    
     if (mySign.detect())
     {
         mySign.recognize();
-        int signID = mySign.getClassID();
+        signID = mySign.getClassID();
         if (signID != NO_SIGN)
         {
+            hasSign = true;
+            theta = 0;
+
             cout << signID << endl;
             Rect signROI = mySign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
-            if ((signROI.y + signROI.height) / 2 <= Y_TURN * FRAME_HEIGHT)
+            if ((signROI.y + signROI.height) / 2 >= Y_TURN * FRAME_HEIGHT)
+            {
                 controlTurn(signID);
+                mySign.resetClassID();
+            }    
         }
     }
 }
 
 void controlTurn(int signID)
 {
+    hasSign = false;
     if (signID == SIGN_LEFT)
     {
         putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);

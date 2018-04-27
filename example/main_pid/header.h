@@ -27,8 +27,8 @@ using namespace cv;
 using namespace std;
 using namespace cv::ml;
 
-#define LOW_HSV_BLUE Scalar(104, 148, 55)
-#define HIG_HSV_BLUE Scalar(118, 255, 255)
+#define LOW_HSV_BLUE Scalar(100, 100, 100)
+#define HIG_HSV_BLUE Scalar(120, 255, 255)
 
 #define LOW_HSV_RED1 Scalar(0, 80, 100)
 #define HIG_HSV_RED1 Scalar(5, 255, 255)
@@ -48,7 +48,7 @@ using namespace cv::ml;
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.2
-#define MIN_SIGN_AREA 1800
+#define MIN_SIGN_AREA 200
 
 #define RATIO_WIDTH_LANE_CROP 0.5
 #define RATIO_HEIGHT_LANE_CROP 0.4
@@ -59,10 +59,10 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA -3
-#define ALPHA_TURN 30
+#define ALPHA -2
+#define ALPHA_TURN 55
 
-#define Y_TURN 0.4
+#define Y_TURN 0.2
 #define TURN_TIME 0.5
 
 #define SW1_PIN 160
@@ -71,7 +71,7 @@ using namespace cv::ml;
 #define SW4_PIN 164
 #define SENSOR 165
 
-#define MIN_LANE_AREA 200
+#define MIN_LANE_AREA 300
 #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
 
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
@@ -136,5 +136,6 @@ extern bool isLeft, isRight;
 
 class Sign;
 extern Sign mySign;
+extern bool hasSign;
 
 #endif
