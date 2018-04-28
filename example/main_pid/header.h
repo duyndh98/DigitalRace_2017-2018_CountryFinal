@@ -50,7 +50,7 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_AREA 0.2
 #define MIN_SIGN_AREA 1800
 
-#define RATIO_WIDTH_LANE_CROP 0.6
+#define RATIO_WIDTH_LANE_CROP 0.5
 #define RATIO_HEIGHT_LANE_CROP 0.4
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
@@ -60,6 +60,10 @@ using namespace cv::ml;
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
 #define ALPHA -3
+#define ALPHA_TURN 30
+
+#define Y_TURN 0.4
+#define TURN_TIME 0.5
 
 #define SW1_PIN 160
 #define SW2_PIN 161
@@ -86,7 +90,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL2 40
 
 // Global variables
-extern Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+extern Mat colorImg, hsvImg, grayImg, binImg, binSignImg;
 extern Mat binLaneImg, colorLaneImg;
 
 // Switch input
@@ -109,8 +113,7 @@ extern VideoFrameRef frame_color;
 extern VideoStream *streams[1];
 
 // Log    
-extern string org_filename, color_filename;
-extern VideoWriter org_videoWriter;
+extern string color_filename;
 extern VideoWriter color_videoWriter;
 
 // Speed and direction
@@ -130,5 +133,8 @@ extern Point centerLeft;
 extern Point centerRight;
 
 extern bool isLeft, isRight;
+
+class Sign;
+extern Sign mySign;
 
 #endif

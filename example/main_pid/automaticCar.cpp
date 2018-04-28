@@ -18,12 +18,12 @@
 
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
-VideoWriter org_videoWriter, color_videoWriter;
+VideoWriter color_videoWriter;
 char key;
+Mat binSignImg;
 
 int main(int argc, char *argv[])
 {
-	
     printf("\n");
     // Init hardware
     GPIO_init();
@@ -38,12 +38,12 @@ int main(int argc, char *argv[])
     theta = 0;
 
     // Log
-    org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
+    
     // Run loop
     while (true)
     {
@@ -97,7 +97,6 @@ int main(int argc, char *argv[])
             
             // Preprocessing
             flip(colorImg, colorImg, 1);
-            // colorImg.copyTo(orgImg);
             
             hist_equalize(colorImg);
             //medianBlur(colorImg, colorImg, KERNEL_SIZE);
@@ -108,13 +107,21 @@ int main(int argc, char *argv[])
             get_mask(hsvImg, binImg, false, false, true); // black
 	        bitwise_not(binImg, binImg);
 
+            get_mask(hsvImg, binSignImg, true, true, false); // blue + red
+            medianBlur(binSignImg, binSignImg, KERNEL_SIZE);
+            imshow("binSignImg", binSignImg);
+
+            cvtColor(colorImg, grayImg, CV_BGR2GRAY);
 
             // Process lane to get theta
-            LaneProcessing();
-	    printf("theta: %d\n", int(theta));            
+            laneProcessing();
+            
+            signProcessing();
+
+	        printf("theta: %d\n", int(theta));            
 
             imshow("colorImg", colorImg);
-	    imshow("binImg", binImg);
+	        imshow("binImg", binImg);
             
 
             // Oh yeah... go go go :D
@@ -122,8 +129,6 @@ int main(int argc, char *argv[])
             api_set_STEERING_control(pca9685, theta);
 
             // Log video
-            //if (!orgImg.empty())
-                //org_videoWriter.write(orgImg);
             if (!colorImg.empty())
                 color_videoWriter.write(colorImg);
             
@@ -149,7 +154,6 @@ int main(int argc, char *argv[])
         }
     }
     // Release
-    org_videoWriter.release();
     color_videoWriter.release();
 
     return 0;

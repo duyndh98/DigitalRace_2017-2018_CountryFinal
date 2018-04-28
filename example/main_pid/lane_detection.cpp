@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+Mat colorImg, hsvImg, grayImg, binImg;
 double theta, preTheta;
 Point centerPoint(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
 Point centerLeft(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT);
@@ -113,8 +113,8 @@ double getAngleLane()
         }
     bottom.x = (bottomLeft.x + bottomRight.x) / 2;
 
-    printf("top: (%d, %d)\n", top.x, top.y);
-    printf("bottom: (%d, %d)\n", bottom.x, bottom.y);
+    //printf("top: (%d, %d)\n", top.x, top.y);
+    //printf("bottom: (%d, %d)\n", bottom.x, bottom.y);
  
     return getTheta(bottom, top);
 }
@@ -128,10 +128,10 @@ void transform(Point2f* src_vertices, Point2f* dst_vertices, Mat& src, Mat &dst)
 void birdEye()
 {
 	Point2f src_vertices[4];
-	src_vertices[0] = Point(0, 0);
-	src_vertices[1] = Point(binLaneImg.cols, 0);
-	src_vertices[2] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, binLaneImg.rows);
-	src_vertices[3] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, binLaneImg.rows);
+	src_vertices[0] = Point((1 - RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
+	src_vertices[1] = Point((1 + RATIO_WIDTH_LANE_CROP) * 0.5 * binLaneImg.cols, 0);
+	src_vertices[2] = Point(binLaneImg.cols, binLaneImg.rows);
+	src_vertices[3] = Point(0, binLaneImg.rows);
 
 	Point2f dst_vertices[4];
 	dst_vertices[0] = Point(0, 0);
@@ -140,22 +140,20 @@ void birdEye()
 	dst_vertices[3] = Point(0, binLaneImg.rows);
 
 	Mat result(binLaneImg.rows, binLaneImg.cols, CV_8UC1);
-	transform(dst_vertices, src_vertices, binLaneImg, result);
+	transform(src_vertices, dst_vertices, binLaneImg, result);
 	result.copyTo(binLaneImg);
 	
 	Mat result_(colorLaneImg.rows, colorLaneImg.cols, CV_8UC3);
-	transform(dst_vertices, src_vertices, colorLaneImg, result);
+	transform(src_vertices, dst_vertices, colorLaneImg, result);
     	result.copyTo(colorLaneImg);
 
     line(colorLaneImg, src_vertices[0], src_vertices[1], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[1], src_vertices[2], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[2], src_vertices[3], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
-   
-
 }
 
-void LaneProcessing()
+void laneProcessing()
 {   
     Rect laneRect(0, (1 - RATIO_HEIGHT_LANE_CROP) * FRAME_HEIGHT, 
                             FRAME_WIDTH, RATIO_HEIGHT_LANE_CROP * FRAME_HEIGHT);
@@ -195,26 +193,32 @@ void LaneProcessing()
     
     if (!isLeft && !isRight)
     {
-        putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         theta = preTheta;
     }
     else if (!isLeft || !isRight || abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * FRAME_WIDTH)
     {
-        putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);	
+        putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);	
         theta = getAngleLane() * ALPHA;
     }
     else
     {
-        putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+        putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
         theta = getTheta(carPosition, centerPoint) * ALPHA;
     }
     
     // Backup
-    preTheta = theta;
+    if (theta > 90)
+        theta = 90;
+    if (theta < -90)
+        theta = -90;
+
 	if (theta > -10 && theta < 10)
 	     theta = 0;
 
+    preTheta = theta;
+    
     // Draw center points
     circle(colorImg,  centerPoint, 2, Scalar(0, 0, 255), 2);
     line(colorImg, carPosition, centerPoint,Scalar(0, 0, 255), 2);
@@ -226,7 +230,7 @@ void LaneProcessing()
 
     
     
-    putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+    putText(colorImg, "Theta " + to_string(int(theta)) , Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
     
     imshow("binLaneImg", binLaneImg);
 }

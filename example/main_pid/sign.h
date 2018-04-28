@@ -14,10 +14,11 @@ private:
 
 public:
 	Sign();
-	bool detect(const Mat &mask);
-	void recognize(const Mat &gray);
-	void classify(const Mat &gray_sign);
+	bool detect();
+	void recognize();
+	void classify(Mat &graySignimg);
 	int getClassID();
+	Rect getROI();
 };
 
 #endif
