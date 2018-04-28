@@ -110,7 +110,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point 
                 vg = false;
                 pA = (double)(p1.y-p2.y)/(p1.x-p2.x);
                 pB = (double)(p1.x*p2.y-p1.y*p2.x)/(p1.x-p2.x);
-                check = (double)(preCenterPoint.y-pB)/pA;
+                check = (double)(binLaneImg.rows-pB)/pA;
                 if(pA==0)
                     continue;
                 cout << "min(" << pMin.x << "," << pMin.y << "), max" << pMax.x  << pMax.y << ")" << endl;
@@ -143,7 +143,8 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point 
     }
     cout << "center point: " << preCenterPoint.y << endl;
     if(!fLane)
-    isLane = false;
+    	isLane = false;
+	else 
     isLane = true;
 }
 
@@ -235,8 +236,9 @@ void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
 }
 
-void LaneProcessing()
+void LaneProcessing(Point &preCenterPoint)
 {
+	cout << "preCenterPoint: " << preCenterPoint.x << " " << preCenterPoint.y << endl;
     bool isLane;
 
     //bool isLeft = true, isRight = true;
@@ -328,7 +330,9 @@ void LaneProcessing()
     else
     {
         putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-        centerPoint = preCenterPoint;
+        centerPoint.x = preCenterPoint.x;
+        centerPoint.y = preCenterPoint.y + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
+		
     }
 
     theta = getTheta(carPosition, centerPoint);
@@ -346,6 +350,7 @@ void LaneProcessing()
 
     putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
     printf("theta: %d\n", int(theta));
+	preCenterPoint.x = centerPoint.x;
     preCenterPoint.y = centerPoint.y - colorImg.rows*RATIO_HEIGHT_LANE_CROP;
 }
 

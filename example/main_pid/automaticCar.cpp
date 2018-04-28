@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 		    bitwise_not(binImg, binImg);
 
             // Process lane to get theta
-            LaneProcessing();
+            LaneProcessing(preCenterPoint);
             
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
