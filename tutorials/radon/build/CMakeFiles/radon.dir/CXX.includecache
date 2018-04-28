@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/Radon.cpp
+Radon.h
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/Radon.h
+
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/Radon.h
+iostream
+-
+opencv2/video/tracking.hpp
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/opencv2/video/tracking.hpp
+opencv2/features2d.hpp
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/opencv2/features2d.hpp
+opencv2/calib3d.hpp
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/opencv2/calib3d.hpp
+opencv2/imgproc.hpp
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/opencv2/imgproc.hpp
+opencv2/videoio.hpp
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/opencv2/videoio.hpp
+opencv2/highgui.hpp
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/opencv2/highgui.hpp
+Singleton.h
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/Singleton.h
+
+/home/viet/Downloads/thanhcong_96-driverless-car-85e51fc60238/jetson/carControl/src/0.3/radon/Singleton.h
+cstddef
+-
+

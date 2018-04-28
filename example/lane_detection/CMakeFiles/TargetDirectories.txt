@@ -1,0 +1,2 @@
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/CMakeFiles/vanishing-point.dir
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/CMakeFiles/test-vanishing-point.dir

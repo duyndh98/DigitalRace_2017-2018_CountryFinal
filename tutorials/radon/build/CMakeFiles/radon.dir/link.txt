@@ -1,0 +1,2 @@
+/usr/bin/ar qc libradon.a  CMakeFiles/radon.dir/Radon.cpp.o
+/usr/bin/ranlib libradon.a
