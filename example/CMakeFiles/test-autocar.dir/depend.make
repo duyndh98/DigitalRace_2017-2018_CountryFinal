@@ -169,6 +169,8 @@ CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: /home/ubuntu/Downloads/2-Lin
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.cpp
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/header.h
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/image_processing.h
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/sign.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: /usr/local/include/opencv/cxcore.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: /usr/local/include/opencv2/calib3d.hpp
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: /usr/local/include/opencv2/calib3d/calib3d_c.h

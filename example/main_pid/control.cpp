@@ -6,12 +6,14 @@ VideoStream colorStream;
 VideoStream *streams[1];
 VideoFrameRef frame_color;
 
-string org_filename, color_filename;
+string color_filename;
 GPIO *gpio;
 PCA9685* pca9685;
 int sw1_stat, sw2_stat, sw3_stat, sw4_stat;
 int sensor;
 int set_throttle_val, throttle_val;
+
+Sign mySign;
 
 void GPIO_init()
 {
@@ -45,7 +47,6 @@ void OpenNI_init()
 
     rc = OpenNI::initialize();
 
-    org_filename = "org.avi";
     color_filename = "color.avi";
 
     if (rc != STATUS_OK)
@@ -133,25 +134,43 @@ void updateSensorStatus()
     sensor = sensor_status;    
 }
 
-// void controlTurn(PCA9685 *&pca9685, int dir)
-// {
-//     if (dir == SIGN_LEFT)
-//     {
-//         double theta = ALPHA * 78;
-//         api_set_STEERING_control(pca9685, theta);
-//         cout << "Turn Left <<<<<<<<<<<<<<<<<<<<\n";
-//         sleep(1);
-//         cout << "Normal" << endl;
-//     }
-//     else if (dir == SIGN_RIGHT)
-//     {
-//         double theta = -ALPHA * 78;
-//         api_set_STEERING_control(pca9685, theta);
-//         cout << "Turn Right >>>>>>>>>>>>>>>>>>>>\n";
-//         sleep(1);
-//         cout << "Normal" << endl;
-//     }
-// }
+void signProcessing()
+{
+    if (mySign.detect())
+    {
+        mySign.recognize();
+        int signID = mySign.getClassID();
+        if (signID != NO_SIGN)
+        {
+            cout << signID << endl;
+            Rect signROI = mySign.getROI();
+            rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
+            if ((signROI.y + signROI.height) / 2 <= Y_TURN * FRAME_HEIGHT)
+                controlTurn(signID);
+        }
+    }
+}
+
+void controlTurn(int signID)
+{
+    if (signID == SIGN_LEFT)
+    {
+        putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+        theta = ALPHA_TURN;
+        sleep(TURN_TIME);
+    }
+    else if (signID == SIGN_RIGHT)
+    {
+        putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+        theta = -ALPHA_TURN;
+        sleep(TURN_TIME);
+    }
+    else
+    {
+        putText(colorImg, "Stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+        throttle_val = 0;
+    }
+}
 
 // double PID(double fps, int xCar, int xCenter, double &previous_error, double &intergral)
 // {
