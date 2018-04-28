@@ -247,7 +247,7 @@ void LaneProcessing()
     Mat binLaneImg = binImg(laneRect);
     Mat colorLaneImg = colorImg(laneRect);
 
-    cropBirdEye(binLaneImg, colorLaneImg);
+    //cropBirdEye(binLaneImg, colorLaneImg);
     Point centerPoint(binLaneImg.cols / 2, (1 - CENTER_POINT_Y) * binLaneImg.rows);
     Point centerLeft(0, (1 - CENTER_POINT_Y) * binLaneImg.rows);
     Point centerRight(binLaneImg.cols, (1 - CENTER_POINT_Y) * binLaneImg.rows);

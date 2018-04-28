@@ -743,8 +743,8 @@ clean: extract_info/CMakeFiles/extractInfo.dir/clean
 
 # All Build rule for target.
 extract_info/CMakeFiles/test_extract_info.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
-extract_info/CMakeFiles/test_extract_info.dir/all: extract_info/CMakeFiles/extractInfo.dir/all
 extract_info/CMakeFiles/test_extract_info.dir/all: radon/CMakeFiles/radon.dir/all
+extract_info/CMakeFiles/test_extract_info.dir/all: extract_info/CMakeFiles/extractInfo.dir/all
 	$(MAKE) -f extract_info/CMakeFiles/test_extract_info.dir/build.make extract_info/CMakeFiles/test_extract_info.dir/depend
 	$(MAKE) -f extract_info/CMakeFiles/test_extract_info.dir/build.make extract_info/CMakeFiles/test_extract_info.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  22
