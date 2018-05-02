@@ -111,7 +111,10 @@ int main(int argc, char *argv[])
 
             // Process lane to get theta
             LaneProcessing();
-	    printf("theta: %d\n", int(theta));            
+	    
+
+
+	printf("theta: %d\n", int(theta));            
 
             imshow("colorImg", colorImg);
 	    imshow("binImg", binImg);

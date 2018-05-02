@@ -70,6 +70,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/threshold-selection.dir/DependInfo.cmake"
   "CMakeFiles/test-autocar.dir/DependInfo.cmake"
+  "CMakeFiles/threshold-Depth.dir/DependInfo.cmake"
   "stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/DependInfo.cmake"
   "stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
   "stereo_vision/CMakeFiles/test-kinect-cv2.dir/DependInfo.cmake"

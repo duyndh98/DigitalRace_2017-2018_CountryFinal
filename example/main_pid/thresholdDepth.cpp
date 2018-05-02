@@ -1,3 +1,4 @@
+
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -9,11 +10,13 @@
 using namespace std;
 using namespace cv;
 
-#define VIDEO_FRAME_WIDTH 320
-#define VIDEO_FRAME_HEIGHT 240
+#define VIDEO_FRAME_WIDTH 640
+#define VIDEO_FRAME_HEIGHT 480
 
-int upper__bound= 80, lower__bound=0;
-int thresh_area_min= 20, thresh_area_max = 1000;
+
+Mat grayImg;
+int upper__bound= 55, lower__bound=0;
+int thresh_area_min= 20 ,thresh_area_max = 70000;
 void on_upper__bound_thresh_trackbar(int, void *)
 {
     upper__bound = max(upper__bound, lower__bound + 1);
@@ -123,7 +126,6 @@ api_kinect_cv_get_obtacle_rect( Mat& depthMap,
     vector<Rect> boundRect1( contours.size() );
     vector<Rect> boundRect2;
     //vector<vector<Point> > contourMax =contours[0];
-    
 
     for( int i = 0; i < contours.size(); i++ )
     {
@@ -135,7 +137,11 @@ api_kinect_cv_get_obtacle_rect( Mat& depthMap,
     Mat binImg1 = Mat::zeros(depthMap.size(), CV_8UC1);
     Mat binImg2 = Mat::zeros(depthMap.size(), CV_8UC1);
     
-    Rect boundRectMax = boundRect1[0];
+
+
+
+    Rect boundRectMax = Rect(0,0,0,0);
+
     for( int i = 0; i< contours.size(); i++ )
     {
         if( (boundRect1[i].area() > thresh_area_min)&&(boundRect1[i].area()<thresh_area_max))
@@ -158,8 +164,12 @@ api_kinect_cv_get_obtacle_rect( Mat& depthMap,
         if( tmp_outputBoxes[i].area() > 1.5*thresh_area_min )
             output_boxes.push_back( tmp_outputBoxes[i] + roi.tl());
     }
-if (contours.size() == 0 ) return false;
-    return true;
+    
+    if (contours.size() == 0)
+	return false;
+
+return true;
+
 }
 
 void
@@ -200,15 +210,14 @@ bool thoidiemre(Mat &depthMap)
     int upper_slice_idx = lower_slice_idx + slice_nb;
     //int lower__bound = DIST_MIN + lower_slice_idx * SLICE_DEPTH;
     //int upper__bound = lower__bound + slice_nb*SLICE_DEPTH;
-
-    Mat grayImage;
+    //Mat grayImage = colorImg.clone();
     vector< Rect > rects;
     Rect intersect;
     vector< Rect > output_boxes;
 
     Rect roi_1 = Rect(0, VIDEO_FRAME_HEIGHT/4,
                     VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT/2);
-    //Rect roi_2(0, 132, 640, 238);
+    Rect roi_2(0, VIDEO_FRAME_HEIGHT*1/3, VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT*1/3);
 
     int frame_width = VIDEO_FRAME_WIDTH;
     int frame_height = VIDEO_FRAME_HEIGHT;
@@ -217,10 +226,11 @@ bool thoidiemre(Mat &depthMap)
     //namedWindow("DepthImg", 1);
 
 
-    Mat crop_grayImage = grayImage(roi_1);
+//    Mat crop_grayImage = grayImage(roi_1);
     Mat crop_depthMap = depthMap(roi_1);
 
-    api_kinect_cv_get_obtacle_rect( depthMap, output_boxes, roi_1, lower__bound, upper__bound, thresh_area_min, thresh_area_max); 
+    api_kinect_cv_get_obtacle_rect( depthMap, output_boxes, roi_2, lower__bound, upper__bound, thresh_area_min, thresh_area_max); 
+
     //chinh lai trong api.cpp va file .h, truyen tham chieu cho 4 tham so cuoi
     Mat binImg = Mat::zeros(depthMap.size(), CV_8UC1);
 
@@ -228,7 +238,7 @@ bool thoidiemre(Mat &depthMap)
     Rect center_rect = rects[lower_slice_idx];
     //center_rect = center_rect + Size(0, slice_nb*SLICE_DEPTH); // lay center_rect
     if (output_boxes.size()==0) {
-        cout <<"NONE";
+        cout <<"NONE"<<endl;
         return false;
     }
     for( int i = 0; i< output_boxes.size(); i++ )
@@ -242,6 +252,9 @@ bool thoidiemre(Mat &depthMap)
                     //cout<< endl<< "Has Collision detect"<< flush;
                 }
         }
+
+
+
         /*//lay toa do, rong, cao.
     xL = intersect.x;
     xR = intersect.x + intersect.width;
@@ -250,12 +263,13 @@ bool thoidiemre(Mat &depthMap)
     h = intersect.height;*/
 
     imshow( "BoundingRect", binImg );
-    if(!grayImage.empty())
-        imshow( "gray", crop_grayImage );
+//    if(!grayImage.empty())
+//        imshow( "gray", crop_grayImage );
 
     if (!depthMap.empty() )
         imshow( "depth", crop_depthMap );
-    cout <<"YEP";
+    cout <<"YEP"<<endl;
+
     return true;
 }
 
@@ -302,7 +316,7 @@ api_kinect_cv_get_images(VideoCapture &capture,
 
 int main()
 {
-    Mat depthMap,grayImage;
+    Mat depthMap,grayImage,bgrImage;
 	VideoCapture capture;
 	capture.open( CV_CAP_OPENNI2 );
 	if( !capture.isOpened() )
@@ -317,14 +331,19 @@ int main()
 	//call funtion get depthImg
 
     namedWindow("Threshold Selection", WINDOW_NORMAL);
-    createTrackbar("lower__bound", "Threshold Selection", &lower__bound, 1000, on_lower__bound_thresh_trackbar);
-    createTrackbar("upper__bound", "Threshold Selection", &upper__bound, 1000, on_upper__bound_thresh_trackbar);
-    createTrackbar("thresh_area_min", "Threshold Selection", &thresh_area_min, 1000, on_thresh_area_min_thresh_trackbar);
-    createTrackbar("thresh_area_max", "Threshold Selection", &thresh_area_max, 1000, on_thresh_area_max_thresh_trackbar);
-    while ((char)waitKey(1) != 'q')
+    createTrackbar("lower__bound", "Threshold Selection", &lower__bound, 300, on_lower__bound_thresh_trackbar);
+    createTrackbar("upper__bound", "Threshold Selection", &upper__bound, 300, on_upper__bound_thresh_trackbar);
+    createTrackbar("thresh_area_min", "Threshold Selection", &thresh_area_min, 400, on_thresh_area_min_thresh_trackbar);
+    //createTrackbar("thresh_area_max", "Threshold Selection", &thresh_area_max, 800, on_thresh_area_max_thresh_trackbar);
+    
+	while ((char)waitKey(1) != 'q')
     {
+		
 	api_kinect_cv_get_images( capture, depthMap, grayImage);
-			if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
+	imshow("capture Img",grayImage);
+	//cout<<"width ="<<grayImage.cols<<"-height-="<<grayImage.rows<<endl;
+	
+	if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
 	        {
 	            cout<< endl<< "Error: Cannot bgr gray image";
 	            return -1;

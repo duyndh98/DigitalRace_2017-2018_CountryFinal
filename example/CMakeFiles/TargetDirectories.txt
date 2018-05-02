@@ -11,6 +11,7 @@
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/CMakeFiles/openni2.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/CMakeFiles/multilane.dir
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/threshold-Depth.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/kinect-cv2.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/test-kinect-cv2.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/CMakeFiles/uart.dir
