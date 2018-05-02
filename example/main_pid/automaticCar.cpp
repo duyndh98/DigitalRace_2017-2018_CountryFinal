@@ -18,9 +18,10 @@
 
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
-VideoWriter org_videoWriter, color_videoWriter;
+VideoWriter color_videoWriter;
 char key;
 Point preCenterPoint;
+Mat binSignImg;
 
 int main(int argc, char *argv[])
 {
@@ -35,13 +36,16 @@ int main(int argc, char *argv[])
     theta = 0;
 
     // Log
-    org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
+    //org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
     // Calculate FPS
     double st = 0, et = 0, fps = 0;
     double freq = getTickFrequency();
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+    
+    hasSign = false;
+
     // Run loop
     while (true)
     {
@@ -95,26 +99,37 @@ int main(int argc, char *argv[])
             
             // Preprocessing
             flip(colorImg, colorImg, 1);
-            colorImg.copyTo(orgImg);
-            
+            //colorImg.copyTo(orgImg);
             //hist_equalize(colorImg);
             medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
-            cvtColor(colorImg, grayImg, CV_BGR2GRAY);
             
+            // get lane binary image
             get_mask(hsvImg, binImg, false, false, true); // black
 		    bitwise_not(binImg, binImg);
 
+            // Get sign binary image
+            get_mask(hsvImg, binSignImg, true, true, false); // blue + red		
+            medianBlur(binSignImg, binSignImg, KERNEL_SIZE);		
+            imshow("binSignImg", binSignImg);
+
             // Process lane to get theta
-            LaneProcessing(preCenterPoint);
+            laneProcessing();
             
+            // Process traffic sign
+            signProcessing();
+
+            printf("theta: %d\n", int(theta));            		
+            imshow("colorImg", colorImg);		
+	        imshow("binImg", binImg);
+
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
 
             // Log video
-            if (!orgImg.empty())
-                org_videoWriter.write(orgImg);
+            // if (!orgImg.empty())
+            //     org_videoWriter.write(orgImg);
             if (!colorImg.empty())
                 color_videoWriter.write(colorImg);
             
@@ -123,8 +138,8 @@ int main(int argc, char *argv[])
             
             et = getTickCount();
             fps = 1.0 / ((et - st) / freq);
-            cerr << "FPS: " << fps << '\n';
-
+            printf("FPS: %lf\n", fps);
+            
             waitKey(1);
         }
         else
@@ -142,7 +157,7 @@ int main(int argc, char *argv[])
         }
     }
     // Release
-    org_videoWriter.release();
+    //org_videoWriter.release();
     color_videoWriter.release();
 
     return 0;

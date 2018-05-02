@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+Mat colorImg, hsvImg, binImg;
 double theta;
 //Point preCenterPoint;
 // My function
@@ -52,7 +52,7 @@ void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
 }
 */
 
-void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &preCenterPoint, Point &centerLeft, Point &centerRight, bool &isLane)
+void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane)
 {
     isLane = false;
     std::vector<std::vector<Point>> contours;
@@ -236,7 +236,7 @@ void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
 }
 
-void LaneProcessing(Point &preCenterPoint)
+void laneProcessing()
 {
 	cout << "preCenterPoint: " << preCenterPoint.x << " " << preCenterPoint.y << endl;
     bool isLane;
@@ -361,27 +361,3 @@ void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
     memcpy(color_img.data, color_img_data, FRAME_HEIGHT * FRAME_WIDTH * sizeof(RGB888Pixel));
     cvtColor(color_img, color_img, COLOR_RGB2BGR);
 }
-
-// void remOutlier(Mat &gray)
-// {
-//     int esize = 1;
-//     Mat element = getStructuringElement(MORPH_RECT,
-//                                                 Size(2 * esize + 1, 2 * esize + 1),
-//                                                 Point(esize, esize));
-//     erode(gray, gray, element);
-//     std::vector<std::vector<Point>> contours, polygons;
-//     std::vector<Vec4i> hierarchy;
-//     findContours(gray, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-//     for (size_t i = 0; i < contours.size(); ++i)
-//     {
-//         std::vector<Point> p;
-//         approxPolyDP(Mat(contours[i]), p, 2, true);
-//         polygons.push_back(p);
-//     }
-//     gray = Mat::zeros(gray.size(), CV_8UC3);
-//     for (size_t i = 0; i < polygons.size(); ++i)
-//     {
-//         Scalar color = Scalar(255, 255, 255);
-//         drawContours(gray, polygons, i, color, CV_FILLED);
-//     }
-// }

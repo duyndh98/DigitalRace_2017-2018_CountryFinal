@@ -85,7 +85,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL2 45
 
 // Global variables
-extern Mat orgImg, colorImg, hsvImg, grayImg, binImg;
+extern Mat colorImg, hsvImg, binImg, binSignImg;
 
 // Switch input
 extern int sw1_stat;
@@ -107,8 +107,8 @@ extern VideoFrameRef frame_color;
 extern VideoStream *streams[1];
 
 // Log    
-extern string org_filename, color_filename;
-extern VideoWriter org_videoWriter;
+extern string color_filename;
+//extern VideoWriter org_videoWriter;
 extern VideoWriter color_videoWriter;
 
 // Speed and direction
@@ -122,7 +122,7 @@ extern bool running, started, stopped;
 extern unsigned int bt_status;
 extern unsigned int sensor_status;
 extern char key;
-//public Point preCenterPoint;
+extern Point preCenterPoint;
 
 
 #endif
