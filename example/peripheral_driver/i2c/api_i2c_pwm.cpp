@@ -76,7 +76,7 @@ api_pwm_pca9685_release( PCA9685 *pca9685 )
     pca9685->closePCA9685();
 }
 ////////////////////////////////
-int api_set_FORWARD_control( PCA9685 *pca9685,int &throttle_val)
+int api_set_FORWARD_control( PCA9685 *pca9685,int throttle_val)
 {       
     int pwm = map( throttle_val, 0, 100, THROTTLE_NEUTRAL, THROTTLE_MAX_FORWARD ); 
     pca9685->setPWM(THROTTLE_CHANNEL,0, pwm);

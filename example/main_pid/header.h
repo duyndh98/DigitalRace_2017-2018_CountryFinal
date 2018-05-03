@@ -27,12 +27,12 @@ using namespace cv;
 using namespace std;
 using namespace cv::ml;
 
-#define LOW_HSV_BLUE Scalar(100, 100, 100)
+#define LOW_HSV_BLUE Scalar(100, 100, 70)
 #define HIG_HSV_BLUE Scalar(120, 255, 255)
 
-#define LOW_HSV_RED1 Scalar(0, 80, 100)
-#define HIG_HSV_RED1 Scalar(5, 255, 255)
-#define LOW_HSV_RED2 Scalar(170, 80, 100)
+#define LOW_HSV_RED1 Scalar(0, 100, 70)
+#define HIG_HSV_RED1 Scalar(10, 255, 255)
+#define LOW_HSV_RED2 Scalar(170, 100, 70)
 #define HIG_HSV_RED2 Scalar(180, 255, 255)
 
 #define LOW_HSV_GREEN Scalar(34, 80, 100)
@@ -56,7 +56,7 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA 1.5
+#define ALPHA 2
 #define ALPHA_TURN 100
 
 #define SW1_PIN 160
@@ -78,9 +78,13 @@ using namespace cv::ml;
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
 #define MIN_SIGN_TURN 1400
+#define MIN_SIGN_STOP 1400
+
+#define SIGN_THROTTLE 30
 
 #define Y_TURN 0.2
-#define TURN_TIME 1
+#define TURN_TIME 500*1000
+#define STOP_TIME 5
 
 #define KI 0.3
 #define KP 0.1
@@ -129,5 +133,5 @@ extern unsigned int sensor_status;
 extern char key;
 extern Point preCenterPoint;
 extern bool hasSign;
-
+extern int backupThrottle;
 #endif

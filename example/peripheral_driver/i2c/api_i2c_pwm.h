@@ -54,6 +54,6 @@ api_pwm_pca9685_init( PCA9685 *pca9685);
 
 void
 api_pwm_pca9685_release( PCA9685 *pca9685 );
-int api_set_FORWARD_control(PCA9685 *pca9685,int &throttle_val);
+int api_set_FORWARD_control(PCA9685 *pca9685,int throttle_val);
 int api_set_REVERSE_control( PCA9685 *pca9685,int &throttle_val);
 int api_set_STEERING_control(PCA9685 *pca9685,double theta);

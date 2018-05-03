@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
             flip(colorImg, colorImg, 1);
             //colorImg.copyTo(orgImg);
             //hist_equalize(colorImg);
-            medianBlur(colorImg, colorImg, KERNEL_SIZE);
+            //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
             
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
@@ -123,25 +123,24 @@ int main(int argc, char *argv[])
             signProcessing();
 
             printf("theta: %d\n", int(theta));            		
-            imshow("colorImg", colorImg);		
-	        imshow("binImg", binImg);
 
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
-
             // Log video
             // if (!orgImg.empty())
             //     org_videoWriter.write(orgImg);
             if (!colorImg.empty())
                 color_videoWriter.write(colorImg);
             
-	        imshow("bin", binImg);
-            imshow("color", colorImg);
-            
             et = getTickCount();
             fps = 1.0 / ((et - st) / freq);
             printf("FPS: %lf\n", fps);
+	    putText(colorImg, "FPS " + to_string(int(fps)), Point(200, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+
+            imshow("bin", binImg);
+            imshow("color", colorImg);
+            
             
             waitKey(1);
         }

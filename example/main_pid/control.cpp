@@ -15,6 +15,7 @@ int set_throttle_val, throttle_val;
 
 Sign mySign;
 bool hasSign;
+int backupThrottle;
 
 void GPIO_init()
 {
@@ -151,14 +152,17 @@ void signProcessing()
         signID = mySign.getClassID();
         if (signID != NO_SIGN)
         {
-            hasSign = true;
-            theta = 0;
-
+            if (!hasSign)
+		backupThrottle = set_throttle_val;
+	    set_throttle_val = SIGN_THROTTLE;
+	    theta = 0;
+	    hasSign = true;
+            
             cout << signID << endl;
             Rect signROI = mySign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "Sign area: " << signROI.height * signROI.width << endl;
-            if (signROI.height * signROI.width >= MIN_SIGN_TURN)
+	    if ((signID == 3 && signROI.height * signROI.width >= MIN_SIGN_STOP) || (signID != 3 && signROI.height * signROI.width >= MIN_SIGN_TURN))
             {
                 controlTurn(signID);
                 mySign.resetClassID();
@@ -173,18 +177,27 @@ void controlTurn(int signID)
     if (signID == SIGN_LEFT)
     {
         putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        theta = -ALPHA_TURN;
-        sleep(TURN_TIME);
+        theta = ALPHA_TURN;
+	api_set_STEERING_control(pca9685, theta);
+	imshow("color", colorImg);
+        usleep(TURN_TIME);
     }
     else if (signID == SIGN_RIGHT)
     {
         putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        theta = ALPHA_TURN;
-        sleep(TURN_TIME);
+        theta = -ALPHA_TURN;
+	api_set_STEERING_control(pca9685, theta);
+	imshow("color", colorImg);
+        usleep(TURN_TIME);
     }
     else
     {
         putText(colorImg, "Stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        set_throttle_val = 0;
+        api_set_FORWARD_control(pca9685, -30);
+	usleep(300*1000);
+	api_set_FORWARD_control(pca9685, 0);
+	imshow("color", colorImg);
+	sleep(STOP_TIME);
     }
+    set_throttle_val = backupThrottle;
 }
