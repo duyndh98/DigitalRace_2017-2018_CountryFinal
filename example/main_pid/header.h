@@ -32,8 +32,8 @@ using namespace cv::ml;
 
 #define LOW_HSV_RED1 Scalar(0, 100, 70)
 #define HIG_HSV_RED1 Scalar(10, 255, 255)
-#define LOW_HSV_RED2 Scalar(170, 100, 70)
-#define HIG_HSV_RED2 Scalar(180, 255, 255)
+#define LOW_HSV_RED2 Scalar(0, 0, 0)
+#define HIG_HSV_RED2 Scalar(0, 0, 0)
 
 #define LOW_HSV_GREEN Scalar(34, 80, 100)
 #define HIG_HSV_GREEN Scalar(83, 255, 255)
@@ -49,6 +49,7 @@ using namespace cv::ml;
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
 #define DIF_RATIO_SIGN_AREA 0.1
 #define MIN_SIGN_AREA 200
+#define MIN_DISTANCE 15
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
@@ -69,7 +70,7 @@ using namespace cv::ml;
 #define MIN_LANE_AREA 500
 #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
 #define RATIO_WIDTH_LANE_CROP 0.5
-#define RATIO_HEIGHT_LANE_CROP 0.4
+#define RATIO_HEIGHT_LANE_CROP 0.45
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
 #define CENTER_POINT_Y 0.4
 
@@ -94,7 +95,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL2 45
 
 // Global variables
-extern Mat colorImg, hsvImg, binImg, binSignImg, grayImg;
+extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg;
 
 // Switch input
 extern int sw1_stat;

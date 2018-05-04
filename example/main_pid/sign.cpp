@@ -1,5 +1,7 @@
 #include "sign.h"
 
+Mat binBlueImg, binRedImg;
+
 Sign::Sign()
 {
 	_hog = HOGDescriptor(Size(SIGN_SIZE, SIGN_SIZE),
@@ -14,11 +16,15 @@ Sign::Sign()
 	_class_id = 0;
 }
 
-bool Sign::detect()
+bool Sign::detect(bool blueSign)
 {
 	vector< vector<Point> > contours;
 	vector<Vec4i> hierarchy;
-	findContours(binSignImg, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	
+	if (blueSign)
+		findContours(binBlueImg, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	else
+		findContours(binRedImg, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	// set default is no sign found
 	double max_area = MIN_SIGN_AREA;

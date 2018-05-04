@@ -14,7 +14,7 @@ private:
 
 public:
 	Sign();
-	bool detect();
+	bool detect(bool blueSign);
 	void recognize();
 	void classify(Mat &graySignimg);
 	int getClassID();

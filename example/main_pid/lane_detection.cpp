@@ -71,7 +71,6 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
         if (area >= AREA_MIN)
         {
             double check = 0;
-            fLane = true;
             Point pMin(binLaneImg.cols,0);
             Point pMax(0,0);
             drawContours(binLaneImg, contours, i, Scalar(255), CV_FILLED);
@@ -99,6 +98,10 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
             p1.y = p1.y/countUp;
             p2.x = p2.x/countDown;
             p2.y = p2.y/countDown;
+            double checkDistance = sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+            if(checkDistance < MIN_DISTANCE)
+                continue;
+            cout << "checkDistance: " << checkDistance << endl;
             line(colorLaneImg, p1, p2, Scalar(0, 255, 255), 3);
             circle(colorLaneImg, pMin, 2, Scalar(25, 255, 255), 3);
             circle(colorLaneImg, pMax, 2, Scalar(255, 0, 255), 3);
@@ -140,6 +143,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
                 }
             }
             cout << "check: " << check << endl;
+	    fLane = true;
         }
     }
     cout << "center point: " << preCenterPoint.y << endl;

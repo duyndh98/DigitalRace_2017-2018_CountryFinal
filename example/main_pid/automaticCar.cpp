@@ -21,7 +21,7 @@ unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
 char key;
 Point preCenterPoint;
-Mat binSignImg, grayImg;
+Mat grayImg;
 //bool hasSign;
 
 int main(int argc, char *argv[])
@@ -112,10 +112,17 @@ int main(int argc, char *argv[])
 		    bitwise_not(binImg, binImg);
 
             // Get sign binary image
-            get_mask(hsvImg, binSignImg, true, true, false); // blue + red		
-            medianBlur(binSignImg, binSignImg, KERNEL_SIZE);		
-            imshow("binSignImg", binSignImg);
-
+            get_mask(hsvImg, binBlueImg, true, false, false); // blue
+            get_mask(hsvImg, binRedImg, false, true, false); // red
+	Mat element = getStructuringElement( MORPH_RECT,Size( 2*7+1, 2*7+1 ),Point( 7, 7 ) );
+	dilate(binRedImg,binRedImg,element);
+	erode( binRedImg,binRedImg, element );	
+            medianBlur(binBlueImg, binBlueImg, KERNEL_SIZE);		
+            medianBlur(binRedImg, binRedImg, KERNEL_SIZE);		
+	    
+            imshow("binBlueImg", binBlueImg);
+            imshow("binRedImg", binRedImg);
+            
             // Process lane to get theta
             laneProcessing();
             

@@ -15,7 +15,7 @@ int set_throttle_val, throttle_val;
 
 Sign mySign;
 bool hasSign;
-int backupThrottle;
+int backupThrottle;	
 
 void GPIO_init()
 {
@@ -146,7 +146,11 @@ void signProcessing()
     else if (signID == SIGN_STOP)
         putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
     
-    if (mySign.detect())
+    bool detected = mySign.detect(true); // blue
+    if (!detected)
+	detected = mySign.detect(false); // red
+
+    if (detected)
     {
         mySign.recognize();
         signID = mySign.getClassID();
