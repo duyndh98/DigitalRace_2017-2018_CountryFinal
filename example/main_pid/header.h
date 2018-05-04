@@ -79,12 +79,12 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
-#define MIN_SIGN_TURN 1400
-#define MIN_SIGN_STOP 600
-#define SIGN_THROTTLE 30
+#define MIN_SIGN_TURN 1000
+#define MIN_SIGN_STOP 400
+//#define SIGN_THROTTLE 40
 
-#define Y_TURN 0.2
-#define TURN_TIME 500*1000
+//#define Y_TURN 0.2
+#define TURN_TIME 300*1000
 #define STOP_TIME 5
 
 #define KI 0.3
@@ -93,6 +93,8 @@ using namespace cv::ml;
 
 #define THROTTLE_VAL1 35
 #define THROTTLE_VAL2 45
+#define THROTTLE_VAL3 55
+#define THROTTLE_VAL4 65
 
 // Global variables
 extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg;

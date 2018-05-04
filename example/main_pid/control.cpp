@@ -95,21 +95,6 @@ void PCA9685_init()
 void updateButtonStatus()
 {
     // Update status of physical buttons
-    gpio->gpioGetValue(SW4_PIN, &bt_status);
-    if (!bt_status)
-    {
-        if (bt_status != sw4_stat)
-        {
-            running = !running;
-            sw4_stat = bt_status;
-            throttle_val = THROTTLE_VAL1;
-            set_throttle_val = THROTTLE_VAL1;
-            backupThrottle = throttle_val;
-        }
-    }
-    else
-        sw4_stat = bt_status;
-
     gpio->gpioGetValue(SW1_PIN, &bt_status);
     if (!bt_status)
     {
@@ -117,13 +102,58 @@ void updateButtonStatus()
         {
             running = !running;
             sw1_stat = bt_status;
+            throttle_val = THROTTLE_VAL1;
+            set_throttle_val = THROTTLE_VAL1;
+            backupThrottle = throttle_val;
+        }
+    }
+    else
+        sw1_stat = bt_status;
+    
+    gpio->gpioGetValue(SW2_PIN, &bt_status);
+    if (!bt_status)
+    {
+        if (bt_status != sw2_stat)
+        {
+            running = !running;
+            sw2_stat = bt_status;
             throttle_val = THROTTLE_VAL2;
             set_throttle_val = THROTTLE_VAL2;
             backupThrottle = throttle_val;
         }
     }
     else
-        sw1_stat = bt_status;
+        sw2_stat = bt_status;
+    
+    gpio->gpioGetValue(SW3_PIN, &bt_status);
+    if (!bt_status)
+    {
+        if (bt_status != sw3_stat)
+        {
+            running = !running;
+            sw3_stat = bt_status;
+            throttle_val = THROTTLE_VAL3;
+            set_throttle_val = THROTTLE_VAL3;
+            backupThrottle = throttle_val;
+        }
+    }
+    else
+        sw3_stat = bt_status;
+
+    gpio->gpioGetValue(SW4_PIN, &bt_status);
+    if (!bt_status)
+    {
+        if (bt_status != sw4_stat)
+        {
+            running = !running;
+            sw4_stat = bt_status;
+            throttle_val = THROTTLE_VAL4;
+            set_throttle_val = THROTTLE_VAL4;
+            backupThrottle = throttle_val;
+        }
+    }
+    else
+        sw4_stat = bt_status;
 }
 
 void updateSensorStatus()
@@ -160,17 +190,18 @@ void signProcessing()
         if (signID != NO_SIGN)
         {
             if (!hasSign)
-		backupThrottle = set_throttle_val;
+	        	backupThrottle = set_throttle_val;
      
-	    set_throttle_val = SIGN_THROTTLE;
-	    theta = 0;
-	    hasSign = true;
-            
+            set_throttle_val = set_throttle_val * 0.75;
+            theta = 0;
+            hasSign = true;
+                
             cout << signID << endl;
             Rect signROI = mySign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "Sign area: " << signROI.height * signROI.width << endl;
-	    if ((signID == 3 && signROI.height * signROI.width >= MIN_SIGN_STOP) || (signID != 3 && signROI.height * signROI.width >= MIN_SIGN_TURN))
+	        
+            if ((signID == 3 && signROI.height * signROI.width >= MIN_SIGN_STOP) || (signID != 3 && signROI.height * signROI.width >= MIN_SIGN_TURN))
             {
                 controlTurn(signID);
                 mySign.resetClassID();
@@ -186,28 +217,26 @@ void controlTurn(int signID)
     {
         putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         theta = ALPHA_TURN;
-	api_set_STEERING_control(pca9685, theta);
-	imshow("color", colorImg);
+        api_set_STEERING_control(pca9685, theta);
+        imshow("color", colorImg);
         usleep(TURN_TIME);
     }
     else if (signID == SIGN_RIGHT)
     {
         putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         theta = -ALPHA_TURN;
-	api_set_STEERING_control(pca9685, theta);
-	imshow("color", colorImg);
+        api_set_STEERING_control(pca9685, theta);
+        imshow("color", colorImg);
         usleep(TURN_TIME);
     }
     else
     {
         putText(colorImg, "Stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         api_set_FORWARD_control(pca9685, -30);
-	usleep(300*1000);
-	api_set_FORWARD_control(pca9685, 0);
-	imshow("color", colorImg);
-	sleep(STOP_TIME);
+        usleep(300*1000);
+        api_set_FORWARD_control(pca9685, 0);
+        imshow("color", colorImg);
+        sleep(STOP_TIME);
     }
     set_throttle_val = backupThrottle;
-
-
 }

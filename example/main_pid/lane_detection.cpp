@@ -289,7 +289,6 @@ void laneProcessing()
         putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
         centerPoint.x = preCenterPoint.x;
         centerPoint.y = preCenterPoint.y + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
-		
     }
 
     theta = getTheta(carPosition, centerPoint);
