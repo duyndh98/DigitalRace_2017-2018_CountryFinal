@@ -6,10 +6,13 @@
 void GPIO_init();
 void OpenNI_init();
 void PCA9685_init();
+void LCD_init();
 void updateButtonStatus();
 void updateSensorStatus();
 void updateKeyBoardInput();
+void updateLCD();
 void signProcessing();
+void setupThrottle();
 void controlTurn(int signID);
 double PID(double fps, int xCar, int xCenter, double &previous_error, double &intergral);
     

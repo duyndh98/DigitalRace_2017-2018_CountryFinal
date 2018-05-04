@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     GPIO_init();
     OpenNI_init();
     PCA9685_init();
+    LCD_init();
 
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
@@ -46,10 +47,11 @@ int main(int argc, char *argv[])
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     
     hasSign = false;
-
+    set_throttle_val = INIT_THROTTLE;
     // Run loop
     while (true)
     {
+        updateLCD();
         printf("---------------------------\n");
         st = getTickCount();
         
@@ -154,6 +156,7 @@ int main(int argc, char *argv[])
         }
         else
         {
+            setupThrottle();
             theta = 0;
             throttle_val = 0;
             if (!stopped)
@@ -163,7 +166,7 @@ int main(int argc, char *argv[])
                 started = false;
             }
             api_set_FORWARD_control(pca9685, throttle_val);
-            sleep(1);
+            //usleep(200000);
         }
     }
     // Release

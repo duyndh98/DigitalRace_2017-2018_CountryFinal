@@ -8,14 +8,17 @@ VideoFrameRef frame_color;
 
 string color_filename;
 GPIO *gpio;
-PCA9685* pca9685;
+PCA9685 *pca9685;
+I2C *i2c_device;
+LCDI2C *lcd;
+
 int sw1_stat, sw2_stat, sw3_stat, sw4_stat;
 int sensor;
 int set_throttle_val, throttle_val;
 
 Sign mySign;
 bool hasSign;
-int backupThrottle;	
+int backupThrottle;
 
 void GPIO_init()
 {
@@ -25,8 +28,8 @@ void GPIO_init()
     sw2_stat = 1;
     sw3_stat = 1;
     sw4_stat = 1;
-    sensor = 0;
-    
+    sensor = 1;
+
     gpio = new GPIO();
     gpio->gpioExport(SW1_PIN);
     gpio->gpioExport(SW2_PIN);
@@ -44,7 +47,7 @@ void GPIO_init()
 void OpenNI_init()
 {
     printf("OpenNI init...\n");
-    
+
     streams[0] = {&colorStream};
 
     rc = OpenNI::initialize();
@@ -92,6 +95,29 @@ void PCA9685_init()
     //backupThrottle = THROTTLE_VAL2;
 }
 
+void LCD_init()
+{
+    i2c_device = new I2C();
+    lcd = new LCDI2C();
+    i2c_device->m_i2c_bus = 2;
+
+    lcd->LCDInit(i2c_device, 0x38, 20, 4);
+    lcd->LCDBacklightOn();
+    lcd->LCDCursorOn();
+
+    lcd->LCDSetCursor(0, 0);
+    lcd->LCDPrintStr("..:DRIVERLESS CAR:..");
+
+    lcd->LCDSetCursor(4, 1);
+    lcd->LCDPrintStr("SOPHIA TEAM");
+
+    lcd->LCDSetCursor(3, 2);
+    lcd->LCDPrintStr("Throttle: xx");
+
+    lcd->LCDSetCursor(4, 3);
+    lcd->LCDPrintStr("Sensor: x");
+}
+
 void updateButtonStatus()
 {
     // Update status of physical buttons
@@ -102,43 +128,12 @@ void updateButtonStatus()
         {
             running = !running;
             sw1_stat = bt_status;
-            throttle_val = THROTTLE_VAL1;
-            set_throttle_val = THROTTLE_VAL1;
+            throttle_val = set_throttle_val;
             backupThrottle = throttle_val;
         }
     }
     else
         sw1_stat = bt_status;
-    
-    gpio->gpioGetValue(SW2_PIN, &bt_status);
-    if (!bt_status)
-    {
-        if (bt_status != sw2_stat)
-        {
-            running = !running;
-            sw2_stat = bt_status;
-            throttle_val = THROTTLE_VAL2;
-            set_throttle_val = THROTTLE_VAL2;
-            backupThrottle = throttle_val;
-        }
-    }
-    else
-        sw2_stat = bt_status;
-    
-    gpio->gpioGetValue(SW3_PIN, &bt_status);
-    if (!bt_status)
-    {
-        if (bt_status != sw3_stat)
-        {
-            running = !running;
-            sw3_stat = bt_status;
-            throttle_val = THROTTLE_VAL3;
-            set_throttle_val = THROTTLE_VAL3;
-            backupThrottle = throttle_val;
-        }
-    }
-    else
-        sw3_stat = bt_status;
 
     gpio->gpioGetValue(SW4_PIN, &bt_status);
     if (!bt_status)
@@ -147,13 +142,40 @@ void updateButtonStatus()
         {
             running = !running;
             sw4_stat = bt_status;
-            throttle_val = THROTTLE_VAL4;
-            set_throttle_val = THROTTLE_VAL4;
+            throttle_val = set_throttle_val;
             backupThrottle = throttle_val;
         }
     }
     else
         sw4_stat = bt_status;
+}
+
+void setupThrottle()
+{
+
+    gpio->gpioGetValue(SW2_PIN, &bt_status);
+    if (!bt_status)
+    {
+        if (bt_status != sw2_stat)
+        {
+            sw2_stat = bt_status;
+            set_throttle_val += 5;
+        }
+    }
+    else
+        sw2_stat = bt_status;
+
+    gpio->gpioGetValue(SW3_PIN, &bt_status);
+    if (!bt_status)
+    {
+        if (bt_status != sw3_stat)
+        {
+            sw3_stat = bt_status;
+            set_throttle_val -= 5;
+        }
+    }
+    else
+        sw3_stat = bt_status;
 }
 
 void updateSensorStatus()
@@ -165,8 +187,21 @@ void updateSensorStatus()
     {
         running = true;
         throttle_val = set_throttle_val;
+        backupThrottle = throttle_val;
     }
-    sensor = sensor_status;    
+    sensor = sensor_status;
+}
+
+void updateLCD()
+{
+    lcd->LCDSetCursor(13, 2);
+    std::string s = std::to_string(set_throttle_val);
+    char const *pchar_throttle = s.c_str();
+    lcd->LCDPrintStr(pchar_throttle);
+    lcd->LCDSetCursor(12, 3);
+    s = std::to_string(sensor_status);
+    char const *pchar_sensor = s.c_str();
+    lcd->LCDPrintStr(pchar_sensor);
 }
 
 void signProcessing()
@@ -178,10 +213,10 @@ void signProcessing()
         putText(colorImg, "Sign right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
     else if (signID == SIGN_STOP)
         putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-    
+
     bool detected = mySign.detect(true); // blue
     if (!detected)
-	detected = mySign.detect(false); // red
+        detected = mySign.detect(false); // red
 
     if (detected)
     {
@@ -189,23 +224,24 @@ void signProcessing()
         signID = mySign.getClassID();
         if (signID != NO_SIGN)
         {
-            if (!hasSign){
-	        	backupThrottle = set_throttle_val;
-            		set_throttle_val = set_throttle_val * 0.75;
-		}
+            if (!hasSign)
+            {
+                backupThrottle = set_throttle_val;
+                set_throttle_val = set_throttle_val * 0.75;
+            }
             theta = 0;
             hasSign = true;
-                
+
             cout << signID << endl;
             Rect signROI = mySign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "Sign area: " << signROI.height * signROI.width << endl;
-	        
+
             if ((signID == 3 && signROI.height * signROI.width >= MIN_SIGN_STOP) || (signID != 3 && signROI.height * signROI.width >= MIN_SIGN_TURN))
             {
                 controlTurn(signID);
                 mySign.resetClassID();
-            }    
+            }
         }
     }
 }
@@ -233,7 +269,7 @@ void controlTurn(int signID)
     {
         putText(colorImg, "Stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         api_set_FORWARD_control(pca9685, -30);
-        usleep(300*1000);
+        usleep(300 * 1000);
         api_set_FORWARD_control(pca9685, 0);
         imshow("color", colorImg);
         sleep(STOP_TIME);

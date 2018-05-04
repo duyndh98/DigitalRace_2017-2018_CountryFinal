@@ -95,6 +95,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL2 50
 #define THROTTLE_VAL3 65
 #define THROTTLE_VAL4 100
+#define INIT_THROTTLE 45
 
 // Global variables
 extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg;
@@ -117,6 +118,11 @@ extern VideoStream colorStream;
 
 extern VideoFrameRef frame_color;
 extern VideoStream *streams[1];
+
+// LCD
+
+extern I2C *i2c_device;
+extern LCDI2C *lcd;
 
 // Log    
 extern string color_filename;
