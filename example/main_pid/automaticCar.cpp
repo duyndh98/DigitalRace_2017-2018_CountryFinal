@@ -22,7 +22,6 @@ VideoWriter color_videoWriter;
 char key;
 Point preCenterPoint;
 Mat grayImg;
-//bool hasSign;
 
 int main(int argc, char *argv[])
 {
@@ -37,7 +36,6 @@ int main(int argc, char *argv[])
     theta = 0;
 
     // Log
-    //org_videoWriter.open(org_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
     // Calculate FPS
@@ -69,6 +67,7 @@ int main(int argc, char *argv[])
             theta = 0;
             throttle_val = 0;
             api_set_FORWARD_control(pca9685, throttle_val);
+            api_set_STEERING_control(pca9685, theta);
             break;
         }
         
@@ -82,7 +81,7 @@ int main(int argc, char *argv[])
                 started = true;
                 stopped = false;
                 throttle_val = set_throttle_val;
-                api_set_FORWARD_control(pca9685, throttle_val);
+                api_set_FORWARD_control(pca9685, throttle_val);   
             }
             
             // Update stream
@@ -100,7 +99,6 @@ int main(int argc, char *argv[])
             
             // Preprocessing
             flip(colorImg, colorImg, 1);
-            //colorImg.copyTo(orgImg);
             //hist_equalize(colorImg);
             //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
@@ -114,9 +112,10 @@ int main(int argc, char *argv[])
             // Get sign binary image
             get_mask(hsvImg, binBlueImg, true, false, false); // blue
             get_mask(hsvImg, binRedImg, false, true, false); // red
-	Mat element = getStructuringElement( MORPH_RECT,Size( 2*7+1, 2*7+1 ),Point( 7, 7 ) );
-	dilate(binRedImg,binRedImg,element);
-	erode( binRedImg,binRedImg, element );	
+            // Mat element = getStructuringElement( MORPH_RECT,Size( 2*7+1, 2*7+1 ),Point( 7, 7 ) );
+            // dilate(binRedImg,binRedImg,element);
+            // erode( binRedImg,binRedImg, element );	
+            
             medianBlur(binBlueImg, binBlueImg, KERNEL_SIZE);		
             medianBlur(binRedImg, binRedImg, KERNEL_SIZE);		
 	    
