@@ -89,6 +89,7 @@ void PCA9685_init()
     api_pwm_pca9685_init(pca9685);
     if (pca9685->error >= 0)
         api_set_FORWARD_control(pca9685, throttle_val);
+    //backupThrottle = THROTTLE_VAL2;
 }
 
 void updateButtonStatus()
@@ -103,6 +104,7 @@ void updateButtonStatus()
             sw4_stat = bt_status;
             throttle_val = THROTTLE_VAL1;
             set_throttle_val = THROTTLE_VAL1;
+            backupThrottle = throttle_val;
         }
     }
     else
@@ -117,6 +119,7 @@ void updateButtonStatus()
             sw1_stat = bt_status;
             throttle_val = THROTTLE_VAL2;
             set_throttle_val = THROTTLE_VAL2;
+            backupThrottle = throttle_val;
         }
     }
     else
@@ -158,6 +161,7 @@ void signProcessing()
         {
             if (!hasSign)
 		backupThrottle = set_throttle_val;
+     
 	    set_throttle_val = SIGN_THROTTLE;
 	    theta = 0;
 	    hasSign = true;
@@ -204,4 +208,6 @@ void controlTurn(int signID)
 	sleep(STOP_TIME);
     }
     set_throttle_val = backupThrottle;
+
+
 }

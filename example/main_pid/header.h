@@ -46,10 +46,11 @@ using namespace cv::ml;
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
-#define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.2
-#define DIF_RATIO_SIGN_AREA 0.1
+#define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.5
+#define DIF_RATIO_SIGN_AREA 0.2
 #define MIN_SIGN_AREA 200
 #define MIN_DISTANCE 15
+#define DIF_RATIO_2_PART_SIGN_STOP_AREA 0.2
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
 #define FRAME_WIDTH 320
@@ -80,7 +81,6 @@ using namespace cv::ml;
 #define SIGN_STOP 3
 #define MIN_SIGN_TURN 1400
 #define MIN_SIGN_STOP 600
-
 #define SIGN_THROTTLE 30
 
 #define Y_TURN 0.2

@@ -4,54 +4,6 @@
 
 Mat colorImg, hsvImg, binImg;
 double theta;
-//bool hasSign;
-//Point preCenterPoint;
-// My function
-/*
-void filterLane(Mat &binLaneImg, bool &isLine, int &centerX, int check)
-{
-    isLine = false;
-    if (check < 0) // Left
-    	centerX = 0;
-	else // Right
-        centerX = binLaneImg.cols;
-
-    std::vector<std::vector<Point>> contours;
-    std::vector<Vec4i> hierarchy;
-    findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-    
-    if (contours.size() == 0)
-        return;
-    
-    binLaneImg = Mat::zeros(binLaneImg.size(), CV_8UC1);
-    
-    for (int i = 0; i < (int)contours.size(); ++i)
-    {
-        int area = contourArea(contours[i]);
-        if (area >= AREA_MIN)
-        {
-            drawContours(binLaneImg, contours, i, Scalar(255), CV_FILLED);
-            isLine = true;
-            if (check < 0) // Left
-            {
-                // Find the most right vertice (xmax)
-                for (int j = 0; j < contours[i].size(); ++j)
-                    if (contours[i][j].x > centerX)
-                        centerX = contours[i][j].x;
-            }
-            else // Right
-            {
-                for (int j = 0; j < contours[i].size(); ++j)
-                {
-                    // Find the most left vertice (xmin)
-                    if (contours[i][j].x < centerX)
-                        centerX = contours[i][j].x;
-                }	
-            }
-        }
-    }
-}
-*/
 
 void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane)
 {
