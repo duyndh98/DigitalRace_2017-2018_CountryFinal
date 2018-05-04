@@ -92,9 +92,9 @@ using namespace cv::ml;
 #define KD 0.01
 
 #define THROTTLE_VAL1 35
-#define THROTTLE_VAL2 45
-#define THROTTLE_VAL3 55
-#define THROTTLE_VAL4 65
+#define THROTTLE_VAL2 50
+#define THROTTLE_VAL3 65
+#define THROTTLE_VAL4 100
 
 // Global variables
 extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg;
@@ -135,6 +135,8 @@ extern unsigned int bt_status;
 extern unsigned int sensor_status;
 extern char key;
 extern Point preCenterPoint;
+extern Point preLeft;
+extern Point preRight;
 extern bool hasSign;
 extern int backupThrottle;
 #endif

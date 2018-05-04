@@ -22,6 +22,8 @@ VideoWriter color_videoWriter;
 char key;
 Point preCenterPoint;
 Mat grayImg;
+Point preLeft;
+Point preRight;
 
 int main(int argc, char *argv[])
 {

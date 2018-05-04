@@ -8,6 +8,8 @@ double theta;
 void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane)
 {
     isLane = false;
+    bool isLeft = false;
+    bool isRight = false;
     std::vector<std::vector<Point>> contours;
     std::vector<Vec4i> hierarchy;
     findContours(binLaneImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
@@ -53,7 +55,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
             double checkDistance = sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
             if(checkDistance < MIN_DISTANCE)
                 continue;
-            cout << "checkDistance: " << checkDistance << endl;
+            //cout << "checkDistance: " << checkDistance << endl;
             line(colorLaneImg, p1, p2, Scalar(0, 255, 255), 3);
             circle(colorLaneImg, pMin, 2, Scalar(25, 255, 255), 3);
             circle(colorLaneImg, pMax, 2, Scalar(255, 0, 255), 3);
@@ -69,11 +71,12 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
                 check = (double)(binLaneImg.rows-pB)/pA;
                 if(pA==0)
                     continue;
-                cout << "min(" << pMin.x << "," << pMin.y << "), max" << pMax.x  << pMax.y << ")" << endl;
+                //cout << "min(" << pMin.x << "," << pMin.y << "), max" << pMax.x  << pMax.y << ")" << endl;
                 circle(colorLaneImg, Point(check,preCenterPoint.y), 2, Scalar(255, 255, 255), 3);
-                cout << "p1(" << p1.x << "," << p1.y << "),p2(" << p2.x << "," << p2.y<< ") check: " << check << endl;
+                //cout << "p1(" << p1.x << "," << p1.y << "),p2(" << p2.x << "," << p2.y<< ") check: " << check << endl;
             }
             if(check>preCenterPoint.x){
+                isRight = true;
                 if(vg){
                     check = pMin.x;
                 } else {
@@ -84,6 +87,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
                     centerRight.x = check;
                 }
             } else {
+                isLeft = true;
                 if(vg){
                     check = pMax.x;
                 } else {
@@ -94,11 +98,17 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
                     centerLeft.x = check;
                 }
             }
-            cout << "check: " << check << endl;
+            //cout << "check: " << check << endl;
 	    fLane = true;
         }
     }
-    cout << "center point: " << preCenterPoint.y << endl;
+    if(!isLeft)
+        centerLeft = preLeft;
+    if(!isRight)
+        centerRight = preRight;
+    preLeft = centerLeft;
+    preRight = centerRight;
+    //cout << "center point: " << preCenterPoint.y << endl;
     if(!fLane)
     	isLane = false;
 	else 

@@ -84,6 +84,9 @@ bool Sign::detect(bool blueSign)
 			{
 				Rect bound1 = boundingRect(contours[i_max1]);
 				Rect bound2 = boundingRect(contours[i_max2]);
+				
+				rectangle(colorImg, Point(bound1.x, bound1.y), Point(bound1.x + bound1.width, bound1.y + bound1.height), Scalar(0, 255, 255), 2);
+				rectangle(colorImg, Point(bound2.x, bound2.y), Point(bound2.x + bound2.width, bound2.y + bound2.height), Scalar(0, 255, 255), 2);
 
 				_sign_ROI.x = min(bound1.x, bound2.x);
 				_sign_ROI.y = min(bound1.y, bound2.y);

@@ -189,10 +189,10 @@ void signProcessing()
         signID = mySign.getClassID();
         if (signID != NO_SIGN)
         {
-            if (!hasSign)
+            if (!hasSign){
 	        	backupThrottle = set_throttle_val;
-     
-            set_throttle_val = set_throttle_val * 0.75;
+            		set_throttle_val = set_throttle_val * 0.75;
+		}
             theta = 0;
             hasSign = true;
                 
