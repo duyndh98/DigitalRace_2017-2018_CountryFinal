@@ -32,11 +32,11 @@ bool Sign::detect(bool blueSign)
 
 	for (int i = 0; i < contours.size(); i++)
 	{
-		Rect bound = boundingRect(contours[i]);
 		double contour_area = contourArea(contours[i]);
-		if (contour_area <= max_area)
+		if (contour_area < max_area)
 			continue;
 
+		Rect bound = boundingRect(contours[i]);
 		// constraints
 		double ellipse_area = (3.14f * (double)(bound.width / 2) * (double)(bound.height / 2));
 		if ((1 - DIF_RATIO_SIGN_WIDTH_PER_HEIGHT < (float)bound.width / bound.height) && ((float)bound.width / bound.height < 1 + DIF_RATIO_SIGN_WIDTH_PER_HEIGHT))
@@ -47,6 +47,52 @@ bool Sign::detect(bool blueSign)
 				max_area = contour_area;
 			}
 	}
+
+	// Stop sign case
+	if (_sign_ROI == Rect(0, 0, 0, 0) && !blueSign)
+	{
+		double area_max1 = MIN_SIGN_AREA;
+		double area_max2 = MIN_SIGN_AREA;
+		int i_max1 = -1, i_max2 = -1;
+		
+		for (int i = 0; i < contours.size(); i++)
+		{
+			double contour_area = contourArea(contours[i]);
+			if (contour_area < MIN_SIGN_AREA)
+				continue;
+
+			Rect bound = boundingRect(contours[i]);
+			// update max sign
+			if (contour_area > area_max1)
+			{
+				area_max2 = area_max1;
+				i_max2 = i_max1;
+
+				area_max1 = contour_area;
+				i_max1 = i;
+			}
+			else if (contour_area > area_max2)
+			{
+				area_max2 = contour_area;
+				i_max2 = i;
+			}
+		}
+
+		if (i_max1 != -1 && i_max2 != -1)
+		{
+			if (area_max1 / area_max2 < 1 + DIF_RATIO_2_PART_SIGN_STOP_AREA)
+			{
+				Rect bound1 = boundingRect(contours[i_max1]);
+				Rect bound2 = boundingRect(contours[i_max2]);
+
+				_sign_ROI.x = min(bound1.x, bound2.x);
+				_sign_ROI.y = min(bound1.y, bound2.y);
+				_sign_ROI.width = max(bound1.x + bound1.width, bound2.x + bound2.width) - _sign_ROI.x;
+				_sign_ROI.height = max(bound1.y + bound1.height, bound2.y + bound2.height) - _sign_ROI.y;
+			}
+		}
+	}
+
 	return _sign_ROI != Rect(0, 0, 0, 0);
 }
 
