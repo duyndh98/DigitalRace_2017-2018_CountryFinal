@@ -247,8 +247,11 @@ void laneProcessing()
     // filterLane(binLeft, isLeft, centerLeft.x, -1);
     // filterLane(binRight, isRight, centerRight.x, 1);
     filterLane(colorLaneImg, binLaneImg, centerLeft, centerRight, isLane);
-    imshow("binLaneImg", binLaneImg);
-    imshow("colorLaneImg", colorLaneImg);
+    if (isDebug)
+    {
+        imshow("binLaneImg", binLaneImg);
+        imshow("colorLaneImg", colorLaneImg);
+    }
     // centerLeft.x += xLeftRect;
     // centerRight.x += xRightRect;
 
@@ -287,7 +290,8 @@ void laneProcessing()
     // }
     if (isLane)
     {
-        putText(colorImg, "Has Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        if (isDebug)
+            putText(colorImg, "Has Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
         centerPoint.y = (centerLeft.y + centerRight.y) / 2 + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
         circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
@@ -296,7 +300,8 @@ void laneProcessing()
     }
     else
     {
-        putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        if (isDebug)
+            putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
         centerPoint.x = preCenterPoint.x;
         centerPoint.y = preCenterPoint.y + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
     }
@@ -314,7 +319,9 @@ void laneProcessing()
     if (theta > -20 && theta < 20)
         theta = 0;
 
-    putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+    if (isDebug)
+        putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+    
     printf("theta: %d\n", int(theta));
 	preCenterPoint.x = centerPoint.x;
     preCenterPoint.y = centerPoint.y - colorImg.rows*RATIO_HEIGHT_LANE_CROP;

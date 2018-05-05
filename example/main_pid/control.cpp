@@ -105,17 +105,20 @@ void LCD_init()
     lcd->LCDBacklightOn();
     lcd->LCDCursorOn();
 
-    lcd->LCDSetCursor(0, 0);
-    lcd->LCDPrintStr("..:DRIVERLESS CAR:..");
-
-    lcd->LCDSetCursor(4, 1);
+    lcd->LCDSetCursor(4, 0);
     lcd->LCDPrintStr("SOPHIA TEAM");
+    
+    lcd->LCDSetCursor(1, 1);
+    lcd->LCDPrintStr("Sign: ");
 
-    lcd->LCDSetCursor(3, 2);
-    lcd->LCDPrintStr("Throttle: xx");
+    lcd->LCDSetCursor(1, 2);
+    lcd->LCDPrintStr("Throttle:");
 
-    lcd->LCDSetCursor(4, 3);
-    lcd->LCDPrintStr("Sensor: x");
+    lcd->LCDSetCursor(1, 3);
+    lcd->LCDPrintStr("Sensor:");
+
+    lcd->LCDSetCursor(12, 3)
+    lcd->LCDPrintStr("FPS: ");
 }
 
 void updateButtonStatus()
@@ -194,25 +197,53 @@ void updateSensorStatus()
 
 void updateLCD()
 {
-    lcd->LCDSetCursor(13, 2);
-    std::string s = std::to_string(set_throttle_val);
-    char const *pchar_throttle = s.c_str();
-    lcd->LCDPrintStr(pchar_throttle);
-    lcd->LCDSetCursor(12, 3);
-    s = std::to_string(sensor_status);
-    char const *pchar_sensor = s.c_str();
-    lcd->LCDPrintStr(pchar_sensor);
+    string s;
+    // Sign
+    lcd->LCDSetCursor(7, 1);
+    if (hasSign)
+        s = "SIGN ";
+    else
+        s = "TURN ";
+    switch (mySign.getClassID())
+    {
+        case 1: s = s + "LEFT ";
+                break;
+        case 2: s = s + "RIGHT";
+                break;
+        case 3: s = s + "STOP ";
+                break;
+        default:
+                s = "NO SIGN   ";
+    }
+    lcd->LCDPrintStr(s.c_str());
+
+    // Throttle val
+    lcd->LCDSetCursor(11, 2);
+    s = to_string(set_throttle_val) + "  ";
+    lcd->LCDPrintStr(s.c_str());
+    
+    // Sensor
+    lcd->LCDSetCursor(10, 3);
+    s = to_string(sensor_status);
+    lcd->LCDPrintStr(s.c_str());
+
+    lcd->LCDSetCursor(17, 3);
+    s = to_string(fps) + " ";
+    lcd->LCDPrintStr(s.c_str());
 }
 
 void signProcessing()
 {
     int signID = mySign.getClassID();
-    if (signID == SIGN_LEFT)
-        putText(colorImg, "Sign left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-    else if (signID == SIGN_RIGHT)
-        putText(colorImg, "Sign right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-    else if (signID == SIGN_STOP)
-        putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    if (isDebug)
+    {
+        if (signID == SIGN_LEFT)
+            putText(colorImg, "Sign left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+        else if (signID == SIGN_RIGHT)
+            putText(colorImg, "Sign right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+        else if (signID == SIGN_STOP)
+            putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    }
 
     bool detected = mySign.detect(true); // blue
     if (!detected)
@@ -237,7 +268,8 @@ void signProcessing()
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "Sign area: " << signROI.height * signROI.width << endl;
 
-            if ((signID == 3 && signROI.height * signROI.width >= MIN_SIGN_STOP) || (signID != 3 && signROI.height * signROI.width >= MIN_SIGN_TURN))
+            if ((signID == 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_STOP) 
+            || (signID != 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_TURN))
             {
                 controlTurn(signID);
                 mySign.resetClassID();
@@ -249,29 +281,40 @@ void signProcessing()
 void controlTurn(int signID)
 {
     hasSign = false;
+    updateLCD();
+
     if (signID == SIGN_LEFT)
     {
-        putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         theta = ALPHA_TURN;
         api_set_STEERING_control(pca9685, theta);
-        imshow("color", colorImg);
+        if (isDebug)
+        {
+            putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+            imshow("color", colorImg);
+        }     
         usleep(TURN_TIME);
     }
     else if (signID == SIGN_RIGHT)
     {
-        putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         theta = -ALPHA_TURN;
         api_set_STEERING_control(pca9685, theta);
-        imshow("color", colorImg);
+        if (isDebug)
+        {
+            putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+            imshow("color", colorImg);
+        }
         usleep(TURN_TIME);
     }
     else
     {
-        putText(colorImg, "Stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
         api_set_FORWARD_control(pca9685, -30);
         usleep(300 * 1000);
         api_set_FORWARD_control(pca9685, 0);
-        imshow("color", colorImg);
+        if (isDebug)
+        {
+            putText(colorImg, "Stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+            imshow("color", colorImg);
+        }
         sleep(STOP_TIME);
     }
     set_throttle_val = backupThrottle;

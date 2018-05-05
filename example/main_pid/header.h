@@ -79,8 +79,8 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
-#define MIN_SIGN_TURN 1000
-#define MIN_SIGN_STOP 400
+#define MIN_AREA_SIGN_TURN 1000
+#define MIN_AREA_SIGN_STOP 400
 //#define SIGN_THROTTLE 40
 
 //#define Y_TURN 0.2
@@ -145,4 +145,8 @@ extern Point preLeft;
 extern Point preRight;
 extern bool hasSign;
 extern int backupThrottle;
+
+extern bool isDebug;
+extern int fps;
+
 #endif

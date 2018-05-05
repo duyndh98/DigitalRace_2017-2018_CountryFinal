@@ -27,6 +27,11 @@ Point preRight;
 
 int main(int argc, char *argv[])
 {
+    if (argc == 2)
+        isDebug = argv[1];
+    else
+        isDebug = false;
+
     printf("\n");
     // Init hardware
     GPIO_init();
@@ -42,7 +47,8 @@ int main(int argc, char *argv[])
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
     // Calculate FPS
-    double st = 0, et = 0, fps = 0;
+    double st = 0, et = 0;
+    fps = 0;
     double freq = getTickFrequency();
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     
@@ -51,7 +57,6 @@ int main(int argc, char *argv[])
     // Run loop
     while (true)
     {
-        updateLCD();
         printf("---------------------------\n");
         st = getTickCount();
         
@@ -123,8 +128,11 @@ int main(int argc, char *argv[])
             medianBlur(binBlueImg, binBlueImg, KERNEL_SIZE);		
             medianBlur(binRedImg, binRedImg, KERNEL_SIZE);		
 	    
-            imshow("binBlueImg", binBlueImg);
-            imshow("binRedImg", binRedImg);
+            if (isDebug)
+            {
+                imshow("binBlueImg", binBlueImg);
+                imshow("binRedImg", binRedImg);
+            }
             
             // Process lane to get theta
             laneProcessing();
@@ -140,18 +148,21 @@ int main(int argc, char *argv[])
             // Log video
             // if (!orgImg.empty())
             //     org_videoWriter.write(orgImg);
-            if (!colorImg.empty())
+            if (isDebug && !colorImg.empty())
                 color_videoWriter.write(colorImg);
             
             et = getTickCount();
-            fps = 1.0 / ((et - st) / freq);
+            fps = int(1.0 / ((et - st) / freq));
             printf("FPS: %lf\n", fps);
-	    putText(colorImg, "FPS " + to_string(int(fps)), Point(200, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+	        
+            if (isDebug)
+            {
+                putText(colorImg, "FPS " + to_string(fps), Point(200, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
+                imshow("bin", binImg);
+                imshow("color", colorImg);
+            }
 
-            imshow("bin", binImg);
-            imshow("color", colorImg);
-            
-            
+            updateLCD();
             waitKey(1);
         }
         else
