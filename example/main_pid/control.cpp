@@ -16,8 +16,8 @@ int sw1_stat, sw2_stat, sw3_stat, sw4_stat;
 int sensor;
 int set_throttle_val, throttle_val;
 
-Sign mySign;
-bool hasSign;
+Sign blueSign, redSign;
+bool hasBlueSign, hasRedSign;
 int backupThrottle;
 
 void GPIO_init()
@@ -234,42 +234,63 @@ void updateLCD()
 
 void signProcessing()
 {
-    int signID = mySign.getClassID();
-    if (isDebug)
-    {
-        if (signID == SIGN_LEFT)
-            putText(colorImg, "Sign left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        else if (signID == SIGN_RIGHT)
-            putText(colorImg, "Sign right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-        else if (signID == SIGN_STOP)
-            putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-    }
+    // int signID = mySign.getClassID();
+    // if (isDebug)
+    // {
+    //     if (signID == SIGN_LEFT)
+    //         putText(colorImg, "Sign left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    //     else if (signID == SIGN_RIGHT)
+    //         putText(colorImg, "Sign right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    //     else if (signID == SIGN_STOP)
+    //         putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    // }
 
-    bool detected = mySign.detect(true); // blue
-    if (!detected)
-        detected = mySign.detect(false); // red
+    bool redDetected = mySign.detect(false); // red
+    bool blueDetected = mySign.detect(true); // blue
 
-    if (detected)
+    if (redDetected)
     {
-        mySign.recognize();
-        signID = mySign.getClassID();
-        if (signID != NO_SIGN)
+        signID = redSign.recognize();
+        if (signID == SIGN_STOP)
         {
-            if (!hasSign)
+            if (!hasRedSign)
             {
                 backupThrottle = set_throttle_val;
-                set_throttle_val = set_throttle_val * 0.75;
+                set_throttle_val = set_throttle_val * RATE_DECELERATION;
+                hasRedSign = true;
             }
-            theta = 0;
-            hasSign = true;
+            theta = getSignTheta(SIGN_STOP);
 
-            cout << signID << endl;
+            Rect signROI = mySign.getROI();
+            rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
+            
+            cout << "Sign area: " << signROI.height * signROI.width << endl;
+
+            if ((signID == 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_STOP) 
+            {
+                controlTurn(signID);
+                mySign.resetClassID();
+            }
+        }
+    }
+    else if (blueDetected)
+    {
+        signID = blueSign.recognize();
+        if (signID == SIGN_LEFT || signID == SIGN_RIGHT)
+        {
+            if (!hasBlueSign)
+            {
+                backupThrottle = set_throttle_val;
+                set_throttle_val = set_throttle_val * RATE_DECELERATION;
+                hasBlueSign = true; 
+            }
+            theta = getSignTheta();
+
             Rect signROI = mySign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "Sign area: " << signROI.height * signROI.width << endl;
 
-            if ((signID == 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_STOP) 
-            || (signID != 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_TURN))
+            if (signID != 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
             {
                 controlTurn(signID);
                 mySign.resetClassID();

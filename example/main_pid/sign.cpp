@@ -99,7 +99,7 @@ bool Sign::detect(bool blueSign)
 	return _sign_ROI != Rect(0, 0, 0, 0);
 }
 
-void Sign::recognize()
+int Sign::recognize()
 {
 	// no sign
 	if (_sign_ROI == Rect(0, 0, 0, 0))
@@ -111,6 +111,7 @@ void Sign::recognize()
 	resize(sign_gray, sign_gray, Size(SIGN_SIZE, SIGN_SIZE));
 
 	classify(sign_gray);
+	return _class_id;
 }
 
 void Sign::classify(Mat &graySignImg)
