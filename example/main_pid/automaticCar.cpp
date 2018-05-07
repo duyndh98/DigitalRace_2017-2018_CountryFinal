@@ -15,7 +15,7 @@
 #include "sign.h"
 #include "control.h"
 
-
+bool isCaptureStopSign;
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
@@ -38,7 +38,9 @@ int main(int argc, char *argv[])
     OpenNI_init();
     PCA9685_init();
     LCD_init();
-
+    //init capture Stop Sign
+    isCaptureStopSign = true;
+    
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
@@ -52,7 +54,7 @@ int main(int argc, char *argv[])
     double freq = getTickFrequency();
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     
-    hasSign = false;
+//    hasSign = false;
     set_throttle_val = INIT_THROTTLE;
     // Run loop
     while (true)
@@ -153,7 +155,7 @@ int main(int argc, char *argv[])
             
             et = getTickCount();
             fps = int(1.0 / ((et - st) / freq));
-            printf("FPS: %lf\n", fps);
+            printf("FPS: %d\n", fps);
 	        
             if (isDebug)
             {

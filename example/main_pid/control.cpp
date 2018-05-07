@@ -19,6 +19,11 @@ int set_throttle_val, throttle_val;
 Sign blueSign, redSign;
 bool hasBlueSign, hasRedSign;
 int backupThrottle;
+int fps;
+bool isDebug;
+//bool isCaptureStopSign;
+
+
 
 void GPIO_init()
 {
@@ -117,7 +122,7 @@ void LCD_init()
     lcd->LCDSetCursor(1, 3);
     lcd->LCDPrintStr("Sensor:");
 
-    lcd->LCDSetCursor(12, 3)
+    lcd->LCDSetCursor(12, 3);
     lcd->LCDPrintStr("FPS: ");
 }
 
@@ -200,20 +205,33 @@ void updateLCD()
     string s;
     // Sign
     lcd->LCDSetCursor(7, 1);
-    if (hasSign)
+    if (hasBlueSign == true || hasBlueSign == true)
         s = "SIGN ";
     else
         s = "TURN ";
-    switch (mySign.getClassID())
-    {
-        case 1: s = s + "LEFT ";
-                break;
-        case 2: s = s + "RIGHT";
-                break;
-        case 3: s = s + "STOP ";
-                break;
+    bool prioritySign = true;
+    switch (redSign.getClassID()) {
+        case 3:
+            s += "STOP ";
+            break;
         default:
-                s = "NO SIGN   ";
+            s+= "NO SIGN";
+            prioritySign = false;
+            break;
+    }
+    if (!prioritySign) {
+
+        switch (blueSign.getClassID()) {
+            case 1:
+                s += "LEFT";
+                break;
+            case 2:
+                s += "RIGHT";
+                break; 
+            default:
+                s+= "NO SIGN";
+                break;
+        }
     }
     lcd->LCDPrintStr(s.c_str());
 
@@ -231,7 +249,16 @@ void updateLCD()
     s = to_string(fps) + " ";
     lcd->LCDPrintStr(s.c_str());
 }
-
+double getSignTheta(int signID) {
+    switch (signID) {
+        case SIGN_STOP:
+            return 0;
+        case SIGN_LEFT:
+            return -60;
+        default:
+            return 60;
+    }
+}
 void signProcessing()
 {
     // int signID = mySign.getClassID();
@@ -245,14 +272,13 @@ void signProcessing()
     //         putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
     // }
 
-    bool redDetected = mySign.detect(false); // red
-    bool blueDetected = mySign.detect(true); // blue
-
+    bool redDetected =redSign.detect(false); // red
+    bool blueDetected = blueSign.detect(true); // blue
+    int signID = 0;
     if (redDetected)
     {
         signID = redSign.recognize();
-        if (signID == SIGN_STOP)
-        {
+        if (isCaptureStopSign && signID == SIGN_STOP) {
             if (!hasRedSign)
             {
                 backupThrottle = set_throttle_val;
@@ -261,16 +287,17 @@ void signProcessing()
             }
             theta = getSignTheta(SIGN_STOP);
 
-            Rect signROI = mySign.getROI();
+            Rect signROI =redSign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             
             cout << "Sign area: " << signROI.height * signROI.width << endl;
 
-            if ((signID == 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_STOP) 
+            if (signID == 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_STOP) 
             {
                 controlTurn(signID);
-                mySign.resetClassID();
+                redSign.resetClassID();
             }
+            isCaptureStopSign = false;
         }
     }
     else if (blueDetected)
@@ -284,24 +311,27 @@ void signProcessing()
                 set_throttle_val = set_throttle_val * RATE_DECELERATION;
                 hasBlueSign = true; 
             }
-            theta = getSignTheta();
+            theta = getSignTheta(signID);
 
-            Rect signROI = mySign.getROI();
+            Rect signROI = blueSign.getROI();
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "Sign area: " << signROI.height * signROI.width << endl;
 
             if (signID != 3 && signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
             {
                 controlTurn(signID);
-                mySign.resetClassID();
+                blueSign.resetClassID();
             }
+            isCaptureStopSign = true;
         }
     }
 }
 
 void controlTurn(int signID)
 {
-    hasSign = false;
+    //hasSign = false;
+    hasRedSign = false;
+    hasBlueSign = false;
     updateLCD();
 
     if (signID == SIGN_LEFT)

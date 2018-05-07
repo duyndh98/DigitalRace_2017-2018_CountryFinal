@@ -145,8 +145,11 @@ extern Point preCenterPoint;
 extern Point preLeft;
 extern Point preRight;
 
+
 extern bool hasBlueSign;
 extern bool hasRedSign;
+extern bool hasSign;
+extern bool isCaptureStopSign;
 
 extern int backupThrottle;
 extern bool isDebug;
