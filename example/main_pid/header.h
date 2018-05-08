@@ -154,4 +154,7 @@ extern int backupThrottle;
 extern bool isDebug;
 extern int fps;
 extern bool turning;
+
+extern Point carPosition;
+
 #endif

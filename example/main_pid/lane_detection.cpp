@@ -258,8 +258,6 @@ void laneProcessing()
     // imshow("Left", binLeft);
     // imshow("Right", binRight);
 
-    Point carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
-
     // if (!isLeft && !isRight)
     // {
     //     putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
@@ -301,7 +299,7 @@ void laneProcessing()
     else
     {
         if (isDebug)
-            putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
         centerPoint.x = preCenterPoint.x;
         centerPoint.y = preCenterPoint.y + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
     }

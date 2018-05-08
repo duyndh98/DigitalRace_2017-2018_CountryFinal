@@ -13,7 +13,7 @@ void updateKeyBoardInput();
 void updateLCD();
 void signProcessing();
 void setupThrottle();
-void controlTurn(int signID);
+void controlTurn(int signID, Rect signROI);
 double PID(double fps, int xCar, int xCenter, double &previous_error, double &intergral);
     
 #endif 

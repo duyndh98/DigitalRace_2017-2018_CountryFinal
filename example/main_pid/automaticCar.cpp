@@ -24,6 +24,7 @@ Point preCenterPoint;
 Mat grayImg;
 Point preLeft;
 Point preRight;
+Point centerPoint;
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
     //init capture Stop Sign
     allowStopSign = true;
     
+    carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;

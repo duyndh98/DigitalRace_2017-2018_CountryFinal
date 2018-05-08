@@ -285,7 +285,13 @@ double getWaitTurnTheta(int signID) {
     //     default:
     //         return 60;
     // }
-    return 0;
+    if (signID == 3) // sign stop detected
+        return theta;
+    else // turn sign
+    {
+        Point signCenter(signROI.x + signROI.width / 2, signROI.y + signROI.height / 2);
+        return getTheta(carPosition, signCenter);
+    }
 }
 void signProcessing()
 {
@@ -310,6 +316,8 @@ void signProcessing()
         if (blueSign.recognize())
             hasBlueSign = true;
     
+    if (!allowStopSign && hasRedSign)
+        hasRedSign = false;
     if (hasRedSign && allowStopSign == true)
         hasBlueSign = false;
 
@@ -335,19 +343,19 @@ void signProcessing()
             signROI = redSign.getROI();
         }
     
-        theta = getWaitTurnTheta(signID);
+        theta = getWaitTurnTheta(signID, signROI);
         rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
 
         if (signROI.height * signROI.width >= MIN_AREA_SIGN_STOP)
         {
             turning = true;
-            controlTurn(signID);
+            controlTurn(signID, signROI);
             turning = false;
         }
     }   
 }
 
-void controlTurn(int signID)
+void controlTurn(int signID, Rect signROI)
 {
     updateLCD();
 
@@ -364,7 +372,6 @@ void controlTurn(int signID)
         hasBlueSign = false;
         blueSign.resetClassID();
         allowStopSign = true;
-        cout <<"allowStopSign: true"<<endl;
     }
     else if (signID == SIGN_RIGHT)
     {
@@ -379,7 +386,6 @@ void controlTurn(int signID)
         hasBlueSign = false;
         blueSign.resetClassID();
         allowStopSign = true;
-        cout<<"allowStopSign: true"<<endl;
     }
     else
     {
@@ -393,7 +399,6 @@ void controlTurn(int signID)
         hasRedSign = false;
         redSign.resetClassID();
         allowStopSign = false;
-        cout<<"allowStopSign: false"<<endl;
     }
     set_throttle_val = backupThrottle;
 }
