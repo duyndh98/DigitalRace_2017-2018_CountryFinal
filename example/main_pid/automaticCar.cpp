@@ -15,7 +15,7 @@
 #include "sign.h"
 #include "control.h"
 
-bool isCaptureStopSign;
+bool allowCaptureStopSign;
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     PCA9685_init();
     LCD_init();
     //init capture Stop Sign
-    isCaptureStopSign = true;
+    allowStopSign = true;
     
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;

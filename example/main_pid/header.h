@@ -85,7 +85,7 @@ using namespace cv::ml;
 //#define SIGN_THROTTLE 40
 
 //#define Y_TURN 0.2
-#define TURN_TIME 300*1000
+#define TURN_TIME 0.3
 #define STOP_TIME 5
 
 #define KI 0.3
@@ -145,11 +145,10 @@ extern Point preCenterPoint;
 extern Point preLeft;
 extern Point preRight;
 
-
 extern bool hasBlueSign;
 extern bool hasRedSign;
 extern bool hasSign;
-extern bool isCaptureStopSign;
+extern bool allowStopSign;
 
 extern int backupThrottle;
 extern bool isDebug;
