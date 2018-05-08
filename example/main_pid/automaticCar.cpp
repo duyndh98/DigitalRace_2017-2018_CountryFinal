@@ -15,7 +15,7 @@
 #include "sign.h"
 #include "control.h"
 
-bool allowCaptureStopSign;
+bool allowStopSign=true,hasBlueSign=false,hasRedSign=false;
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
@@ -28,7 +28,7 @@ Point preRight;
 int main(int argc, char *argv[])
 {
     if (argc == 2)
-        isDebug = argv[1];
+        isDebug = true;
     else
         isDebug = false;
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
-
+    turning =false;
     // Log
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
@@ -170,6 +170,7 @@ int main(int argc, char *argv[])
         else
         {
             setupThrottle();
+            updateLCD();
             theta = 0;
             throttle_val = 0;
             if (!stopped)

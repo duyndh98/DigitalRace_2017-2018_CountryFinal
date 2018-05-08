@@ -153,5 +153,5 @@ extern bool allowStopSign;
 extern int backupThrottle;
 extern bool isDebug;
 extern int fps;
-
+extern bool turning;
 #endif

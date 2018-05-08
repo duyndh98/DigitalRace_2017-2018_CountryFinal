@@ -15,12 +15,14 @@ LCDI2C *lcd;
 int sw1_stat, sw2_stat, sw3_stat, sw4_stat;
 int sensor;
 int set_throttle_val, throttle_val;
-
+bool turning;
 Sign blueSign, redSign;
-bool hasBlueSign, hasRedSign;
-int backupThrottle;
+//bool hasBlueSign, hasRedSign;
+int backupThrottle; 
 int fps;
 bool isDebug;
+//bool allowStopSign;
+
 
 void GPIO_init()
 {
@@ -123,6 +125,84 @@ void LCD_init()
     lcd->LCDPrintStr("FPS: ");
 }
 
+void updateLCD()
+{
+    string s;
+    // Sign
+    lcd->LCDSetCursor(0, 1);
+    /*if (hasBlueSign == true || hasRedSign == true)
+        s = "SIGN ";
+    else
+        s = "TURN ";
+    bool prioritySign = true;
+    switch (redSign.getClassID()) {
+        case 3:
+            s += "STOP ";
+            break;
+        default:
+            s+= "NO SIGN";
+            prioritySign = false;
+            break;
+    }
+    if (!prioritySign) {
+
+        switch (blueSign.getClassID()) {
+            case 1:
+            case 2:
+                break;
+                s += "LEFT";
+                s += "RIGHT";
+                break; 
+            default:
+                //s+= "NO SIGN";
+                break;
+        }
+    }*/
+    if (!hasBlueSign && !hasRedSign)
+        s = "NO SIGN";
+    else if(hasRedSign)
+        {
+            if (turning)
+                s = "TURN STOP";
+            else
+                s = "SIGN STOP";  
+        }
+    
+    else if (hasBlueSign)
+    {
+        if (blueSign.getClassID()==1)
+        {
+            if (turning)
+                s = "TURN LEFT";
+            else
+                s = "SIGN LEFT";
+        }
+        else if (blueSign.getClassID()==2)
+        {
+            if (turning)
+                s = "TURN RIGHT";
+            else
+                s = "SIGN RIGHT";
+        }
+        
+    }
+    lcd->LCDPrintStr(s.c_str());
+
+    // Throttle val
+    lcd->LCDSetCursor(11, 2);
+    s = to_string(set_throttle_val) + "  ";
+    lcd->LCDPrintStr(s.c_str());
+    
+    // Sensor
+    lcd->LCDSetCursor(10, 3);
+    s = to_string(sensor_status);
+    lcd->LCDPrintStr(s.c_str());
+    //fps
+    lcd->LCDSetCursor(17, 3);
+    s = to_string(fps) + " ";
+    lcd->LCDPrintStr(s.c_str());
+}
+
 void updateButtonStatus()
 {
     // Update status of physical buttons
@@ -157,7 +237,6 @@ void updateButtonStatus()
 
 void setupThrottle()
 {
-
     gpio->gpioGetValue(SW2_PIN, &bt_status);
     if (!bt_status)
     {
@@ -197,55 +276,6 @@ void updateSensorStatus()
     sensor = sensor_status;
 }
 
-void updateLCD()
-{
-    string s;
-    // Sign
-    lcd->LCDSetCursor(7, 1);
-    if (hasBlueSign == true || hasRedSign == true)
-        s = "SIGN ";
-    else
-        s = "TURN ";
-    bool prioritySign = true;
-    switch (redSign.getClassID()) {
-        case 3:
-            s += "STOP ";
-            break;
-        default:
-            s+= "NO SIGN";
-            prioritySign = false;
-            break;
-    }
-    if (!prioritySign) {
-
-        switch (blueSign.getClassID()) {
-            case 1:
-                s += "LEFT";
-                break;
-            case 2:
-                s += "RIGHT";
-                break; 
-            default:
-                s+= "NO SIGN";
-                break;
-        }
-    }
-    lcd->LCDPrintStr(s.c_str());
-
-    // Throttle val
-    lcd->LCDSetCursor(11, 2);
-    s = to_string(set_throttle_val) + "  ";
-    lcd->LCDPrintStr(s.c_str());
-    
-    // Sensor
-    lcd->LCDSetCursor(10, 3);
-    s = to_string(sensor_status);
-    lcd->LCDPrintStr(s.c_str());
-
-    lcd->LCDSetCursor(17, 3);
-    s = to_string(fps) + " ";
-    lcd->LCDPrintStr(s.c_str());
-}
 double getWaitTurnTheta(int signID) {
     // switch (signID) {
     //     case SIGN_STOP:
@@ -255,7 +285,7 @@ double getWaitTurnTheta(int signID) {
     //     default:
     //         return 60;
     // }
-    return 0f;
+    return 0;
 }
 void signProcessing()
 {
@@ -280,7 +310,7 @@ void signProcessing()
         if (blueSign.recognize())
             hasBlueSign = true;
     
-    if (hasRedSign)
+    if (hasRedSign && allowStopSign == true)
         hasBlueSign = false;
 
     // from no sign -> has sign
@@ -310,7 +340,9 @@ void signProcessing()
 
         if (signROI.height * signROI.width >= MIN_AREA_SIGN_STOP)
         {
+            turning = true;
             controlTurn(signID);
+            turning = false;
         }
     }   
 }
@@ -332,6 +364,7 @@ void controlTurn(int signID)
         hasBlueSign = false;
         blueSign.resetClassID();
         allowStopSign = true;
+        cout <<"allowStopSign: true"<<endl;
     }
     else if (signID == SIGN_RIGHT)
     {
@@ -346,6 +379,7 @@ void controlTurn(int signID)
         hasBlueSign = false;
         blueSign.resetClassID();
         allowStopSign = true;
+        cout<<"allowStopSign: true"<<endl;
     }
     else
     {
@@ -359,6 +393,7 @@ void controlTurn(int signID)
         hasRedSign = false;
         redSign.resetClassID();
         allowStopSign = false;
+        cout<<"allowStopSign: false"<<endl;
     }
     set_throttle_val = backupThrottle;
 }
