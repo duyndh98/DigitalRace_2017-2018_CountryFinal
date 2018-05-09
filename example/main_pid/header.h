@@ -98,6 +98,13 @@ using namespace cv::ml;
 #define THROTTLE_VAL4 100
 #define INIT_THROTTLE 45
 
+#define ENTER_KEY 13
+#define LEFT_ARROW 37
+#define RIGHT_ARROW 39
+#define UP_ARROW 38
+#define DOWN_ARROW 40
+#define SPACE_KEY 32
+
 // Global variables
 extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg;
 

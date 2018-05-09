@@ -171,6 +171,7 @@ CMakeFiles/test-autocar.dir/main_pid/control.cpp.o
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.h
+ /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
  /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
  /usr/local/include/opencv/cxcore.h
  /usr/local/include/opencv2/calib3d.hpp

@@ -17,12 +17,51 @@ int sensor;
 int set_throttle_val, throttle_val;
 bool turning;
 Sign blueSign, redSign;
-//bool hasBlueSign, hasRedSign;
+
 int backupThrottle; 
 int fps;
 bool isDebug;
-//bool allowStopSign;
+char key;
 
+bool keyboardControl()
+{
+    if (key == ' ') // enter -> start control-mode
+    {
+        int alpha = 0;
+        int throttle = 0;
+        cout << "Control modeeeeeeeeeeeeeeeeeeeeeeeeeeee\n";
+        while (1)
+        {
+            key = getkey();
+            if (key == ' ') // re-entrer -> exit control-mode
+                break;
+            switch (key)
+            {
+                case 'w':
+                    api_set_FORWARD_control(pca9685, set_throttle_val);
+                    break;
+                case 's':
+                    api_set_FORWARD_control(pca9685, -set_throttle_val);
+                    break;
+                case 'a':
+                    api_set_STEERING_control(pca9685, ALPHA_TURN);
+                    break;
+                case 'd':
+                    api_set_STEERING_control(pca9685, -ALPHA_TURN);
+                    break;
+                case ENTER_KEY:
+                    api_set_FORWARD_control(pca9685, 0);
+                    api_set_STEERING_control(pca9685, 0);
+                    break;
+            }
+            waitKey(1);
+        }
+        api_set_FORWARD_control(pca9685, 0);
+        api_set_STEERING_control(pca9685, 0);
+        return true;
+    }
+    return false;
+}
 
 void GPIO_init()
 {
@@ -276,7 +315,7 @@ void updateSensorStatus()
     sensor = sensor_status;
 }
 
-double getWaitTurnTheta(int signID) {
+double getWaitTurnTheta(int signID, Rect signROI) {
     // switch (signID) {
     //     case SIGN_STOP:
     //         return 0;

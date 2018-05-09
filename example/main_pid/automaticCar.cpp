@@ -19,7 +19,6 @@ bool allowStopSign=true,hasBlueSign=false,hasRedSign=false;
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
-char key;
 Point preCenterPoint;
 Mat grayImg;
 Point preLeft;
@@ -42,7 +41,9 @@ int main(int argc, char *argv[])
     //init capture Stop Sign
     allowStopSign = true;
     
-    carPosition(FRAME_WIDTH / 2, FRAME_HEIGHT);
+    carPosition.x = FRAME_WIDTH / 2;
+    carPosition.y = FRAME_HEIGHT;
+
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
@@ -83,8 +84,10 @@ int main(int argc, char *argv[])
             api_set_STEERING_control(pca9685, theta);
             break;
         }
-        
-        if (running)
+
+        if (keyboardControl())
+            continue;
+        else if (running)
         {
             // Update throttle val
             throttle_val = set_throttle_val;

@@ -4,6 +4,7 @@
 
 Mat colorImg, hsvImg, binImg;
 double theta;
+Point carPosition;
 
 void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane)
 {

@@ -170,6 +170,7 @@ CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.cpp
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/control.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/header.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/image_processing.h
+CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/lane_detection.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: main_pid/sign.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: /usr/local/include/opencv/cxcore.h
 CMakeFiles/test-autocar.dir/main_pid/control.cpp.o: /usr/local/include/opencv2/calib3d.hpp
