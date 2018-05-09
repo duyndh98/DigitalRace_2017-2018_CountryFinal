@@ -304,12 +304,12 @@ api_kinect_cv_get_images(VideoCapture &capture,
             return -1;
         }
 
-        if( !capture.retrieve( grayImage, CV_CAP_OPENNI_GRAY_IMAGE ) )
+/*        if( !capture.retrieve( grayImage, CV_CAP_OPENNI_GRAY_IMAGE ) )
         {
             cout<< endl<< "Error: Cannot get gray image";
             return -1;
         }
-    }
+*/    }
 
     return 0;
 }
@@ -335,20 +335,38 @@ int main()
     createTrackbar("upper__bound", "Threshold Selection", &upper__bound, 300, on_upper__bound_thresh_trackbar);
     createTrackbar("thresh_area_min", "Threshold Selection", &thresh_area_min, 400, on_thresh_area_min_thresh_trackbar);
     //createTrackbar("thresh_area_max", "Threshold Selection", &thresh_area_max, 800, on_thresh_area_max_thresh_trackbar);
-    
+     double st = 0, et = 0, fps = 0;
+    double freq = getTickFrequency();
+/*	for(;;)
+{
+    Mat depthMap1;
+    Mat bgrImage1;
+    capture.grab();
+    capture.retrieve( depthMap1, CAP_OPENNI_DEPTH_MAP );
+    //capture.retrieve( bgrImage1, CAP_OPENNI_BGR_IMAGE );
+	//imshow("capture Img",bgrImage1);
+	imshow("depth: ",depthMap1);
+	cout << "FPS    " << capture.get( CAP_OPENNI_IMAGE_GENERATOR+CAP_PROP_FPS ) << endl;
+
+    waitKey( 1 );
+}
+*/
 	while ((char)waitKey(1) != 'q')
     {
-		
+		st = getTickCount();
 	api_kinect_cv_get_images( capture, depthMap, grayImage);
-	imshow("capture Img",grayImage);
+	//imshow("capture Img",grayImage);
 	//cout<<"width ="<<grayImage.cols<<"-height-="<<grayImage.rows<<endl;
 	
-	if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
-	        {
-	            cout<< endl<< "Error: Cannot bgr gray image";
-	            return -1;
-	        }
+//	if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
+//	        {
+//	            cout<< endl<< "Error: Cannot bgr gray image";
+//	            return -1;
+//	        }
         thoidiemre(depthMap);
+	et = getTickCount();
+            fps = 1.0 / ((et - st) / freq);
+            printf("FPS: %lf\n", fps);
     }
 
     return 0;
