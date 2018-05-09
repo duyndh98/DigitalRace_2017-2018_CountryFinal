@@ -2,9 +2,10 @@
 
 Status rc;
 Device device;
-VideoStream colorStream;
-VideoStream *streams[1];
-VideoFrameRef frame_color;
+VideoStream colorStream, depthStream;
+VideoStream *streams[] = {&colorStream, &depthStream};
+
+VideoFrameRef frame_color, frame_depth;
 
 string color_filename;
 GPIO *gpio;
@@ -22,6 +23,8 @@ int backupThrottle;
 int fps;
 bool isDebug;
 char key;
+
+Mat depthImg;
 
 bool keyboardControl()
 {
@@ -91,8 +94,6 @@ void OpenNI_init()
 {
     printf("OpenNI init...\n");
 
-    streams[0] = {&colorStream};
-
     rc = OpenNI::initialize();
 
     color_filename = "color.avi";
@@ -124,6 +125,25 @@ void OpenNI_init()
         }
         else
             printf("Couldn't create color stream\n%s\n", OpenNI::getExtendedError());
+    }
+
+    if (device.getSensorInfo(SENSOR_DEPTH) != NULL) {
+    	rc = depthStream.create(device, SENSOR_DEPTH);
+    	if (rc == STATUS_OK) {
+            VideoMode depth_mode = depthStream.getVideoMode();
+            depth_mode.setFps(30);
+            depth_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
+            depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
+            depthStream.setVideoMode(depth_mode);
+
+            rc = depthStream.start();
+            if (rc != STATUS_OK) {
+                printf("Couldn't start the color stream\n%s\n", OpenNI::getExtendedError());
+            }
+        }
+    	else {
+            printf("Couldn't create depth stream\n%s\n", OpenNI::getExtendedError());
+        }
     }
 }
 

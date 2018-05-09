@@ -115,6 +115,19 @@ test-autocar/fast:
 .PHONY : test-autocar/fast
 
 #=============================================================================
+# Target rules for targets named threshold-depth
+
+# Build rule for target.
+threshold-depth: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 threshold-depth
+.PHONY : threshold-depth
+
+# fast build rule for target.
+threshold-depth/fast:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/build
+.PHONY : threshold-depth/fast
+
+#=============================================================================
 # Target rules for targets named threshold-selection
 
 # Build rule for target.
@@ -423,6 +436,7 @@ main_pid/real_camera.o: main_pid/real_camera.cpp.o
 
 # target to build an object file
 main_pid/real_camera.cpp.o:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/main_pid/real_camera.cpp.o
 	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.o
 .PHONY : main_pid/real_camera.cpp.o
 
@@ -431,6 +445,7 @@ main_pid/real_camera.i: main_pid/real_camera.cpp.i
 
 # target to preprocess a source file
 main_pid/real_camera.cpp.i:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/main_pid/real_camera.cpp.i
 	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.i
 .PHONY : main_pid/real_camera.cpp.i
 
@@ -439,6 +454,7 @@ main_pid/real_camera.s: main_pid/real_camera.cpp.s
 
 # target to generate assembly for a file
 main_pid/real_camera.cpp.s:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/main_pid/real_camera.cpp.s
 	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/main_pid/real_camera.cpp.s
 .PHONY : main_pid/real_camera.cpp.s
 
@@ -465,6 +481,30 @@ main_pid/sign.s: main_pid/sign.cpp.s
 main_pid/sign.cpp.s:
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/main_pid/sign.cpp.s
 .PHONY : main_pid/sign.cpp.s
+
+main_pid/thresholdDepth.o: main_pid/thresholdDepth.cpp.o
+.PHONY : main_pid/thresholdDepth.o
+
+# target to build an object file
+main_pid/thresholdDepth.cpp.o:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/main_pid/thresholdDepth.cpp.o
+.PHONY : main_pid/thresholdDepth.cpp.o
+
+main_pid/thresholdDepth.i: main_pid/thresholdDepth.cpp.i
+.PHONY : main_pid/thresholdDepth.i
+
+# target to preprocess a source file
+main_pid/thresholdDepth.cpp.i:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/main_pid/thresholdDepth.cpp.i
+.PHONY : main_pid/thresholdDepth.cpp.i
+
+main_pid/thresholdDepth.s: main_pid/thresholdDepth.cpp.s
+.PHONY : main_pid/thresholdDepth.s
+
+# target to generate assembly for a file
+main_pid/thresholdDepth.cpp.s:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/main_pid/thresholdDepth.cpp.s
+.PHONY : main_pid/thresholdDepth.cpp.s
 
 main_pid/thresholdSelection.o: main_pid/thresholdSelection.cpp.o
 .PHONY : main_pid/thresholdSelection.o
@@ -498,6 +538,7 @@ help:
 	@echo "... depend"
 	@echo "... threshold-selection"
 	@echo "... edit_cache"
+	@echo "... threshold-depth"
 	@echo "... rebuild_cache"
 	@echo "... test-autocar"
 	@echo "... test-kinect-cv2-2"
@@ -533,6 +574,9 @@ help:
 	@echo "... main_pid/sign.o"
 	@echo "... main_pid/sign.i"
 	@echo "... main_pid/sign.s"
+	@echo "... main_pid/thresholdDepth.o"
+	@echo "... main_pid/thresholdDepth.i"
+	@echo "... main_pid/thresholdDepth.s"
 	@echo "... main_pid/thresholdSelection.o"
 	@echo "... main_pid/thresholdSelection.i"
 	@echo "... main_pid/thresholdSelection.s"

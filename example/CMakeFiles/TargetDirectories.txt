@@ -4,6 +4,7 @@
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/test-kinect-cv2-2.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/CMakeFiles/vanishing-point.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/extract_info/CMakeFiles/extractInfo.dir
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/threshold-depth.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/CMakeFiles/test-multilane.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/CMakeFiles/test-vanishing-point.dir
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/radon/CMakeFiles/radon.dir

@@ -106,7 +106,7 @@ using namespace cv::ml;
 #define SPACE_KEY 32
 
 // Global variables
-extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg;
+extern Mat colorImg, hsvImg, binImg, binBlueImg, binRedImg, grayImg, depthImg;
 
 // Switch input
 extern int sw1_stat;
@@ -122,10 +122,10 @@ extern PCA9685* pca9685;
 // OpenNI
 extern Status rc;
 extern Device device;
-extern VideoStream colorStream;
+extern VideoStream colorStream, depthStream;
 
-extern VideoFrameRef frame_color;
-extern VideoStream *streams[1];
+extern VideoFrameRef frame_color, frame_depth;
+extern VideoStream *streams[2];
 
 // LCD
 

@@ -69,6 +69,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/threshold-selection.dir/DependInfo.cmake"
+  "CMakeFiles/threshold-depth.dir/DependInfo.cmake"
   "CMakeFiles/test-autocar.dir/DependInfo.cmake"
   "stereo_vision/CMakeFiles/test-kinect-cv2-2.dir/DependInfo.cmake"
   "stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"

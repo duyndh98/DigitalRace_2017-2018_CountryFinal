@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
     OpenNI_init();
     PCA9685_init();
     LCD_init();
+
     //init capture Stop Sign
     allowStopSign = true;
     
@@ -111,10 +112,16 @@ int main(int argc, char *argv[])
 
             // Load image
             colorStream.readFrame(&frame_color);
-            analyzeFrame(frame_color, colorImg);
+            //analyzeFrame(frame_color, colorImg);
+
+	    depthStream.readFrame(&frame_depth);
+	    //analyzeFrame(frame_depth, depthImg);
+	    analyzeFrame(frame_depth,frame_color, depthImg, colorImg);
+	    imshow("depth", depthImg);
             
             // Preprocessing
             flip(colorImg, colorImg, 1);
+	    flip(depthImg, depthImg, 1);
             //hist_equalize(colorImg);
             //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);

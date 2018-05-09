@@ -56,12 +56,12 @@ CMAKE_BINARY_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
 # Target rules for target CMakeFiles/test-autocar.dir
 
 # All Build rule for target.
-CMakeFiles/test-autocar.dir/all: multilane/CMakeFiles/multilane.dir/all
 CMakeFiles/test-autocar.dir/all: stereo_vision/CMakeFiles/kinect-cv2.dir/all
-CMakeFiles/test-autocar.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
 CMakeFiles/test-autocar.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
+CMakeFiles/test-autocar.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
 CMakeFiles/test-autocar.dir/all: peripheral_driver/uart/CMakeFiles/uart.dir/all
 CMakeFiles/test-autocar.dir/all: HAL/CMakeFiles/HAL.dir/all
+CMakeFiles/test-autocar.dir/all: multilane/CMakeFiles/multilane.dir/all
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/depend
 	$(MAKE) -f CMakeFiles/test-autocar.dir/build.make CMakeFiles/test-autocar.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  12 13 14 15 16
@@ -93,18 +93,58 @@ clean: CMakeFiles/test-autocar.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/threshold-depth.dir
+
+# All Build rule for target.
+CMakeFiles/threshold-depth.dir/all: stereo_vision/CMakeFiles/kinect-cv2.dir/all
+CMakeFiles/threshold-depth.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
+CMakeFiles/threshold-depth.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
+CMakeFiles/threshold-depth.dir/all: peripheral_driver/uart/CMakeFiles/uart.dir/all
+CMakeFiles/threshold-depth.dir/all: HAL/CMakeFiles/HAL.dir/all
+CMakeFiles/threshold-depth.dir/all: multilane/CMakeFiles/multilane.dir/all
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/depend
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  23 24
+	@echo "Built target threshold-depth"
+.PHONY : CMakeFiles/threshold-depth.dir/all
+
+# Include target in all.
+all: CMakeFiles/threshold-depth.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/threshold-depth.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles 16
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/threshold-depth.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles 0
+.PHONY : CMakeFiles/threshold-depth.dir/rule
+
+# Convenience name for target.
+threshold-depth: CMakeFiles/threshold-depth.dir/rule
+.PHONY : threshold-depth
+
+# clean rule for target.
+CMakeFiles/threshold-depth.dir/clean:
+	$(MAKE) -f CMakeFiles/threshold-depth.dir/build.make CMakeFiles/threshold-depth.dir/clean
+.PHONY : CMakeFiles/threshold-depth.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/threshold-depth.dir/clean
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/threshold-selection.dir
 
 # All Build rule for target.
-CMakeFiles/threshold-selection.dir/all: multilane/CMakeFiles/multilane.dir/all
 CMakeFiles/threshold-selection.dir/all: stereo_vision/CMakeFiles/kinect-cv2.dir/all
-CMakeFiles/threshold-selection.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
 CMakeFiles/threshold-selection.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
+CMakeFiles/threshold-selection.dir/all: peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/all
 CMakeFiles/threshold-selection.dir/all: peripheral_driver/uart/CMakeFiles/uart.dir/all
 CMakeFiles/threshold-selection.dir/all: HAL/CMakeFiles/HAL.dir/all
+CMakeFiles/threshold-selection.dir/all: multilane/CMakeFiles/multilane.dir/all
 	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/depend
 	$(MAKE) -f CMakeFiles/threshold-selection.dir/build.make CMakeFiles/threshold-selection.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  23 24
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  25 26
 	@echo "Built target threshold-selection"
 .PHONY : CMakeFiles/threshold-selection.dir/all
 
@@ -315,7 +355,7 @@ clean: lane_detection/CMakeFiles/test-vanishing-point.dir/clean
 lane_detection/CMakeFiles/vanishing-point.dir/all:
 	$(MAKE) -f lane_detection/CMakeFiles/vanishing-point.dir/build.make lane_detection/CMakeFiles/vanishing-point.dir/depend
 	$(MAKE) -f lane_detection/CMakeFiles/vanishing-point.dir/build.make lane_detection/CMakeFiles/vanishing-point.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  27 28 29 30
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  29 30 31 32
 	@echo "Built target vanishing-point"
 .PHONY : lane_detection/CMakeFiles/vanishing-point.dir/all
 
@@ -470,7 +510,7 @@ clean: peripheral_driver/uart/CMakeFiles/test-uart.dir/clean
 peripheral_driver/uart/CMakeFiles/uart.dir/all:
 	$(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/depend
 	$(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  25 26
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  27 28
 	@echo "Built target uart"
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/all
 
@@ -743,8 +783,8 @@ clean: extract_info/CMakeFiles/extractInfo.dir/clean
 
 # All Build rule for target.
 extract_info/CMakeFiles/test_extract_info.dir/all: lane_detection/CMakeFiles/vanishing-point.dir/all
-extract_info/CMakeFiles/test_extract_info.dir/all: radon/CMakeFiles/radon.dir/all
 extract_info/CMakeFiles/test_extract_info.dir/all: extract_info/CMakeFiles/extractInfo.dir/all
+extract_info/CMakeFiles/test_extract_info.dir/all: radon/CMakeFiles/radon.dir/all
 	$(MAKE) -f extract_info/CMakeFiles/test_extract_info.dir/build.make extract_info/CMakeFiles/test_extract_info.dir/depend
 	$(MAKE) -f extract_info/CMakeFiles/test_extract_info.dir/build.make extract_info/CMakeFiles/test_extract_info.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles  22
