@@ -42,7 +42,7 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 150)
+#define HIG_HSV_BLACK Scalar(255, 255, 65)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
@@ -79,9 +79,9 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
-#define MIN_AREA_SIGN_TURN 1000
+#define MIN_AREA_SIGN_TURN 1200
 #define MIN_AREA_SIGN_STOP 400
-#define RATE_DECELERATION 0.75
+#define RATE_DECELERATION 1
 //#define SIGN_THROTTLE 40
 
 //#define Y_TURN 0.2

@@ -347,6 +347,7 @@ void signProcessing()
 
     bool preHasSign = hasRedSign || hasBlueSign;
     
+
     if (redSign.detect(false)) // red
         if (redSign.recognize())
             hasRedSign = true;
@@ -359,7 +360,10 @@ void signProcessing()
         hasRedSign = false;
     if (hasRedSign && allowStopSign == true)
         hasBlueSign = false;
-
+/*
+    if (hasBlueSign == false && hasRedSign == false)
+        return false;
+*/
     // from no sign -> has sign
     if (hasRedSign || hasBlueSign)
     {
@@ -381,17 +385,21 @@ void signProcessing()
             signID = redSign.getClassID();
             signROI = redSign.getROI();
         }
-    
-        theta = getWaitTurnTheta(signID, signROI);
+        circle(colorImg, Point(signROI.x + signROI.width / 2, signROI.y + signROI.height / 2), 1, Scalar(255,255,0), 3);
+        
+        theta = -getWaitTurnTheta(signID, signROI)*ALPHA;
+        cout << "theta in control: " << theta << endl;
+        
         rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
-
-        if (signROI.height * signROI.width >= MIN_AREA_SIGN_STOP)
+	    cout << "sign area: " << signROI.height * signROI.width << endl;
+        if (signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
         {
             turning = true;
             controlTurn(signID, signROI);
             turning = false;
         }
-    }   
+    }
+    //return true;   
 }
 
 void controlTurn(int signID, Rect signROI)
@@ -440,4 +448,6 @@ void controlTurn(int signID, Rect signROI)
         allowStopSign = false;
     }
     set_throttle_val = backupThrottle;
+    preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+    preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
 }

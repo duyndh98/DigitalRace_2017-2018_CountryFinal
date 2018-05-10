@@ -56,9 +56,11 @@ int main(int argc, char *argv[])
     fps = 0;
     double freq = getTickFrequency();
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
-    
+    preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+    preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
 //    hasSign = false;
     set_throttle_val = INIT_THROTTLE;
+
     // Run loop
     while (true)
     {
@@ -143,7 +145,10 @@ int main(int argc, char *argv[])
             
             // Process lane to get theta
             laneProcessing();
-            
+            /*
+            if (!signProcessing())
+                laneProcessing();
+            */
             // Process traffic sign
             signProcessing();
 
