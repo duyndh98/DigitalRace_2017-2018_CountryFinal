@@ -79,13 +79,13 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
-#define MIN_AREA_SIGN_TURN 1200
+#define MIN_AREA_SIGN_TURN 1000
 #define MIN_AREA_SIGN_STOP 400
-#define RATE_DECELERATION 1
+#define RATE_DECELERATION 0.75
 //#define SIGN_THROTTLE 40
 
 //#define Y_TURN 0.2
-#define TURN_TIME 0.3
+#define TURN_TIME 0.2
 #define STOP_TIME 5
 
 #define KI 0.3
@@ -97,6 +97,8 @@ using namespace cv::ml;
 #define THROTTLE_VAL3 65
 #define THROTTLE_VAL4 100
 #define INIT_THROTTLE 45
+#define STEP_THROTTLE 1
+#define START_UP_VAL 20
 
 #define ENTER_KEY 13
 #define LEFT_ARROW 37

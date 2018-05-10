@@ -60,7 +60,6 @@ int main(int argc, char *argv[])
     preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
 //    hasSign = false;
     set_throttle_val = INIT_THROTTLE;
-
     // Run loop
     while (true)
     {
@@ -75,13 +74,13 @@ int main(int argc, char *argv[])
         {
             running = !running;
             theta = 0;
-            throttle_val = set_throttle_val;
+            throttle_val = START_UP_VAL;
         }
         if (key == 'f')
         {
             fprintf(stderr, "End process.\n");
             theta = 0;
-            throttle_val = 0;
+            throttle_val = START_UP_VAL;
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
             break;
@@ -92,15 +91,16 @@ int main(int argc, char *argv[])
         else if (running)
         {
             // Update throttle val
-            throttle_val = set_throttle_val;
             if (!started)
             {
                 fprintf(stderr, "ON\n");
                 started = true;
                 stopped = false;
-                throttle_val = set_throttle_val;
+                throttle_val = START_UP_VAL;
                 api_set_FORWARD_control(pca9685, throttle_val);   
             }
+		if(throttle_val < set_throttle_val)
+                throttle_val += STEP_THROTTLE;
             
             // Update stream
             int readyStream = -1;
@@ -182,14 +182,17 @@ int main(int argc, char *argv[])
             setupThrottle();
             updateLCD();
             theta = 0;
-            throttle_val = 0;
+            throttle_val = START_UP_VAL;
             if (!stopped)
             {
                 fprintf(stderr, "OFF\n");
                 stopped = true;
                 started = false;
             }
-            api_set_FORWARD_control(pca9685, throttle_val);
+            api_set_FORWARD_control(pca9685, 0);
+            preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+            preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+            preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             //usleep(200000);
         }
     }

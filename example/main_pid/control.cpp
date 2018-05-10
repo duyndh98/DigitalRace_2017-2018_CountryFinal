@@ -367,6 +367,9 @@ void signProcessing()
     // from no sign -> has sign
     if (hasRedSign || hasBlueSign)
     {
+        preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+        preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+        preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
         if (!preHasSign)
         {
             backupThrottle = set_throttle_val;
@@ -448,6 +451,4 @@ void controlTurn(int signID, Rect signROI)
         allowStopSign = false;
     }
     set_throttle_val = backupThrottle;
-    preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
-    preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
 }
