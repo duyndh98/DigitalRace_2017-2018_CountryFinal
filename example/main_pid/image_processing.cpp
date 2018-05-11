@@ -25,10 +25,13 @@ void get_mask(const Mat &hsv, Mat &mask, bool blue, bool red, bool black)
 		bitwise_or(mask, tmp_mask, mask);
     }
 
-	Mat kernel = Mat::ones(KERNEL_SIZE, KERNEL_SIZE, CV_8UC1);
-
-	dilate(mask, mask, kernel);
-	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
+	
+	if (blue || red)
+	{
+		Mat kernel = Mat::ones(KERNEL_SIZE, KERNEL_SIZE, CV_8UC1);	
+		dilate(mask, mask, kernel);
+		morphologyEx(mask, mask, MORPH_CLOSE, kernel);
+	}
 }
 
 // WARNING: should only be used once

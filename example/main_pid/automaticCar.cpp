@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
 //    hasSign = false;
-    set_throttle_val = INIT_THROTTLE;
+    //set_throttle_val = INIT_THROTTLE;
     // Run loop
     while (true)
     {
@@ -75,12 +75,13 @@ int main(int argc, char *argv[])
             running = !running;
             theta = 0;
             throttle_val = START_UP_VAL;
+		api_set_STEERING_control(pca9685, theta);
         }
         if (key == 'f')
         {
             fprintf(stderr, "End process.\n");
             theta = 0;
-            throttle_val = START_UP_VAL;
+            throttle_val = 0;//L;
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
             break;
@@ -133,7 +134,6 @@ int main(int argc, char *argv[])
             // Mat element = getStructuringElement( MORPH_RECT,Size( 2*7+1, 2*7+1 ),Point( 7, 7 ) );
             // dilate(binRedImg,binRedImg,element);
             // erode( binRedImg,binRedImg, element );	
-            
             medianBlur(binBlueImg, binBlueImg, KERNEL_SIZE);		
             medianBlur(binRedImg, binRedImg, KERNEL_SIZE);		
 	    
@@ -193,6 +193,8 @@ int main(int argc, char *argv[])
             preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+		theta = 0;
+		api_set_STEERING_control(pca9685, theta);
             //usleep(200000);
         }
     }

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 Mat colorImg, hsvImg, binImg;
 double theta;
 Point carPosition;
@@ -23,7 +24,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
     for (int i = 0; i < (int)contours.size(); ++i)
     {
         int area = contourArea(contours[i]);
-        if (area >= AREA_MIN)
+        if (area >= MIN_LANE_AREA)
         {
             double check = 0;
             Point pMin(binLaneImg.cols,0);
@@ -103,10 +104,18 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
 	    fLane = true;
         }
     }
-    if(!isLeft)
-        centerLeft = preLeft;
-    if(!isRight)
-        centerRight = preRight;
+    if(!isLeft && isRight){
+        centerLeft.x = preCenterPoint.x*2-centerRight.x;
+	centerLeft.y = preCenterPoint.y*2-centerRight.y;
+	if((centerLeft.x < 0) || (centerRight.x - centerLeft.x < DISTANCE_2_POINT))
+		centerLeft.x = preLeft.x;
+	}
+    if(!isRight && isLeft){
+        centerRight.x = preCenterPoint.x*2-centerLeft.x;
+	centerRight.y = preCenterPoint.y*2-centerLeft.y;
+	if((centerRight.x > binLaneImg.cols) || (centerRight.x - centerLeft.x < DISTANCE_2_POINT))
+		centerRight.x = preRight.x;
+	}
     preLeft = centerLeft;
     preRight = centerRight;
     //cout << "center point: " << preCenterPoint.y << endl;

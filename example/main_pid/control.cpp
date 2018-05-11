@@ -353,9 +353,9 @@ void signProcessing()
             hasRedSign = true;
     
     if (blueSign.detect(true)) // blue
-        if (blueSign.recognize())
+        if (blueSign.recognize()){
             hasBlueSign = true;
-    
+    	}
     if (!allowStopSign && hasRedSign)
         hasRedSign = false;
     if (hasRedSign && allowStopSign == true)
@@ -389,12 +389,14 @@ void signProcessing()
             signROI = redSign.getROI();
         }
         circle(colorImg, Point(signROI.x + signROI.width / 2, signROI.y + signROI.height / 2), 1, Scalar(255,255,0), 3);
-        
+        if((hasBlueSign && blueSign.getClassID()) || (hasRedSign && redSign.getClassID()))
+{
         theta = -getWaitTurnTheta(signID, signROI)*ALPHA;
         cout << "theta in control: " << theta << endl;
         
         rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
 	    cout << "sign area: " << signROI.height * signROI.width << endl;
+}
         if (signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
         {
             turning = true;
