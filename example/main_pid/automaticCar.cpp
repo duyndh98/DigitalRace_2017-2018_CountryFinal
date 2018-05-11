@@ -114,10 +114,13 @@ int main(int argc, char *argv[])
 
             // Load image
             colorStream.readFrame(&frame_color);
-            analyzeFrame(frame_color, colorImg);
+            depthStream.readFrame(&frame_depth);
+            char recordStatus = analyzeFrame(frame_depth,frame_color, depthImg, colorImg);
+            //analyzeFrame(frame_color, colorImg);
             
             // Preprocessing
             flip(colorImg, colorImg, 1);
+            flip(depthImg, depthImg, 1);
             //hist_equalize(colorImg);
             //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);

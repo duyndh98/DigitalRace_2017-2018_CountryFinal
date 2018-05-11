@@ -11,7 +11,7 @@ double getAngleLane(Mat &binImg, double preTheta);
 void transform(Point* src_vertices, Point* dst_vertices, Mat& src, Mat &dst);
 void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg);
 void laneProcessing();
-void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img);
+char analyzeFrame(const VideoFrameRef& frame_depth,const VideoFrameRef& frame_color,Mat& depth_img, Mat& color_img);
 void remOutlier(Mat &gray);
 
 #endif

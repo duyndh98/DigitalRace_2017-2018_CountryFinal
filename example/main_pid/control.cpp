@@ -1,10 +1,12 @@
 #include "control.h"
+#include "depth_processing.h"
 
 Status rc;
 Device device;
-VideoStream colorStream;
-VideoStream *streams[1];
-VideoFrameRef frame_color;
+VideoStream colorStream,depthStream;
+//VideoStream *streams[1];
+VideoStream* streams[] = {&depthStream, &colorStream};
+VideoFrameRef frame_color,frame_depth;
 
 string color_filename;
 GPIO *gpio;
@@ -91,7 +93,7 @@ void OpenNI_init()
 {
     printf("OpenNI init...\n");
 
-    streams[0] = {&colorStream};
+    //streams[0] = {&colorStream};
 
     rc = OpenNI::initialize();
 
@@ -125,6 +127,26 @@ void OpenNI_init()
         else
             printf("Couldn't create color stream\n%s\n", OpenNI::getExtendedError());
     }
+
+    if (device.getSensorInfo(SENSOR_DEPTH) != NULL) {
+        rc = depth.create(device, SENSOR_DEPTH);
+        if (rc == STATUS_OK) {
+            VideoMode depth_mode = depth.getVideoMode();
+            depth_mode.setFps(30);
+            depth_mode.setResolution(VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT);
+            depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
+            depth.setVideoMode(depth_mode);
+
+            rc = depth.start();
+            if (rc != STATUS_OK) {
+                printf("Couldn't start the color stream\n%s\n", OpenNI::getExtendedError());
+            }
+        }
+        else {
+            printf("Couldn't create depth stream\n%s\n", OpenNI::getExtendedError());
+        }
+    }
+
 }
 
 void PCA9685_init()
@@ -397,7 +419,13 @@ void signProcessing()
         rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
 	    cout << "sign area: " << signROI.height * signROI.width << endl;
 }
-        if (signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
+        /*if (signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
+        {
+            turning = true;
+            controlTurn(signID, signROI);
+            turning = false;
+        }*/
+        if (thoidiemre(depthImg))
         {
             turning = true;
             controlTurn(signID, signROI);

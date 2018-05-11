@@ -261,8 +261,7 @@ bool thoidiemre(Mat &depthMap)
 
 int
 api_kinect_cv_get_images(VideoCapture &capture,
-        Mat &depthMap,
-        Mat &grayImage)
+        Mat &depthMap)
 {
     if( !capture.isOpened() )
     {
@@ -302,7 +301,7 @@ api_kinect_cv_get_images(VideoCapture &capture,
 
 int main()
 {
-    Mat depthMap,grayImage;
+    Mat depthMap;
 	VideoCapture capture;
 	capture.open( CV_CAP_OPENNI2 );
 	if( !capture.isOpened() )
@@ -323,12 +322,12 @@ int main()
     createTrackbar("thresh_area_max", "Threshold Selection", &thresh_area_max, 1000, on_thresh_area_max_thresh_trackbar);
     while ((char)waitKey(1) != 'q')
     {
-	api_kinect_cv_get_images( capture, depthMap, grayImage);
-			if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
+	api_kinect_cv_get_images( capture, depthMap);
+			/*if( !capture.retrieve( bgrImage, CV_CAP_OPENNI_BGR_IMAGE ) )
 	        {
 	            cout<< endl<< "Error: Cannot bgr gray image";
 	            return -1;
-	        }
+	        }*/
         thoidiemre(depthMap);
     }
 
