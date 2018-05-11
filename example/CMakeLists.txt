@@ -72,6 +72,7 @@ set( exec_name test-autocar)
 set( source_files
     main_pid/automaticCar.cpp
     main_pid/image_processing.cpp
+    main_pid/depth_processing.cpp
     main_pid/lane_detection.cpp
     main_pid/sign.cpp
     main_pid/control.cpp

@@ -125,7 +125,7 @@ extern PCA9685* pca9685;
 extern Status rc;
 extern Device device;
 extern VideoStream colorStream,depthStream;
-extern VideoFrameRef frame_color,depth_color;
+extern VideoFrameRef frame_color,frame_depth;
 extern VideoStream *streams[2];
 
 // LCD

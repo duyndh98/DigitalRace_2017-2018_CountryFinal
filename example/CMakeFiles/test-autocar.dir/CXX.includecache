@@ -137,6 +137,16 @@ sign.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.h
 lane_detection.h
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.h
+depth_processing.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/depth_processing.h
+
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/depth_processing.cpp
+depth_processing.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/depth_processing.h
+
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/depth_processing.h
+header.h
+/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
 
 /home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/header.h
 opencv2/imgproc/imgproc.hpp

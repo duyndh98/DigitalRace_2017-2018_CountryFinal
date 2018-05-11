@@ -289,11 +289,11 @@ api_kinect_cv_get_images(VideoCapture &capture,
             return -1;
         }
 
-        if( !capture.retrieve( grayImage, CV_CAP_OPENNI_GRAY_IMAGE ) )
+        /*if( !capture.retrieve( grayImage, CV_CAP_OPENNI_GRAY_IMAGE ) )
         {
             cout<< endl<< "Error: Cannot get gray image";
             return -1;
-        }
+        }*/
     }
 
     return 0;

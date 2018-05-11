@@ -20,7 +20,7 @@ bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
 Point preCenterPoint;
-Mat grayImg;
+Mat grayImg,depthImg;
 Point preLeft;
 Point preRight;
 Point centerPoint;
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
                 laneProcessing();
             */
             // Process traffic sign
-            signProcessing();
+            signProcessing(depthImg);
 
             printf("theta: %d\n", int(theta));            		
 

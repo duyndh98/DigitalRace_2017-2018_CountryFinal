@@ -1,5 +1,4 @@
 #include "control.h"
-#include "depth_processing.h"
 
 Status rc;
 Device device;
@@ -129,15 +128,15 @@ void OpenNI_init()
     }
 
     if (device.getSensorInfo(SENSOR_DEPTH) != NULL) {
-        rc = depth.create(device, SENSOR_DEPTH);
+        rc = depthStream.create(device, SENSOR_DEPTH);
         if (rc == STATUS_OK) {
-            VideoMode depth_mode = depth.getVideoMode();
+            VideoMode depth_mode = depthStream.getVideoMode();
             depth_mode.setFps(30);
-            depth_mode.setResolution(VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT);
+            depth_mode.setResolution(FRAME_WIDTH, FRAME_HEIGHT);
             depth_mode.setPixelFormat(PIXEL_FORMAT_DEPTH_100_UM);
-            depth.setVideoMode(depth_mode);
+            depthStream.setVideoMode(depth_mode);
 
-            rc = depth.start();
+            rc = depthStream.start();
             if (rc != STATUS_OK) {
                 printf("Couldn't start the color stream\n%s\n", OpenNI::getExtendedError());
             }
@@ -354,7 +353,7 @@ double getWaitTurnTheta(int signID, Rect signROI) {
         return getTheta(carPosition, signCenter);
     }
 }
-void signProcessing()
+void signProcessing(Mat &depthImg)
 {
     // int signID = mySign.getClassID();
     // if (isDebug)

@@ -1,4 +1,4 @@
-
+#include "depth_processing.h"
 void
 mergeOverlappingBoxes(std::vector<cv::Rect> &inputBoxes,
                       cv::Mat &image,
@@ -167,12 +167,12 @@ bool thoidiemre(Mat &depthMap)
     Rect intersect;
     vector< Rect > output_boxes;
 
-    Rect roi_1 = Rect(0, VIDEO_FRAME_HEIGHT/4,
-                    VIDEO_FRAME_WIDTH, VIDEO_FRAME_HEIGHT/2);
+    Rect roi_1 = Rect(0, FRAME_HEIGHT/4,
+                    FRAME_WIDTH,FRAME_HEIGHT/2);
     //Rect roi_2(0, 132, 640, 238);
 
-    int frame_width = VIDEO_FRAME_WIDTH;
-    int frame_height = VIDEO_FRAME_HEIGHT;
+    int frame_width = FRAME_WIDTH;
+    int frame_height = FRAME_HEIGHT;
 
     //api_kinect_cv_get_images(capture, depthMap , grayImage); //get depth
     //namedWindow("DepthImg", 1);
@@ -181,8 +181,11 @@ bool thoidiemre(Mat &depthMap)
     Mat crop_grayImage = grayImage(roi_1);
     Mat crop_depthMap = depthMap(roi_1);
 
+	int lower__bound = 0;
+	int upper__bound = 55;
+	int thresh_area_min = 20;
+	int thresh_area_max = 7000;
     api_kinect_cv_get_obtacle_rect( depthMap, output_boxes, roi_1, lower__bound, upper__bound, thresh_area_min, thresh_area_max); 
-    //chinh lai trong api.cpp va file .h, truyen tham chieu cho 4 tham so cuoi
     Mat binImg = Mat::zeros(depthMap.size(), CV_8UC1);
 
     api_kinect_cv_center_rect_gen( rects, frame_width, frame_height);
