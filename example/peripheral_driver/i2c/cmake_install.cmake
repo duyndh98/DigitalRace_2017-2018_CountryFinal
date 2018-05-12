@@ -1,4 +1,4 @@
-# Install script for directory: /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/i2c
+# Install script for directory: /home/ubuntu/FinalRound-CDS/example/peripheral_driver/i2c
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -114,7 +114,7 @@ crtdbg.h
 stdint.h
 -
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/multilane.h
+/home/ubuntu/FinalRound-CDS/example/multilane/multilane.h
 vector
 -
 cstdio
@@ -126,11 +126,11 @@ opencv2/opencv.hpp
 opencv2/highgui/highgui.hpp
 -
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/test_multilane.cpp
+/home/ubuntu/FinalRound-CDS/example/multilane/test_multilane.cpp
 multilane.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/multilane.h
+/home/ubuntu/FinalRound-CDS/example/multilane/multilane.h
 api_kinect_cv.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/api_kinect_cv.h
+/home/ubuntu/FinalRound-CDS/example/multilane/api_kinect_cv.h
 iostream
 -
 

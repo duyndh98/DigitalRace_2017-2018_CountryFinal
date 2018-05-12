@@ -92,6 +92,7 @@ bool Sign::detect(bool blueSign)
 				_sign_ROI.y = min(bound1.y, bound2.y);
 				_sign_ROI.width = max(bound1.x + bound1.width, bound2.x + bound2.width) - _sign_ROI.x;
 				_sign_ROI.height = max(bound1.y + bound1.height, bound2.y + bound2.height) - _sign_ROI.y;
+rectangle(colorImg, Point(_sign_ROI.x, _sign_ROI.y), Point(_sign_ROI.x + _sign_ROI.width, _sign_ROI.y + _sign_ROI.height), Scalar(255, 255, 0), 2);
 			}
 		}
 	}

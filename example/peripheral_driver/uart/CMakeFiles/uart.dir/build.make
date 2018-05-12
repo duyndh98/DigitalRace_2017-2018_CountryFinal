@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+CMAKE_SOURCE_DIR = /home/ubuntu/FinalRound-CDS/example
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+CMAKE_BINARY_DIR = /home/ubuntu/FinalRound-CDS/example
 
 # Include any dependencies generated for this target.
 include peripheral_driver/uart/CMakeFiles/uart.dir/depend.make
@@ -51,17 +51,17 @@ include peripheral_driver/uart/CMakeFiles/uart.dir/flags.make
 
 peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o: peripheral_driver/uart/CMakeFiles/uart.dir/flags.make
 peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o: peripheral_driver/uart/rs232.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/FinalRound-CDS/example/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/uart.dir/rs232.c.o   -c /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.c
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/uart.dir/rs232.c.o   -c /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.c
 
 peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/uart.dir/rs232.c.i"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.c > CMakeFiles/uart.dir/rs232.c.i
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -E /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.c > CMakeFiles/uart.dir/rs232.c.i
 
 peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/uart.dir/rs232.c.s"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.c -o CMakeFiles/uart.dir/rs232.c.s
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && /usr/bin/cc  $(C_DEFINES) $(C_FLAGS) -S /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.c -o CMakeFiles/uart.dir/rs232.c.s
 
 peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o.requires:
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o.requires
@@ -74,17 +74,17 @@ peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o.provides.build: peripheral_
 
 peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o: peripheral_driver/uart/CMakeFiles/uart.dir/flags.make
 peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o: peripheral_driver/uart/api_uart.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ubuntu/FinalRound-CDS/example/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/uart.dir/api_uart.cpp.o -c /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.cpp
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/uart.dir/api_uart.cpp.o -c /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.cpp
 
 peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/uart.dir/api_uart.cpp.i"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.cpp > CMakeFiles/uart.dir/api_uart.cpp.i
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.cpp > CMakeFiles/uart.dir/api_uart.cpp.i
 
 peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/uart.dir/api_uart.cpp.s"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.cpp -o CMakeFiles/uart.dir/api_uart.cpp.s
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.cpp -o CMakeFiles/uart.dir/api_uart.cpp.s
 
 peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o.requires:
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o.requires
@@ -108,8 +108,8 @@ bin/Release/libuart.a: peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o
 bin/Release/libuart.a: peripheral_driver/uart/CMakeFiles/uart.dir/build.make
 bin/Release/libuart.a: peripheral_driver/uart/CMakeFiles/uart.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX static library ../../bin/Release/libuart.a"
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && $(CMAKE_COMMAND) -P CMakeFiles/uart.dir/cmake_clean_target.cmake
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/uart.dir/link.txt --verbose=$(VERBOSE)
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && $(CMAKE_COMMAND) -P CMakeFiles/uart.dir/cmake_clean_target.cmake
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/uart.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 peripheral_driver/uart/CMakeFiles/uart.dir/build: bin/Release/libuart.a
@@ -120,10 +120,10 @@ peripheral_driver/uart/CMakeFiles/uart.dir/requires: peripheral_driver/uart/CMak
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/requires
 
 peripheral_driver/uart/CMakeFiles/uart.dir/clean:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart && $(CMAKE_COMMAND) -P CMakeFiles/uart.dir/cmake_clean.cmake
+	cd /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart && $(CMAKE_COMMAND) -P CMakeFiles/uart.dir/cmake_clean.cmake
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/clean
 
 peripheral_driver/uart/CMakeFiles/uart.dir/depend:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ubuntu/DriverlessCarChallenge_2017-2018/example /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart /home/ubuntu/DriverlessCarChallenge_2017-2018/example /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/CMakeFiles/uart.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ubuntu/FinalRound-CDS/example /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart /home/ubuntu/FinalRound-CDS/example /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/CMakeFiles/uart.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/depend
 

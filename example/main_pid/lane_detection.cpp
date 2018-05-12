@@ -104,7 +104,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
 	    fLane = true;
         }
     }
-    if(!isLeft && isRight){
+/*    if(!isLeft && isRight){
         centerLeft.x = preCenterPoint.x*2-centerRight.x;
 	centerLeft.y = preCenterPoint.y*2-centerRight.y;
 	if((centerLeft.x < 0) || (centerRight.x - centerLeft.x < DISTANCE_2_POINT))
@@ -115,7 +115,11 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
 	centerRight.y = preCenterPoint.y*2-centerLeft.y;
 	if((centerRight.x > binLaneImg.cols) || (centerRight.x - centerLeft.x < DISTANCE_2_POINT))
 		centerRight.x = preRight.x;
-	}
+	}*/
+	if(!isLeft)
+		centerLeft = preLeft;
+	if(!isRight)
+		centerRight = preRight;
     preLeft = centerLeft;
     preRight = centerRight;
     //cout << "center point: " << preCenterPoint.y << endl;

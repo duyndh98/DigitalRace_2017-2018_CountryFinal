@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.cpp
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.cpp
 api_uart.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.h
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.h
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.h
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.h
 stdlib.h
 -
 stdio.h
@@ -18,9 +18,9 @@ stdio.h
 unistd.h
 -
 rs232.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.h
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.h
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.h
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.h
 stdio.h
 -
 string.h

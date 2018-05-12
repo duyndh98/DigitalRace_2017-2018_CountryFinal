@@ -1154,3 +1154,53 @@ int main() {
 #endif
 }
 
+Performing C SOURCE FILE Test OpenMP_FLAG_DETECTED succeded with the following output:
+Change Dir: /home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec4192270006/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec4192270006.dir/build.make CMakeFiles/cmTryCompileExec4192270006.dir/build
+make[1]: Entering directory `/home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec4192270006.dir/src.c.o
+/usr/bin/cc   -DOpenMP_FLAG_DETECTED -fopenmp   -o CMakeFiles/cmTryCompileExec4192270006.dir/src.c.o   -c /home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTryCompileExec4192270006
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4192270006.dir/link.txt --verbose=1
+/usr/bin/cc   -DOpenMP_FLAG_DETECTED -fopenmp    CMakeFiles/cmTryCompileExec4192270006.dir/src.c.o  -o cmTryCompileExec4192270006 -rdynamic 
+make[1]: Leaving directory `/home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#include <omp.h>
+int main() {
+#ifdef _OPENMP
+  return 0;
+#else
+  breaks_on_purpose
+#endif
+}
+
+Performing C++ SOURCE FILE Test OpenMP_FLAG_DETECTED succeded with the following output:
+Change Dir: /home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec2798511062/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2798511062.dir/build.make CMakeFiles/cmTryCompileExec2798511062.dir/build
+make[1]: Entering directory `/home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2798511062.dir/src.cxx.o
+/usr/bin/c++    -std=c++11 -DOpenMP_FLAG_DETECTED -fopenmp   -o CMakeFiles/cmTryCompileExec2798511062.dir/src.cxx.o -c /home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2798511062
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2798511062.dir/link.txt --verbose=1
+/usr/bin/c++    -std=c++11 -DOpenMP_FLAG_DETECTED -fopenmp    CMakeFiles/cmTryCompileExec2798511062.dir/src.cxx.o  -o cmTryCompileExec2798511062 -rdynamic 
+make[1]: Leaving directory `/home/ubuntu/FinalRound-CDS/example/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#include <omp.h>
+int main() {
+#ifdef _OPENMP
+  return 0;
+#else
+  breaks_on_purpose
+#endif
+}
+

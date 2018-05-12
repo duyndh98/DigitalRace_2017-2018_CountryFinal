@@ -42,10 +42,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+CMAKE_SOURCE_DIR = /home/ubuntu/FinalRound-CDS/example
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+CMAKE_BINARY_DIR = /home/ubuntu/FinalRound-CDS/example
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,14 +72,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles /home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/CMakeFiles/progress.marks
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles 0
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/FinalRound-CDS/example/CMakeFiles /home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/CMakeFiles/progress.marks
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/FinalRound-CDS/example/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/clean
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/clean
 .PHONY : clean
 
 # The main clean target
@@ -88,22 +88,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/preinstall
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/preinstall
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 peripheral_driver/uart/CMakeFiles/test-uart.dir/rule:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/CMakeFiles/test-uart.dir/rule
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/CMakeFiles/test-uart.dir/rule
 .PHONY : peripheral_driver/uart/CMakeFiles/test-uart.dir/rule
 
 # Convenience name for target.
@@ -112,12 +112,12 @@ test-uart: peripheral_driver/uart/CMakeFiles/test-uart.dir/rule
 
 # fast build rule for target.
 test-uart/fast:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/build
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/build
 .PHONY : test-uart/fast
 
 # Convenience name for target.
 peripheral_driver/uart/CMakeFiles/uart.dir/rule:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/CMakeFiles/uart.dir/rule
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 peripheral_driver/uart/CMakeFiles/uart.dir/rule
 .PHONY : peripheral_driver/uart/CMakeFiles/uart.dir/rule
 
 # Convenience name for target.
@@ -126,7 +126,7 @@ uart: peripheral_driver/uart/CMakeFiles/uart.dir/rule
 
 # fast build rule for target.
 uart/fast:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/build
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/build
 .PHONY : uart/fast
 
 api_uart.o: api_uart.cpp.o
@@ -134,7 +134,7 @@ api_uart.o: api_uart.cpp.o
 
 # target to build an object file
 api_uart.cpp.o:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o
 .PHONY : api_uart.cpp.o
 
 api_uart.i: api_uart.cpp.i
@@ -142,7 +142,7 @@ api_uart.i: api_uart.cpp.i
 
 # target to preprocess a source file
 api_uart.cpp.i:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.i
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.i
 .PHONY : api_uart.cpp.i
 
 api_uart.s: api_uart.cpp.s
@@ -150,7 +150,7 @@ api_uart.s: api_uart.cpp.s
 
 # target to generate assembly for a file
 api_uart.cpp.s:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.s
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.s
 .PHONY : api_uart.cpp.s
 
 rs232.o: rs232.c.o
@@ -158,7 +158,7 @@ rs232.o: rs232.c.o
 
 # target to build an object file
 rs232.c.o:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o
 .PHONY : rs232.c.o
 
 rs232.i: rs232.c.i
@@ -166,7 +166,7 @@ rs232.i: rs232.c.i
 
 # target to preprocess a source file
 rs232.c.i:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.i
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.i
 .PHONY : rs232.c.i
 
 rs232.s: rs232.c.s
@@ -174,7 +174,7 @@ rs232.s: rs232.c.s
 
 # target to generate assembly for a file
 rs232.c.s:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.s
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/uart.dir/build.make peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.s
 .PHONY : rs232.c.s
 
 test_uart.o: test_uart.cpp.o
@@ -182,7 +182,7 @@ test_uart.o: test_uart.cpp.o
 
 # target to build an object file
 test_uart.cpp.o:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/test_uart.cpp.o
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/test_uart.cpp.o
 .PHONY : test_uart.cpp.o
 
 test_uart.i: test_uart.cpp.i
@@ -190,7 +190,7 @@ test_uart.i: test_uart.cpp.i
 
 # target to preprocess a source file
 test_uart.cpp.i:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/test_uart.cpp.i
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/test_uart.cpp.i
 .PHONY : test_uart.cpp.i
 
 test_uart.s: test_uart.cpp.s
@@ -198,7 +198,7 @@ test_uart.s: test_uart.cpp.s
 
 # target to generate assembly for a file
 test_uart.cpp.s:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/test_uart.cpp.s
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f peripheral_driver/uart/CMakeFiles/test-uart.dir/build.make peripheral_driver/uart/CMakeFiles/test-uart.dir/test_uart.cpp.s
 .PHONY : test_uart.cpp.s
 
 # Help Target
@@ -231,6 +231,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

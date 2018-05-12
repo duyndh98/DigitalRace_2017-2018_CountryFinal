@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/Hal.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/CMakeFiles/HAL.dir/Hal.cpp.o"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/LCDI2C.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/CMakeFiles/HAL.dir/LCDI2C.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/HAL/Hal.cpp" "/home/ubuntu/FinalRound-CDS/example/HAL/CMakeFiles/HAL.dir/Hal.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/HAL/LCDI2C.cpp" "/home/ubuntu/FinalRound-CDS/example/HAL/CMakeFiles/HAL.dir/LCDI2C.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

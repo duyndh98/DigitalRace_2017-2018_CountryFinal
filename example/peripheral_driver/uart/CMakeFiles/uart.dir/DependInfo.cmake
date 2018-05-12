@@ -5,11 +5,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.c" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o"
+  "/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.c" "/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/CMakeFiles/uart.dir/rs232.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/api_uart.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/api_uart.cpp" "/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/CMakeFiles/uart.dir/api_uart.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

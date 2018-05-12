@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.c
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.c
 rs232.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.h
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.h
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/rs232.h
+/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/rs232.h
 stdio.h
 -
 string.h

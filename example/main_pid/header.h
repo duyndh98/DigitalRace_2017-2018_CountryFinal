@@ -58,7 +58,7 @@ using namespace cv::ml;
 #define TEST_DETECT_SIGN 0
 #define ACCEPT_SIGN 1
 #define N_SAMPLE 1
-#define ALPHA 2
+#define ALPHA 2.1
 #define ALPHA_TURN 100
 
 #define SW1_PIN 160
@@ -73,7 +73,7 @@ using namespace cv::ml;
 #define RATIO_WIDTH_LANE_CROP 0.5
 #define RATIO_HEIGHT_LANE_CROP 0.45
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
-#define CENTER_POINT_Y 0.65
+#define CENTER_POINT_Y 0.7
 
 #define NO_SIGN 0
 #define SIGN_LEFT 1
@@ -81,7 +81,7 @@ using namespace cv::ml;
 #define SIGN_STOP 3
 #define MIN_AREA_SIGN_TURN 1000
 #define MIN_AREA_SIGN_STOP 400
-#define RATE_DECELERATION 0.75
+#define RATE_DECELERATION 1
 //#define SIGN_THROTTLE 40
 
 #define TURN_TIME 0.2

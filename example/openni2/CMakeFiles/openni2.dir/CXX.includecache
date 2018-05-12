@@ -6,27 +6,27 @@
 
 #IncludeRegexTransform: 
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/Singleton.h
+/home/ubuntu/FinalRound-CDS/example/openni2/Singleton.h
 cstddef
 -
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/openni2.cpp
+/home/ubuntu/FinalRound-CDS/example/openni2/openni2.cpp
 openni2.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/openni2.h
+/home/ubuntu/FinalRound-CDS/example/openni2/openni2.h
 
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/openni2.h
+/home/ubuntu/FinalRound-CDS/example/openni2/openni2.h
 iostream
 -
 opencv2/videoio.hpp
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/opencv2/videoio.hpp
+/home/ubuntu/FinalRound-CDS/example/openni2/opencv2/videoio.hpp
 opencv2/highgui.hpp
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/opencv2/highgui.hpp
+/home/ubuntu/FinalRound-CDS/example/openni2/opencv2/highgui.hpp
 opencv2/imgproc.hpp
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/opencv2/imgproc.hpp
+/home/ubuntu/FinalRound-CDS/example/openni2/opencv2/imgproc.hpp
 opencv2/opencv.hpp
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/opencv2/opencv.hpp
+/home/ubuntu/FinalRound-CDS/example/openni2/opencv2/opencv.hpp
 Singleton.h
-/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/Singleton.h
+/home/ubuntu/FinalRound-CDS/example/openni2/Singleton.h
 
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h

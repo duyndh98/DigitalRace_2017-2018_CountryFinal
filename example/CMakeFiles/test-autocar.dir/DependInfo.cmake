@@ -4,22 +4,22 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/automaticCar.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/control.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/control.cpp.o"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/image_processing.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/lane_detection.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/main_pid/sign.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/main_pid/automaticCar.cpp" "/home/ubuntu/FinalRound-CDS/example/CMakeFiles/test-autocar.dir/main_pid/automaticCar.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/main_pid/control.cpp" "/home/ubuntu/FinalRound-CDS/example/CMakeFiles/test-autocar.dir/main_pid/control.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/main_pid/image_processing.cpp" "/home/ubuntu/FinalRound-CDS/example/CMakeFiles/test-autocar.dir/main_pid/image_processing.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/main_pid/lane_detection.cpp" "/home/ubuntu/FinalRound-CDS/example/CMakeFiles/test-autocar.dir/main_pid/lane_detection.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/main_pid/sign.cpp" "/home/ubuntu/FinalRound-CDS/example/CMakeFiles/test-autocar.dir/main_pid/sign.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/CMakeFiles/vanishing-point.dir/DependInfo.cmake"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/DependInfo.cmake"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/uart/CMakeFiles/uart.dir/DependInfo.cmake"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/CMakeFiles/HAL.dir/DependInfo.cmake"
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/CMakeFiles/multilane.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/lane_detection/CMakeFiles/vanishing-point.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/peripheral_driver/i2c/CMakeFiles/i2c-pwm.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/peripheral_driver/uart/CMakeFiles/uart.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/HAL/CMakeFiles/HAL.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/multilane/CMakeFiles/multilane.dir/DependInfo.cmake"
   )
 
 # The include file search paths:

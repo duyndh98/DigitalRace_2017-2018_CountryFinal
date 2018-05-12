@@ -1,4 +1,4 @@
-# Install script for directory: /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+# Install script for directory: /home/ubuntu/FinalRound-CDS/example
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,14 +34,14 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/lane_detection/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/peripheral_driver/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/HAL/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/multilane/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/radon/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/extract_info/cmake_install.cmake")
-  include("/home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/stereo_vision/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/lane_detection/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/peripheral_driver/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/HAL/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/multilane/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/radon/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/extract_info/cmake_install.cmake")
+  include("/home/ubuntu/FinalRound-CDS/example/openni2/cmake_install.cmake")
 
 endif()
 
@@ -53,5 +53,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ubuntu/FinalRound-CDS/example/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

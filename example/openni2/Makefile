@@ -42,10 +42,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+CMAKE_SOURCE_DIR = /home/ubuntu/FinalRound-CDS/example
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ubuntu/DriverlessCarChallenge_2017-2018/example
+CMAKE_BINARY_DIR = /home/ubuntu/FinalRound-CDS/example
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,14 +72,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles /home/ubuntu/DriverlessCarChallenge_2017-2018/example/openni2/CMakeFiles/progress.marks
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/DriverlessCarChallenge_2017-2018/example/CMakeFiles 0
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/FinalRound-CDS/example/CMakeFiles /home/ubuntu/FinalRound-CDS/example/openni2/CMakeFiles/progress.marks
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/FinalRound-CDS/example/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/clean
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/clean
 .PHONY : clean
 
 # The main clean target
@@ -88,22 +88,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/preinstall
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/preinstall
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 openni2/CMakeFiles/openni2.dir/rule:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/CMakeFiles/openni2.dir/rule
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f CMakeFiles/Makefile2 openni2/CMakeFiles/openni2.dir/rule
 .PHONY : openni2/CMakeFiles/openni2.dir/rule
 
 # Convenience name for target.
@@ -112,7 +112,7 @@ openni2: openni2/CMakeFiles/openni2.dir/rule
 
 # fast build rule for target.
 openni2/fast:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/build
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/build
 .PHONY : openni2/fast
 
 openni2.o: openni2.cpp.o
@@ -120,7 +120,7 @@ openni2.o: openni2.cpp.o
 
 # target to build an object file
 openni2.cpp.o:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/openni2.cpp.o
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/openni2.cpp.o
 .PHONY : openni2.cpp.o
 
 openni2.i: openni2.cpp.i
@@ -128,7 +128,7 @@ openni2.i: openni2.cpp.i
 
 # target to preprocess a source file
 openni2.cpp.i:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/openni2.cpp.i
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/openni2.cpp.i
 .PHONY : openni2.cpp.i
 
 openni2.s: openni2.cpp.s
@@ -136,7 +136,7 @@ openni2.s: openni2.cpp.s
 
 # target to generate assembly for a file
 openni2.cpp.s:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/openni2.cpp.s
+	cd /home/ubuntu/FinalRound-CDS/example && $(MAKE) -f openni2/CMakeFiles/openni2.dir/build.make openni2/CMakeFiles/openni2.dir/openni2.cpp.s
 .PHONY : openni2.cpp.s
 
 # Help Target
@@ -162,6 +162,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/ubuntu/DriverlessCarChallenge_2017-2018/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/ubuntu/FinalRound-CDS/example && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

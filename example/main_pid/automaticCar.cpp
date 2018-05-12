@@ -179,6 +179,8 @@ int main(int argc, char *argv[])
         }
         else
         {
+		hasRedSign = false;
+		hasBlueSign = false;
             setupThrottle();
             updateLCD();
             theta = 0;

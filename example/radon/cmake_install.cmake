@@ -1,4 +1,4 @@
-# Install script for directory: /home/ubuntu/DriverlessCarChallenge_2017-2018/example/radon
+# Install script for directory: /home/ubuntu/FinalRound-CDS/example/radon
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

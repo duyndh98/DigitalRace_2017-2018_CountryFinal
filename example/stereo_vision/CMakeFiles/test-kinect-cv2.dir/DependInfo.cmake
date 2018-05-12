@@ -4,13 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/test_kinect_cv2.cpp" "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/test-kinect-cv2.dir/test_kinect_cv2.cpp.o"
+  "/home/ubuntu/FinalRound-CDS/example/stereo_vision/test_kinect_cv2.cpp" "/home/ubuntu/FinalRound-CDS/example/stereo_vision/CMakeFiles/test-kinect-cv2.dir/test_kinect_cv2.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/ubuntu/DriverlessCarChallenge_2017-2018/example/stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
+  "/home/ubuntu/FinalRound-CDS/example/stereo_vision/CMakeFiles/kinect-cv2.dir/DependInfo.cmake"
   )
 
 # The include file search paths:
