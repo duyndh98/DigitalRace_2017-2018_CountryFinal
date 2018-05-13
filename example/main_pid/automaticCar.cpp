@@ -15,7 +15,7 @@
 #include "sign.h"
 #include "control.h"
 
-bool allowStopSign=true,hasBlueSign=false,hasRedSign=false;
+bool allowStopSign = true, hasBlueSign = false, hasRedSign = false;
 bool running, started, stopped;
 unsigned int bt_status, sensor_status;
 VideoWriter color_videoWriter;
@@ -40,14 +40,14 @@ int main(int argc, char *argv[])
     LCD_init();
     //init capture Stop Sign
     allowStopSign = true;
-    
+
     carPosition.x = FRAME_WIDTH / 2;
     carPosition.y = FRAME_HEIGHT;
 
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
-    turning =false;
+    turning = false;
     // Log
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
@@ -58,14 +58,20 @@ int main(int argc, char *argv[])
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
-//    hasSign = false;
+    targetTimer = 0;
+    counterComeBack = 0;
+    counterStart = 0;
+    laneMode = MIDDLE;
+    //    hasSign = false;
     //set_throttle_val = INIT_THROTTLE;
     // Run loop
+    avgLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+    avgRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     while (true)
     {
         printf("---------------------------\n");
         st = getTickCount();
-        
+
         updateButtonStatus();
         updateSensorStatus();
         // Check input from keyboard
@@ -75,13 +81,13 @@ int main(int argc, char *argv[])
             running = !running;
             theta = 0;
             throttle_val = START_UP_VAL;
-		api_set_STEERING_control(pca9685, theta);
+            api_set_STEERING_control(pca9685, theta);
         }
         if (key == 'f')
         {
             fprintf(stderr, "End process.\n");
             theta = 0;
-            throttle_val = 0;//L;
+            throttle_val = 0; //L;
             api_set_FORWARD_control(pca9685, throttle_val);
             api_set_STEERING_control(pca9685, theta);
             break;
@@ -98,11 +104,11 @@ int main(int argc, char *argv[])
                 started = true;
                 stopped = false;
                 throttle_val = START_UP_VAL;
-                api_set_FORWARD_control(pca9685, throttle_val);   
+                api_set_FORWARD_control(pca9685, throttle_val);
             }
-		if(throttle_val < set_throttle_val)
+            if (throttle_val < set_throttle_val)
                 throttle_val += STEP_THROTTLE;
-            
+
             // Update stream
             int readyStream = -1;
             rc = OpenNI::waitForAnyStream(streams, 1, &readyStream, -1);
@@ -115,34 +121,48 @@ int main(int argc, char *argv[])
             // Load image
             colorStream.readFrame(&frame_color);
             analyzeFrame(frame_color, colorImg);
-            
+
             // Preprocessing
             flip(colorImg, colorImg, 1);
             //hist_equalize(colorImg);
             //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
-            
+
             cvtColor(colorImg, grayImg, CV_BGR2GRAY);
 
             // get lane binary image
             get_mask(hsvImg, binImg, false, false, true); // black
-		    bitwise_not(binImg, binImg);
+            bitwise_not(binImg, binImg);
 
             // Get sign binary image
             get_mask(hsvImg, binBlueImg, true, false, false); // blue
-            get_mask(hsvImg, binRedImg, false, true, false); // red
+            get_mask(hsvImg, binRedImg, false, true, false);  // red
             // Mat element = getStructuringElement( MORPH_RECT,Size( 2*7+1, 2*7+1 ),Point( 7, 7 ) );
             // dilate(binRedImg,binRedImg,element);
-            // erode( binRedImg,binRedImg, element );	
-            medianBlur(binBlueImg, binBlueImg, KERNEL_SIZE);		
-            medianBlur(binRedImg, binRedImg, KERNEL_SIZE);		
-	    
+            // erode( binRedImg,binRedImg, element );
+            medianBlur(binBlueImg, binBlueImg, KERNEL_SIZE);
+            medianBlur(binRedImg, binRedImg, KERNEL_SIZE);
+
             if (isDebug)
             {
                 imshow("binBlueImg", binBlueImg);
                 imshow("binRedImg", binRedImg);
             }
-            
+            cout << "time: " << getTickCount() / freq << endl;
+            if (targetTimer != 0)
+            {
+                cout << "Has target time ==========================================" << endl;
+                cout << "counterStart: " << counterStart << endl;
+                counterComeBack = getTickCount() / freq - counterStart;
+                if (counterComeBack >= targetTimer)
+                {
+                    cout << "Reach timer" << endl;
+                    api_set_FORWARD_control(pca9685, 0);
+                    sleep(5);
+                    targetTimer = 0;
+                }
+            }
+
             // Process lane to get theta
             laneProcessing();
             /*
@@ -152,7 +172,7 @@ int main(int argc, char *argv[])
             // Process traffic sign
             signProcessing();
 
-            printf("theta: %d\n", int(theta));            		
+            printf("theta: %d\n", int(theta));
 
             // Oh yeah... go go go :D
             api_set_FORWARD_control(pca9685, throttle_val);
@@ -162,11 +182,11 @@ int main(int argc, char *argv[])
             //     org_videoWriter.write(orgImg);
             if (isDebug && !colorImg.empty())
                 color_videoWriter.write(colorImg);
-            
+
             et = getTickCount();
             fps = int(1.0 / ((et - st) / freq));
             printf("FPS: %d\n", fps);
-	        
+
             if (isDebug)
             {
                 putText(colorImg, "FPS " + to_string(fps), Point(200, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
@@ -179,8 +199,9 @@ int main(int argc, char *argv[])
         }
         else
         {
-		hasRedSign = false;
-		hasBlueSign = false;
+            laneMode = MIDDLE;
+            hasRedSign = false;
+            hasBlueSign = false;
             setupThrottle();
             updateLCD();
             theta = 0;
@@ -195,8 +216,10 @@ int main(int argc, char *argv[])
             preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
-		theta = 0;
-		api_set_STEERING_control(pca9685, theta);
+            avgLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+            avgRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);    
+            theta = 0;
+            api_set_STEERING_control(pca9685, theta);
             //usleep(200000);
         }
     }

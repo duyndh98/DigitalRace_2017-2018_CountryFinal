@@ -2,13 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 Mat colorImg, hsvImg, binImg;
 double theta;
 Point carPosition;
+LaneMode laneMode;
+Point avgLeft, avgRight;
 
 void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &centerRight, bool &isLane)
 {
+    Point preAvgLeft;
+    Point preAvgRight;
+    preAvgLeft = avgLeft;
+    preAvgRight = avgRight;
     isLane = false;
     bool isLeft = false;
     bool isRight = false;
@@ -27,35 +32,39 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
         if (area >= MIN_LANE_AREA)
         {
             double check = 0;
-            Point pMin(binLaneImg.cols,0);
-            Point pMax(0,0);
+            Point pMin(binLaneImg.cols, 0);
+            Point pMax(0, 0);
             drawContours(binLaneImg, contours, i, Scalar(255), CV_FILLED);
             Rect contourBoundingRect = boundingRect(contours[i]);
-            Point p1(0,0);
-            Point p2(0,0);
+            Point p1(0, 0);
+            Point p2(0, 0);
             int countUp = 0;
             int countDown = 0;
-            for (int j = 0; j < contours[i].size(); ++j){
-                if (contours[i][j].y < contourBoundingRect.y+contourBoundingRect.height/2){
+            for (int j = 0; j < contours[i].size(); ++j)
+            {
+                if (contours[i][j].y < contourBoundingRect.y + contourBoundingRect.height / 2)
+                {
                     p1.x += contours[i][j].x;
                     p1.y += contours[i][j].y;
                     countUp++;
-                } else {
+                }
+                else
+                {
                     p2.x += contours[i][j].x;
                     p2.y += contours[i][j].y;
                     countDown++;
                 }
-                if(contours[i][j].x>pMax.x)
+                if (contours[i][j].x > pMax.x)
                     pMax = contours[i][j];
-                if(contours[i][j].x<pMin.x)
+                if (contours[i][j].x < pMin.x)
                     pMin = contours[i][j];
             }
-            p1.x = p1.x/countUp;
-            p1.y = p1.y/countUp;
-            p2.x = p2.x/countDown;
-            p2.y = p2.y/countDown;
-            double checkDistance = sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
-            if(checkDistance < MIN_DISTANCE)
+            p1.x = p1.x / countUp;
+            p1.y = p1.y / countUp;
+            p2.x = p2.x / countDown;
+            p2.y = p2.y / countDown;
+            double checkDistance = sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+            if (checkDistance < MIN_DISTANCE)
                 continue;
             //cout << "checkDistance: " << checkDistance << endl;
             line(colorLaneImg, p1, p2, Scalar(0, 255, 255), 3);
@@ -63,48 +72,64 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
             circle(colorLaneImg, pMax, 2, Scalar(255, 0, 255), 3);
             double pA, pB;
             bool vg = false;
-            if(p1.x==p2.x){
+            if (p1.x == p2.x)
+            {
                 vg = true;
                 check = p1.x;
-            } else {
+            }
+            else
+            {
                 vg = false;
-                pA = (double)(p1.y-p2.y)/(p1.x-p2.x);
-                pB = (double)(p1.x*p2.y-p1.y*p2.x)/(p1.x-p2.x);
-                check = (double)(binLaneImg.rows-pB)/pA;
-                if(pA==0)
+                pA = (double)(p1.y - p2.y) / (p1.x - p2.x);
+                pB = (double)(p1.x * p2.y - p1.y * p2.x) / (p1.x - p2.x);
+                check = (double)(binLaneImg.rows - pB) / pA;
+                if (pA == 0)
                     continue;
                 //cout << "min(" << pMin.x << "," << pMin.y << "), max" << pMax.x  << pMax.y << ")" << endl;
-                circle(colorLaneImg, Point(check,preCenterPoint.y), 2, Scalar(255, 255, 255), 3);
+                circle(colorLaneImg, Point(check, preCenterPoint.y), 2, Scalar(255, 255, 255), 3);
                 //cout << "p1(" << p1.x << "," << p1.y << "),p2(" << p2.x << "," << p2.y<< ") check: " << check << endl;
             }
-            if(check>preCenterPoint.x){
+            if (check > preCenterPoint.x)
+            {
                 isRight = true;
-                if(vg){
+                if (vg)
+                {
                     check = pMin.x;
-                } else {
-                    pB = (double)pMin.y-pA*pMin.x;
-                    check = (double)(preCenterPoint.y-pB)/pA;
                 }
-                if(centerRight.x>check){
+                else
+                {
+                    pB = (double)pMin.y - pA * pMin.x;
+                    check = (double)(preCenterPoint.y - pB) / pA;
+                }
+                if (centerRight.x > check)
+                {
                     centerRight.x = check;
+                    avgRight.x = (p1.x + p2.x) / 2;
                 }
-            } else {
+            }
+            else
+            {
                 isLeft = true;
-                if(vg){
+                if (vg)
+                {
                     check = pMax.x;
-                } else {
-                    pB = (double)pMax.y-pA*pMax.x;
-                    check = (double)(preCenterPoint.y-pB)/pA;
                 }
-                if(centerLeft.x<check){
+                else
+                {
+                    pB = (double)pMax.y - pA * pMax.x;
+                    check = (double)(preCenterPoint.y - pB) / pA;
+                }
+                if (centerLeft.x < check)
+                {
                     centerLeft.x = check;
+                    avgLeft.x = (p1.x + p2.x) / 2;
                 }
             }
             //cout << "check: " << check << endl;
-	    fLane = true;
+            fLane = true;
         }
     }
-/*    if(!isLeft && isRight){
+    /*    if(!isLeft && isRight){
         centerLeft.x = preCenterPoint.x*2-centerRight.x;
 	centerLeft.y = preCenterPoint.y*2-centerRight.y;
 	if((centerLeft.x < 0) || (centerRight.x - centerLeft.x < DISTANCE_2_POINT))
@@ -116,17 +141,23 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
 	if((centerRight.x > binLaneImg.cols) || (centerRight.x - centerLeft.x < DISTANCE_2_POINT))
 		centerRight.x = preRight.x;
 	}*/
-	if(!isLeft)
-		centerLeft = preLeft;
-	if(!isRight)
-		centerRight = preRight;
+    if (!isLeft)
+    {
+        centerLeft = preLeft;
+        avgLeft = preAvgLeft;
+    }
+    if (!isRight)
+    {
+        centerRight = preRight;
+        avgRight = preAvgRight;
+    }
     preLeft = centerLeft;
     preRight = centerRight;
     //cout << "center point: " << preCenterPoint.y << endl;
-    if(!fLane)
-    	isLane = false;
-	else 
-    isLane = true;
+    if (!fLane)
+        isLane = false;
+    else
+        isLane = true;
 }
 
 // Return angle between veritcal line containing car and destination point in degree
@@ -219,13 +250,13 @@ void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
 
 void laneProcessing()
 {
-	cout << "preCenterPoint: " << preCenterPoint.x << " " << preCenterPoint.y << endl;
+    cout << "preCenterPoint: " << preCenterPoint.x << " " << preCenterPoint.y << endl;
     bool isLane;
 
     //bool isLeft = true, isRight = true;
 
     Rect laneRect(0, (1 - RATIO_HEIGHT_LANE_CROP) * binImg.rows,
-        binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows);
+                  binImg.cols, RATIO_HEIGHT_LANE_CROP * binImg.rows);
 
     Mat binLaneImg = binImg(laneRect);
     Mat colorLaneImg = colorImg(laneRect);
@@ -305,7 +336,7 @@ void laneProcessing()
         if (isDebug)
             putText(colorImg, "Has Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
         centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-        centerPoint.y = (centerLeft.y + centerRight.y) / 2 + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
+        centerPoint.y = (centerLeft.y + centerRight.y) / 2 + colorImg.rows * RATIO_HEIGHT_LANE_CROP;
         circle(colorImg, centerLeft, 2, Scalar(0, 0, 255), 3);
         circle(colorImg, centerRight, 2, Scalar(0, 0, 255), 3);
         cout << "left: " << centerLeft.x << " right: " << centerRight.x << endl;
@@ -313,13 +344,27 @@ void laneProcessing()
     else
     {
         if (isDebug)
-        putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+            putText(colorImg, "No Lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
         centerPoint.x = preCenterPoint.x;
-        centerPoint.y = preCenterPoint.y + colorImg.rows*RATIO_HEIGHT_LANE_CROP;
+        centerPoint.y = preCenterPoint.y + colorImg.rows * RATIO_HEIGHT_LANE_CROP;
     }
-
-    theta = getTheta(carPosition, centerPoint);
-
+    Point targetPoint;
+    if (laneMode == MIDDLE)
+        theta = getTheta(carPosition, centerPoint);
+    else if (laneMode == LEFT_FOLLOW)
+    {
+        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_LEFT - avgLeft.x);
+        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
+        theta = getTheta(carPosition, targetPoint);
+        cout << "reach here =======================" << endl;
+    }
+    else if (laneMode == RIGHT_FOLLOW)
+    {
+        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_RIGHT - avgRight.x);
+        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
+        theta = getTheta(carPosition, targetPoint);
+    }
+    circle(colorImg, targetPoint, 2, Scalar(100, 100, 255), 3);
     // Draw center points
     circle(colorImg, centerPoint, 2, Scalar(0, 0, 255), 3);
     line(colorImg, carPosition, centerPoint, Scalar(0, 0, 255), 3);
@@ -333,10 +378,10 @@ void laneProcessing()
 
     if (isDebug)
         putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
-    
+
     printf("theta: %d\n", int(theta));
-	preCenterPoint.x = centerPoint.x;
-    preCenterPoint.y = centerPoint.y - colorImg.rows*RATIO_HEIGHT_LANE_CROP;
+    preCenterPoint.x = centerPoint.x;
+    preCenterPoint.y = centerPoint.y - colorImg.rows * RATIO_HEIGHT_LANE_CROP;
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)
