@@ -26,6 +26,10 @@ int fps;
 bool isDebug;
 char key;
 double freq, st_timeout_has_blue_sign, st_timeout_has_red_sign;
+bool allowFollow;
+int reachNSign;
+bool enableTimer1;
+bool enableTimer2;
 
 bool keyboardControl()
 {
@@ -349,19 +353,23 @@ void signProcessing()
     //         putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
     // }
     //allowStopSign = true;
+    double endtime = getTickCount();
+    if ((endtime - st_timeout_has_red_sign) / freq > TIMEOUT_HAS_RED_SIGN){
+        allowStopSign = true;
+    }
     bool preHasSign = hasRedSign || hasBlueSign;
 
     if (redSign.detect(false) && redSign.recognize()) // red
     {
         hasRedSign = true;
-        st_timeout_has_red_sign = getTickCount();
-    } else
+        cout << "recccccccccccccccccccccccccccccccccccccc" << endl;
+    } /*else
     {
         double et = getTickCount();
         if ((et - st_timeout_has_red_sign) / freq > TIMEOUT_HAS_RED_SIGN){
             allowStopSign = true;
         }
-    }
+    }*/
 
     if (blueSign.detect(true) && blueSign.recognize()) // blue
     {
@@ -372,7 +380,7 @@ void signProcessing()
     else
     {
         double et = getTickCount();
-        if ((et - st_timeout_has_blue_sign) / freq > TIMEOUT_HAS_BLUE_SIGN){
+        if ((et - st_timeout_has_blue_sign) / freq > TIMEOUT_HAS_BLUE_SIGN && hasBlueSign){
             hasBlueSign = false;
             laneMode = MIDDLE;
             cout << "NOT FOUND BLUE SIGN" << endl;
@@ -415,12 +423,20 @@ void signProcessing()
         {
             // theta = -getWaitTurnTheta(signID, signROI) * ALPHA;
             // cout << "theta in control: " << theta << endl;
-            laneMode = (blueSign.getClassID() == SIGN_LEFT) ? LEFT_FOLLOW : RIGHT_FOLLOW;
+            if(blueSign.getClassID() == SIGN_LEFT){
+                laneMode = LEFT_FOLLOW;
+                allowFollow = false;
+            } else 
+            if (blueSign.getClassID() == SIGN_RIGHT){
+                laneMode = RIGHT_FOLLOW;
+                allowFollow = true;
+            }
+            //laneMode = (blueSign.getClassID() == SIGN_LEFT) ? LEFT_FOLLOW : RIGHT_FOLLOW;
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "sign area: " << signROI.height * signROI.width << endl;
         }
 
-        if (signROI.height >= MIN_HEIGHT_SIGN_TURN)
+        if (signROI.height >= MIN_HEIGHT_SIGN_STOP)
         {
             turning = true;
             controlTurn(signID, signROI);
@@ -428,6 +444,7 @@ void signProcessing()
         }
     }
     else
+    if(allowFollow)
     {
         laneMode = MIDDLE;
     }
@@ -479,6 +496,7 @@ void controlTurn(int signID, Rect signROI)
         hasRedSign = false;
         redSign.resetClassID();
         allowStopSign = false;
+        st_timeout_has_red_sign = getTickCount();
     }
     // if (signID == SIGN_RIGHT || signID == SIGN_LEFT)
     // {

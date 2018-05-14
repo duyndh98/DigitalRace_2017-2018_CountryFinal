@@ -66,7 +66,7 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
             double checkDistance = sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
             if (checkDistance < MIN_DISTANCE)
                 continue;
-            //cout << "checkDistance: " << checkDistance << endl;
+            cout << "checkDistance: " << checkDistance << endl;
             line(colorLaneImg, p1, p2, Scalar(0, 255, 255), 3);
             circle(colorLaneImg, pMin, 2, Scalar(25, 255, 255), 3);
             circle(colorLaneImg, pMax, 2, Scalar(255, 0, 255), 3);
@@ -143,12 +143,24 @@ void filterLane(Mat &colorLaneImg, Mat binLaneImg, Point &centerLeft, Point &cen
 	}*/
     if (!isLeft)
     {
-        centerLeft = preLeft;
+        if(isRight){
+            centerLeft.x = preLeft.x + (centerRight.x - preRight.x);
+            if(centerLeft.x < 0)
+                centerLeft.x = 0;
+            centerLeft.y = preLeft.y;
+        } else
+            centerLeft = preLeft;
         avgLeft = preAvgLeft;
     }
     if (!isRight)
     {
-        centerRight = preRight;
+        if(isLeft){
+            centerRight.x = preRight.x + (centerLeft.x - preLeft.x);
+            if(centerRight.x > binLaneImg.cols)
+               centerRight.x = binLaneImg.cols; 
+            centerRight.y = preRight.y;
+        } else 
+            centerRight = preRight;
         avgRight = preAvgRight;
     }
     preLeft = centerLeft;

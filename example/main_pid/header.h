@@ -42,14 +42,14 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 100)
+#define HIG_HSV_BLACK Scalar(255, 255, 130)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
 #define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.5
 #define DIF_RATIO_SIGN_AREA 0.2
 #define MIN_SIGN_AREA 200
-#define MIN_DISTANCE 20
+#define MIN_DISTANCE 30
 #define DIF_RATIO_2_PART_SIGN_STOP_AREA 0.2
 
 #define SAMPLE_READ_WAIT_TIMEOUT 1
@@ -73,16 +73,16 @@ using namespace cv::ml;
 #define RATIO_WIDTH_LANE_CROP 0.5
 #define RATIO_HEIGHT_LANE_CROP 0.45
 #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
-#define CENTER_POINT_Y 0.7
-#define TARGET_POINT_LEFT 0.3
-#define TARGET_POINT_RIGHT 0.7
+#define CENTER_POINT_Y 0.72
+#define TARGET_POINT_LEFT 0.25
+#define TARGET_POINT_RIGHT 0.75
 
 #define NO_SIGN 0
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
 #define MIN_AREA_SIGN_TURN 1000
-#define MIN_HEIGHT_SIGN_TURN 30
+#define MIN_HEIGHT_SIGN_STOP 25
 #define MIN_AREA_SIGN_STOP 400
 #define RATE_DECELERATION 1
 //#define SIGN_THROTTLE 40
@@ -109,9 +109,10 @@ using namespace cv::ml;
 #define UP_ARROW 38
 #define DOWN_ARROW 40
 #define SPACE_KEY 32
-#define TIME_RUN_CIRCLE 9.0
+#define TIME_RUN_CIRCLE 10.0
 #define TIMEOUT_HAS_BLUE_SIGN 0.15
 #define TIMEOUT_HAS_RED_SIGN 10.0
+#define SLOW_THROTTLE 35
 
 enum LaneMode{
     LEFT_FOLLOW = 0,
@@ -186,5 +187,9 @@ extern LaneMode laneMode;
 extern double st_timeout_has_blue_sign;
 extern double st_timeout_has_red_sign;
 extern double freq;
+extern bool allowFollow;
+extern int reachNSign;
+extern bool enableTimer1;
+extern bool enableTimer2;
 
 #endif

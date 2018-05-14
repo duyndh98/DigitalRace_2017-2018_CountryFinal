@@ -63,11 +63,15 @@ int main(int argc, char *argv[])
     counterComeBack = 0;
     counterStart = 0;
     laneMode = MIDDLE;
+    allowFollow = false;
     //    hasSign = false;
     //set_throttle_val = INIT_THROTTLE;
     // Run loop
     avgLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     avgRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
+    reachNSign = 0;
+    enableTimer1 = false;
+    enableTimer2 = false;
     while (true)
     {
         printf("---------------------------\n");
@@ -125,7 +129,7 @@ int main(int argc, char *argv[])
 
             // Preprocessing
             flip(colorImg, colorImg, 1);
-            //hist_equalize(colorImg);
+            hist_equalize(colorImg);
             //medianBlur(colorImg, colorImg, KERNEL_SIZE);
             cvtColor(colorImg, hsvImg, CV_BGR2HSV);
 
@@ -154,7 +158,14 @@ int main(int argc, char *argv[])
             if (endTime - counterStart / freq > TIME_RUN_CIRCLE)
             {
                 cout << "Reach timer" << endl;
-                laneMode = RIGHT_FOLLOW;
+                reachNSign += 1;                
+                if(allowFollow && reachNSign>1){
+                    backupThrottle = set_throttle_val;
+                    set_throttle_val = SLOW_THROTTLE;
+                    laneMode = RIGHT_FOLLOW;
+                    reachNSign = 0;
+                }
+                allowFollow = false;
             }
             // Process lane to get theta
             laneProcessing();
@@ -191,6 +202,10 @@ int main(int argc, char *argv[])
         }
         else
         {
+            enableTimer1 = false;
+            enableTimer2 = false;
+            reachNSign = 0;
+            allowFollow = false;
             laneMode = MIDDLE;
             hasRedSign = false;
             hasBlueSign = false;
