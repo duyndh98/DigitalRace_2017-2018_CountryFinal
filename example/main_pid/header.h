@@ -100,7 +100,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL4 100
 #define INIT_THROTTLE 45
 #define STEP_THROTTLE 1
-#define START_UP_VAL 50
+#define START_UP_VAL 30
 #define DISTANCE_2_POINT 25
 
 #define ENTER_KEY 13
@@ -109,8 +109,9 @@ using namespace cv::ml;
 #define UP_ARROW 38
 #define DOWN_ARROW 40
 #define SPACE_KEY 32
-#define TIME_RUN_CIRCLE 9
-#define TIMEOUT_HAS_BLUE_SIGN 0.1
+#define TIME_RUN_CIRCLE 9.0
+#define TIMEOUT_HAS_BLUE_SIGN 0.15
+#define TIMEOUT_HAS_RED_SIGN 10.0
 
 enum LaneMode{
     LEFT_FOLLOW = 0,
@@ -183,6 +184,7 @@ extern double counterComeBack;
 extern double counterStart;
 extern LaneMode laneMode;
 extern double st_timeout_has_blue_sign;
+extern double st_timeout_has_red_sign;
 extern double freq;
 
 #endif

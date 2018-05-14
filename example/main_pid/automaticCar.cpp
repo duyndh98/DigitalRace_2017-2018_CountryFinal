@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         {
             running = !running;
             theta = 0;
-            throttle_val = set_throttle_val;
+            throttle_val = START_UP_VAL;
             api_set_STEERING_control(pca9685, theta);
         }
         if (key == 'f')
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "ON\n");
                 started = true;
                 stopped = false;
-                throttle_val = set_throttle_val;
+                throttle_val = START_UP_VAL;
                 api_set_FORWARD_control(pca9685, throttle_val);
             }
             if (throttle_val < set_throttle_val)
@@ -150,27 +150,19 @@ int main(int argc, char *argv[])
                 imshow("binRedImg", binRedImg);
             }
             cout << "time: " << getTickCount() / freq << endl;
-            if (targetTimer != 0)
+            double endTime = getTickCount() / freq;
+            if (endTime - counterStart / freq > TIME_RUN_CIRCLE)
             {
-                cout << "Has target time ==========================================" << endl;
-                cout << "counterStart: " << counterStart << endl;
-                counterComeBack = getTickCount() / freq - counterStart;
-                if (counterComeBack >= targetTimer)
-                {
-                    cout << "Reach timer" << endl;
-                    api_set_FORWARD_control(pca9685, 0);
-                    sleep(5);
-                    targetTimer = 0;
-                }
+                cout << "Reach timer" << endl;
+                laneMode = RIGHT_FOLLOW;
             }
-
             // Process lane to get theta
             laneProcessing();
             /*
             if (!signProcessing())
                 laneProcessing();
             */
-            signProcessing();           
+            signProcessing();
 
             printf("theta: %d\n", int(theta));
 
@@ -217,7 +209,7 @@ int main(int argc, char *argv[])
             preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             avgLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
-            avgRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);    
+            avgRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
             theta = 0;
             api_set_STEERING_control(pca9685, theta);
             //usleep(200000);

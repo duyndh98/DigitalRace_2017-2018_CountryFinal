@@ -320,7 +320,7 @@ void laneProcessing()
 
     // putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 0, 0), 1, CV_AA);
     // putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
-Point targetPoint;
+    Point targetPoint;
     if (laneMode == MIDDLE)
     {
         putText(colorImg, "MIDDLE", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
@@ -344,7 +344,7 @@ Point targetPoint;
         theta = -theta * ALPHA;
     }
     circle(colorImg, targetPoint, 2, Scalar(100, 100, 255), 3);
-    
+
     if (theta > -20 && theta < 20)
         theta = 0;
 
@@ -354,7 +354,6 @@ Point targetPoint;
     printf("theta: %d\n", int(theta));
     preCenterPoint.x = centerPoint.x;
     preCenterPoint.y = centerPoint.y - colorImg.rows * RATIO_HEIGHT_LANE_CROP;
-    
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)

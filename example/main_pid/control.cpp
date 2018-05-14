@@ -25,7 +25,7 @@ int backupThrottle;
 int fps;
 bool isDebug;
 char key;
-double freq, st_timeout_has_blue_sign;
+double freq, st_timeout_has_blue_sign, st_timeout_has_red_sign;
 
 bool keyboardControl()
 {
@@ -351,23 +351,32 @@ void signProcessing()
     //allowStopSign = true;
     bool preHasSign = hasRedSign || hasBlueSign;
 
-    if (redSign.detect(false)) // red
-        if (redSign.recognize())
-            hasRedSign = true;
-
-    if (blueSign.detect(true)) // blue
+    if (redSign.detect(false) && redSign.recognize()) // red
     {
-        if (blueSign.recognize())
-        {
-            hasBlueSign = true;
-            st_timeout_has_blue_sign = getTickCount();
+        hasRedSign = true;
+        st_timeout_has_red_sign = getTickCount();
+    } else
+    {
+        double et = getTickCount();
+        if ((et - st_timeout_has_red_sign) / freq > TIMEOUT_HAS_RED_SIGN){
+            allowStopSign = true;
         }
+    }
+
+    if (blueSign.detect(true) && blueSign.recognize()) // blue
+    {
+        hasBlueSign = true;
+        st_timeout_has_blue_sign = getTickCount();
+        counterStart = getTickCount();
     }
     else
     {
         double et = getTickCount();
-        if ((et - st_timeout_has_blue_sign) / freq > TIMEOUT_HAS_BLUE_SIGN)
-            hasBlueSign = false;            
+        if ((et - st_timeout_has_blue_sign) / freq > TIMEOUT_HAS_BLUE_SIGN){
+            hasBlueSign = false;
+            laneMode = MIDDLE;
+            cout << "NOT FOUND BLUE SIGN" << endl;
+        }
     }
     if (!allowStopSign && hasRedSign)
         hasRedSign = false;
@@ -406,12 +415,11 @@ void signProcessing()
         {
             // theta = -getWaitTurnTheta(signID, signROI) * ALPHA;
             // cout << "theta in control: " << theta << endl;
-            laneMode = (blueSign.getClassID() == SIGN_LEFT)?LEFT_FOLLOW:RIGHT_FOLLOW;
+            laneMode = (blueSign.getClassID() == SIGN_LEFT) ? LEFT_FOLLOW : RIGHT_FOLLOW;
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
             cout << "sign area: " << signROI.height * signROI.width << endl;
         }
-        
-        
+
         if (signROI.height >= MIN_HEIGHT_SIGN_TURN)
         {
             turning = true;
@@ -423,7 +431,6 @@ void signProcessing()
     {
         laneMode = MIDDLE;
     }
-    
 }
 
 void controlTurn(int signID, Rect signROI)
@@ -461,7 +468,7 @@ void controlTurn(int signID, Rect signROI)
     if (signID == SIGN_STOP)
     {
         api_set_FORWARD_control(pca9685, -throttle_val);
-        usleep(1000*400);
+        usleep(1000 * 400);
         api_set_FORWARD_control(pca9685, 0);
         if (isDebug)
         {
