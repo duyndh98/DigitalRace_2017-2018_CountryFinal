@@ -411,88 +411,54 @@ void signProcessing()
             cout << "sign area: " << signROI.height * signROI.width << endl;
         }
         
-        /*
-        if (signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
+        
+        if (signROI.height >= MIN_HEIGHT_SIGN_TURN)
         {
             turning = true;
             controlTurn(signID, signROI);
             turning = false;
-        }*/
+        }
     }
     else
     {
         laneMode = MIDDLE;
     }
-    //return true;
-    Point targetPoint;
-    if (laneMode == MIDDLE)
-    {
-        putText(colorImg, "MIDDLE", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
-        theta = getTheta(carPosition, centerPoint);
-        theta = -theta * ALPHA;
-    }
-    else if (laneMode == LEFT_FOLLOW)
-    {
-        putText(colorImg, "LEFT FOLLOW", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
-        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_LEFT - avgLeft.x);
-        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
-        theta = getTheta(carPosition, targetPoint);
-        theta = -theta * ALPHA;
-    }
-    else if (laneMode == RIGHT_FOLLOW)
-    {
-        putText(colorImg, "RIGHT FOLLOW", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
-        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_RIGHT - avgRight.x);
-        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
-        theta = getTheta(carPosition, targetPoint);
-        theta = -theta * ALPHA;
-    }
-    circle(colorImg, targetPoint, 2, Scalar(100, 100, 255), 3);
     
-    if (theta > -20 && theta < 20)
-        theta = 0;
-
-    if (isDebug)
-        putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
-
-    printf("theta: %d\n", int(theta));
-    preCenterPoint.x = centerPoint.x;
-    preCenterPoint.y = centerPoint.y - colorImg.rows * RATIO_HEIGHT_LANE_CROP;
 }
 
 void controlTurn(int signID, Rect signROI)
 {
     updateLCD();
 
-    if (signID == SIGN_LEFT)
-    {
-        api_set_STEERING_control(pca9685, theta);
-        if (isDebug)
-        {
-            putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-            imshow("color", colorImg);
-        }
-        // theta = ALPHA_TURN;
-        // usleep(TURN_TIME * 1000000);
-        hasBlueSign = false;
-        blueSign.resetClassID();
-        allowStopSign = true;
-    }
-    else if (signID == SIGN_RIGHT)
-    {
-        api_set_STEERING_control(pca9685, theta);
-        if (isDebug)
-        {
-            putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
-            imshow("color", colorImg);
-        }
-        // theta = -ALPHA_TURN;
-        // usleep(TURN_TIME * 1000000);
-        hasBlueSign = false;
-        blueSign.resetClassID();
-        allowStopSign = true;
-    }
-    else
+    // if (signID == SIGN_LEFT)
+    // {
+    //     api_set_STEERING_control(pca9685, theta);
+    //     if (isDebug)
+    //     {
+    //         putText(colorImg, "Turn left", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    //         imshow("color", colorImg);
+    //     }
+    //     // theta = ALPHA_TURN;
+    //     // usleep(TURN_TIME * 1000000);
+    //     hasBlueSign = false;
+    //     blueSign.resetClassID();
+    //     allowStopSign = true;
+    // }
+    // else if (signID == SIGN_RIGHT)
+    // {
+    //     api_set_STEERING_control(pca9685, theta);
+    //     if (isDebug)
+    //     {
+    //         putText(colorImg, "Turn right", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
+    //         imshow("color", colorImg);
+    //     }
+    //     // theta = -ALPHA_TURN;
+    //     // usleep(TURN_TIME * 1000000);
+    //     hasBlueSign = false;
+    //     blueSign.resetClassID();
+    //     allowStopSign = true;
+    // }
+    if (signID == SIGN_STOP)
     {
         api_set_FORWARD_control(pca9685, -throttle_val);
         usleep(1000*400);
@@ -507,10 +473,10 @@ void controlTurn(int signID, Rect signROI)
         redSign.resetClassID();
         allowStopSign = false;
     }
-    if (signID == SIGN_RIGHT || signID == SIGN_LEFT)
-    {
-        //targetTimer = TIME_RUN_CIRCLE;
-        counterStart = getTickCount() / getTickFrequency();
-    }
+    // if (signID == SIGN_RIGHT || signID == SIGN_LEFT)
+    // {
+    //     //targetTimer = TIME_RUN_CIRCLE;
+    //     counterStart = getTickCount() / getTickFrequency();
+    // }
     set_throttle_val = backupThrottle;
 }

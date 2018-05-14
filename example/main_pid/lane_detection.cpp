@@ -320,7 +320,40 @@ void laneProcessing()
 
     // putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 0, 0), 1, CV_AA);
     // putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
+Point targetPoint;
+    if (laneMode == MIDDLE)
+    {
+        putText(colorImg, "MIDDLE", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        theta = getTheta(carPosition, centerPoint);
+        theta = -theta * ALPHA;
+    }
+    else if (laneMode == LEFT_FOLLOW)
+    {
+        putText(colorImg, "LEFT FOLLOW", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_LEFT - avgLeft.x);
+        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
+        theta = getTheta(carPosition, targetPoint);
+        theta = -theta * ALPHA;
+    }
+    else if (laneMode == RIGHT_FOLLOW)
+    {
+        putText(colorImg, "RIGHT FOLLOW", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_RIGHT - avgRight.x);
+        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
+        theta = getTheta(carPosition, targetPoint);
+        theta = -theta * ALPHA;
+    }
+    circle(colorImg, targetPoint, 2, Scalar(100, 100, 255), 3);
+    
+    if (theta > -20 && theta < 20)
+        theta = 0;
 
+    if (isDebug)
+        putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+
+    printf("theta: %d\n", int(theta));
+    preCenterPoint.x = centerPoint.x;
+    preCenterPoint.y = centerPoint.y - colorImg.rows * RATIO_HEIGHT_LANE_CROP;
     
 }
 

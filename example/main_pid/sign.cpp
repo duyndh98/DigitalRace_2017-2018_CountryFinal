@@ -40,7 +40,7 @@ bool Sign::detect(bool blueSign)
 		// constraints
 		double ellipse_area = (3.14f * (double)(bound.width / 2) * (double)(bound.height / 2));
 		if ((1 - DIF_RATIO_SIGN_WIDTH_PER_HEIGHT < (float)bound.width / bound.height) && ((float)bound.width / bound.height < 1 + DIF_RATIO_SIGN_WIDTH_PER_HEIGHT))
-			if ((1 - DIF_RATIO_SIGN_AREA < ((double)contour_area / ellipse_area)) && ((double)contour_area / ellipse_area < 1 + DIF_RATIO_SIGN_AREA))
+			if (1)//(1 - DIF_RATIO_SIGN_AREA < ((double)contour_area / ellipse_area)) && ((double)contour_area / ellipse_area < 1 + DIF_RATIO_SIGN_AREA))
 			{
 				// update max sign
 				_sign_ROI = bound;

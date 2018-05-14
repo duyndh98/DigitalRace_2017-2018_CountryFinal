@@ -82,6 +82,7 @@ using namespace cv::ml;
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
 #define MIN_AREA_SIGN_TURN 1000
+#define MIN_HEIGHT_SIGN_TURN 30
 #define MIN_AREA_SIGN_STOP 400
 #define RATE_DECELERATION 1
 //#define SIGN_THROTTLE 40
