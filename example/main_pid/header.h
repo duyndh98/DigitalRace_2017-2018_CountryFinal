@@ -42,7 +42,7 @@ using namespace cv::ml;
 #define GREEN_MAX Scalar(83, 246, 124)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 150)
+#define HIG_HSV_BLACK Scalar(255, 255, 100)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32
@@ -99,7 +99,7 @@ using namespace cv::ml;
 #define THROTTLE_VAL4 100
 #define INIT_THROTTLE 45
 #define STEP_THROTTLE 1
-#define START_UP_VAL 30
+#define START_UP_VAL 50
 #define DISTANCE_2_POINT 25
 
 #define ENTER_KEY 13
@@ -108,7 +108,8 @@ using namespace cv::ml;
 #define UP_ARROW 38
 #define DOWN_ARROW 40
 #define SPACE_KEY 32
-#define TIME_RUN_CIRCLE 1
+#define TIME_RUN_CIRCLE 9
+#define TIMEOUT_HAS_BLUE_SIGN 0.1
 
 enum LaneMode{
     LEFT_FOLLOW = 0,
@@ -159,7 +160,7 @@ extern bool running, started, stopped;
 extern unsigned int bt_status;
 extern unsigned int sensor_status;
 extern char key;
-extern Point preCenterPoint;
+extern Point centerPoint, preCenterPoint;
 extern Point preLeft;
 extern Point preRight;
 extern Point avgLeft, avgRight;
@@ -180,5 +181,7 @@ extern double targetTimer;
 extern double counterComeBack;
 extern double counterStart;
 extern LaneMode laneMode;
+extern double st_timeout_has_blue_sign;
+extern double freq;
 
 #endif

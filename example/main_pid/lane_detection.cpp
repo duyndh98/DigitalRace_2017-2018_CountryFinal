@@ -297,40 +297,6 @@ void laneProcessing()
         imshow("binLaneImg", binLaneImg);
         imshow("colorLaneImg", colorLaneImg);
     }
-    // centerLeft.x += xLeftRect;
-    // centerRight.x += xRightRect;
-
-    // imshow("Left", binLeft);
-    // imshow("Right", binRight);
-
-    // if (!isLeft && !isRight)
-    // {
-    //     putText(colorImg, "No lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    //     theta = 0;
-    // }
-    // else if (abs(int(centerLeft.x - centerRight.x)) < MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER * binLaneImg.cols)
-    // {
-    //     putText(colorImg, "Invalid distance", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    //     theta = getAngleLane(binLaneImg, preTheta);
-    // }
-    // else
-    // {
-    //     if (!isLeft)
-    //     {
-    //         putText(colorImg, "Lost left", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    //         centerLeft = preCenterLeft + centerRight - preCenterRight;
-    //     }
-    //     else if (!isRight)
-    //     {
-    //         putText(colorImg, "Lost right", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-    //         centerRight= preCenterRight + centerLeft - preCenterLeft;
-    //     }
-    //     else
-    //         putText(colorImg, "2 lane", Point(0, 50), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(255, 255, 0), 1, CV_AA);
-
-    //     centerPoint.x = (centerLeft.x + centerRight.x) / 2;
-    //     theta = getTheta(carPosition, centerPoint);
-    // }
     if (isLane)
     {
         if (isDebug)
@@ -348,23 +314,6 @@ void laneProcessing()
         centerPoint.x = preCenterPoint.x;
         centerPoint.y = preCenterPoint.y + colorImg.rows * RATIO_HEIGHT_LANE_CROP;
     }
-    Point targetPoint;
-    if (laneMode == MIDDLE)
-        theta = getTheta(carPosition, centerPoint);
-    else if (laneMode == LEFT_FOLLOW)
-    {
-        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_LEFT - avgLeft.x);
-        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
-        theta = getTheta(carPosition, targetPoint);
-        cout << "reach here =======================" << endl;
-    }
-    else if (laneMode == RIGHT_FOLLOW)
-    {
-        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_RIGHT - avgRight.x);
-        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
-        theta = getTheta(carPosition, targetPoint);
-    }
-    circle(colorImg, targetPoint, 2, Scalar(100, 100, 255), 3);
     // Draw center points
     circle(colorImg, centerPoint, 2, Scalar(0, 0, 255), 3);
     line(colorImg, carPosition, centerPoint, Scalar(0, 0, 255), 3);
@@ -372,16 +321,7 @@ void laneProcessing()
     // putText(colorImg, "L", centerLeft, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 0, 0), 1, CV_AA);
     // putText(colorImg, "R", centerRight, FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0, 255, 0), 1, CV_AA);
 
-    theta = -theta * ALPHA;
-    if (theta > -20 && theta < 20)
-        theta = 0;
-
-    if (isDebug)
-        putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
-
-    printf("theta: %d\n", int(theta));
-    preCenterPoint.x = centerPoint.x;
-    preCenterPoint.y = centerPoint.y - colorImg.rows * RATIO_HEIGHT_LANE_CROP;
+    
 }
 
 void analyzeFrame(const VideoFrameRef &frame_color, Mat &color_img)

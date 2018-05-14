@@ -25,6 +25,7 @@ int backupThrottle;
 int fps;
 bool isDebug;
 char key;
+double freq, st_timeout_has_blue_sign;
 
 bool keyboardControl()
 {
@@ -347,7 +348,7 @@ void signProcessing()
     //     else if (signID == SIGN_STOP)
     //         putText(colorImg, "Sign stop", Point(0, 70), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 0, 255), 1, CV_AA);
     // }
-    allowStopSign = true;
+    //allowStopSign = true;
     bool preHasSign = hasRedSign || hasBlueSign;
 
     if (redSign.detect(false)) // red
@@ -355,10 +356,19 @@ void signProcessing()
             hasRedSign = true;
 
     if (blueSign.detect(true)) // blue
+    {
         if (blueSign.recognize())
         {
             hasBlueSign = true;
+            st_timeout_has_blue_sign = getTickCount();
         }
+    }
+    else
+    {
+        double et = getTickCount();
+        if ((et - st_timeout_has_blue_sign) / freq > TIMEOUT_HAS_BLUE_SIGN)
+            hasBlueSign = false;            
+    }
     if (!allowStopSign && hasRedSign)
         hasRedSign = false;
     if (hasRedSign && allowStopSign == true)
@@ -398,16 +408,56 @@ void signProcessing()
             // cout << "theta in control: " << theta << endl;
             laneMode = (blueSign.getClassID() == SIGN_LEFT)?LEFT_FOLLOW:RIGHT_FOLLOW;
             rectangle(colorImg, Point(signROI.x, signROI.y), Point(signROI.x + signROI.width, signROI.y + signROI.height), Scalar(0, 0, 255), 2);
-            // cout << "sign area: " << signROI.height * signROI.width << endl;
+            cout << "sign area: " << signROI.height * signROI.width << endl;
         }
+        
+        /*
         if (signROI.height * signROI.width >= MIN_AREA_SIGN_TURN)
         {
             turning = true;
             controlTurn(signID, signROI);
             turning = false;
-        }
+        }*/
+    }
+    else
+    {
+        laneMode = MIDDLE;
     }
     //return true;
+    Point targetPoint;
+    if (laneMode == MIDDLE)
+    {
+        putText(colorImg, "MIDDLE", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        theta = getTheta(carPosition, centerPoint);
+        theta = -theta * ALPHA;
+    }
+    else if (laneMode == LEFT_FOLLOW)
+    {
+        putText(colorImg, "LEFT FOLLOW", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_LEFT - avgLeft.x);
+        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
+        theta = getTheta(carPosition, targetPoint);
+        theta = -theta * ALPHA;
+    }
+    else if (laneMode == RIGHT_FOLLOW)
+    {
+        putText(colorImg, "RIGHT FOLLOW", Point(0, 90), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+        targetPoint.x = colorImg.cols / 2 - (colorImg.cols * TARGET_POINT_RIGHT - avgRight.x);
+        targetPoint.y = colorImg.rows * RATIO_HEIGHT_LANE_CROP * (2 - CENTER_POINT_Y);
+        theta = getTheta(carPosition, targetPoint);
+        theta = -theta * ALPHA;
+    }
+    circle(colorImg, targetPoint, 2, Scalar(100, 100, 255), 3);
+    
+    if (theta > -20 && theta < 20)
+        theta = 0;
+
+    if (isDebug)
+        putText(colorImg, "Theta " + to_string(int(theta)), Point(0, 30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(0, 255, 0), 1, CV_AA);
+
+    printf("theta: %d\n", int(theta));
+    preCenterPoint.x = centerPoint.x;
+    preCenterPoint.y = centerPoint.y - colorImg.rows * RATIO_HEIGHT_LANE_CROP;
 }
 
 void controlTurn(int signID, Rect signROI)

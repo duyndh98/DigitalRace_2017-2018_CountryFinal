@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
     carPosition.x = FRAME_WIDTH / 2;
     carPosition.y = FRAME_HEIGHT;
 
+    st_timeout_has_blue_sign = 0;
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
     // Calculate FPS
     double st = 0, et = 0;
     fps = 0;
-    double freq = getTickFrequency();
+    freq = getTickFrequency();
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
         {
             running = !running;
             theta = 0;
-            throttle_val = START_UP_VAL;
+            throttle_val = set_throttle_val;
             api_set_STEERING_control(pca9685, theta);
         }
         if (key == 'f')
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "ON\n");
                 started = true;
                 stopped = false;
-                throttle_val = START_UP_VAL;
+                throttle_val = set_throttle_val;
                 api_set_FORWARD_control(pca9685, throttle_val);
             }
             if (throttle_val < set_throttle_val)
@@ -169,8 +170,7 @@ int main(int argc, char *argv[])
             if (!signProcessing())
                 laneProcessing();
             */
-            // Process traffic sign
-            signProcessing();
+            signProcessing();           
 
             printf("theta: %d\n", int(theta));
 
