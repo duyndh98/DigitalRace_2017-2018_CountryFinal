@@ -15,10 +15,10 @@ LCDI2C *lcd;
 int sw1_stat, sw2_stat, sw3_stat, sw4_stat;
 int sensor;
 int set_throttle_val, throttle_val;
-double targetTimer;
-double counterComeBack;
-double counterStart;
-bool turning;
+//double targetTimer;
+//double counterComeBack;
+double st_timeout_run_cirle;
+//bool turning;
 Sign blueSign, redSign;
 
 int backupThrottle;
@@ -28,8 +28,8 @@ char key;
 double freq, st_timeout_has_blue_sign, st_timeout_has_red_sign;
 bool allowFollow;
 int reachNSign;
-bool enableTimer1;
-bool enableTimer2;
+//bool enableTimer1;
+//bool enableTimer2;
 
 bool keyboardControl()
 {
@@ -57,7 +57,7 @@ bool keyboardControl()
             case 'd':
                 api_set_STEERING_control(pca9685, -ALPHA_TURN);
                 break;
-            case ENTER_KEY:
+            case ' ':
                 api_set_FORWARD_control(pca9685, 0);
                 api_set_STEERING_control(pca9685, 0);
                 break;
@@ -209,27 +209,28 @@ void updateLCD()
         s = "NO SIGN";
     else if (hasRedSign)
     {
-        if (turning)
-            s = "TURN STOP";
-        else
-            s = "SIGN STOP";
+        // if (turning)
+        //     s = "TURN STOP";
+        // else
+        //     
+        s = "SIGN STOP";
     }
 
     else if (hasBlueSign)
     {
         if (blueSign.getClassID() == 1)
         {
-            if (turning)
-                s = "TURN LEFT";
-            else
-                s = "SIGN LEFT";
+            // if (turning)
+            //     s = "TURN LEFT";
+            // else
+            s = "SIGN LEFT";
         }
         else if (blueSign.getClassID() == 2)
         {
-            if (turning)
-                s = "TURN RIGHT";
-            else
-                s = "SIGN RIGHT";
+            // if (turning)
+            //     s = "TURN RIGHT";
+            // else
+            s = "SIGN RIGHT";
         }
     }
     lcd->LCDPrintStr(s.c_str());
@@ -375,7 +376,7 @@ void signProcessing()
     {
         hasBlueSign = true;
         st_timeout_has_blue_sign = getTickCount();
-        counterStart = getTickCount();
+        st_timeout_run_cirle = getTickCount();
     }
     else
     {
@@ -436,11 +437,11 @@ void signProcessing()
             cout << "sign area: " << signROI.height * signROI.width << endl;
         }
 
-        if (signROI.height >= MIN_HEIGHT_SIGN_STOP)
+        if (signROI.height >= MIN_HEIGHT_SIGN_TO_STOP)
         {
-            turning = true;
+            //turning = true;
             controlTurn(signID, signROI);
-            turning = false;
+            //turning = false;
         }
     }
     else
@@ -501,7 +502,7 @@ void controlTurn(int signID, Rect signROI)
     // if (signID == SIGN_RIGHT || signID == SIGN_LEFT)
     // {
     //     //targetTimer = TIME_RUN_CIRCLE;
-    //     counterStart = getTickCount() / getTickFrequency();
+    //     st_timeout_run_cirle = getTickCount() / getTickFrequency();
     // }
     set_throttle_val = backupThrottle;
 }

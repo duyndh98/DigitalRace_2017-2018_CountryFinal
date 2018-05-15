@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     running = false, started = false, stopped = false;
     bt_status = sensor_status = 0;
     theta = 0;
-    turning = false;
+    //turning = false;
     // Log
     color_videoWriter.open(color_filename, CV_FOURCC('M', 'J', 'P', 'G'), 8, Size(FRAME_WIDTH, FRAME_HEIGHT), true);
 
@@ -59,9 +59,9 @@ int main(int argc, char *argv[])
     preCenterPoint = Point(FRAME_WIDTH / 2, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
-    targetTimer = 0;
-    counterComeBack = 0;
-    counterStart = 0;
+    //targetTimer = 0;
+    //counterComeBack = 0;
+    st_timeout_run_cirle = 0;
     laneMode = MIDDLE;
     allowFollow = false;
     //    hasSign = false;
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
     avgLeft = Point(0, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     avgRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     reachNSign = 0;
-    enableTimer1 = false;
-    enableTimer2 = false;
+    //enableTimer1 = false;
+    //enableTimer2 = false;
     while (true)
     {
         printf("---------------------------\n");
@@ -154,8 +154,8 @@ int main(int argc, char *argv[])
                 imshow("binRedImg", binRedImg);
             }
             cout << "time: " << getTickCount() / freq << endl;
-            double endTime = getTickCount() / freq;
-            if (endTime - counterStart / freq > TIME_RUN_CIRCLE)
+            double et_timeout_run_cirle = getTickCount();
+            if ((et_timeout_run_cirle - st_timeout_run_cirle) / freq > TIME_RUN_CIRCLE)
             {
                 cout << "Reach timer" << endl;
                 reachNSign += 1;                
@@ -202,8 +202,8 @@ int main(int argc, char *argv[])
         }
         else
         {
-            enableTimer1 = false;
-            enableTimer2 = false;
+            //enableTimer1 = false;
+            //enableTimer2 = false;
             reachNSign = 0;
             allowFollow = false;
             laneMode = MIDDLE;

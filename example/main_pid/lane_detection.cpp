@@ -234,7 +234,7 @@ void transform(Point2f *src_vertices, Point2f *dst_vertices, Mat &src, Mat &dst)
     Mat M = getPerspectiveTransform(src_vertices, dst_vertices);
     warpPerspective(src, dst, M, dst.size(), INTER_LINEAR, BORDER_CONSTANT);
 }
-
+/*
 void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
 {
     Point2f src_vertices[4];
@@ -259,7 +259,7 @@ void cropBirdEye(Mat &binLaneImg, Mat &colorLaneImg)
     line(colorLaneImg, src_vertices[2], src_vertices[3], Scalar(0, 0, 255), 3);
     line(colorLaneImg, src_vertices[3], src_vertices[0], Scalar(0, 0, 255), 3);
 }
-
+*/
 void laneProcessing()
 {
     cout << "preCenterPoint: " << preCenterPoint.x << " " << preCenterPoint.y << endl;

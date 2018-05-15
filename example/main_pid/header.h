@@ -35,31 +35,28 @@ using namespace cv::ml;
 #define LOW_HSV_RED2 Scalar(170, 100, 70)
 #define HIG_HSV_RED2 Scalar(180, 255, 255)
 
-#define LOW_HSV_GREEN Scalar(34, 80, 100)
-#define HIG_HSV_GREEN Scalar(83, 255, 255)
-
-#define GREEN_MIN Scalar(34, 138, 12)
-#define GREEN_MAX Scalar(83, 246, 124)
+// #define LOW_HSV_GREEN Scalar(34, 80, 100)
+// #define HIG_HSV_GREEN Scalar(83, 255, 255)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
 #define HIG_HSV_BLACK Scalar(255, 255, 130)
 
 #define KERNEL_SIZE 3
-#define SIGN_SIZE 32
-#define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.5
-#define DIF_RATIO_SIGN_AREA 0.2
-#define MIN_SIGN_AREA 200
-#define MIN_DISTANCE 30
-#define DIF_RATIO_2_PART_SIGN_STOP_AREA 0.2
+#define SIGN_SIZE 32 // sign size for hog compute
+#define DIF_RATIO_SIGN_WIDTH_PER_HEIGHT 0.5 // constraint for sign detection
+#define DIF_RATIO_SIGN_AREA 0.2 // constraint for sign detection
+#define MIN_SIGN_AREA 200 // remove invalid sign ROIs
+#define MIN_DISTANCE 30 // for lane detection
+#define DIF_RATIO_2_PART_SIGN_STOP_AREA 0.2 // area constraint for connection of 2 part stop sign
 
-#define SAMPLE_READ_WAIT_TIMEOUT 1
+#define SAMPLE_READ_WAIT_TIMEOUT 1 // for camera stream
 #define FRAME_WIDTH 320
 #define FRAME_HEIGHT 240
-#define TEST_DETECT_SIGN 0
-#define ACCEPT_SIGN 1
-#define N_SAMPLE 1
+// #define TEST_DETECT_SIGN 0
+// #define ACCEPT_SIGN 1
+// #define N_SAMPLE 1
 #define ALPHA 2.1
-#define ALPHA_TURN 100
+// #define ALPHA_TURN 100
 
 #define SW1_PIN 160
 #define SW2_PIN 161
@@ -69,10 +66,10 @@ using namespace cv::ml;
 
 //#define AREA_MIN 200
 #define MIN_LANE_AREA 200
-#define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
-#define RATIO_WIDTH_LANE_CROP 0.5
+// #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
+// #define RATIO_WIDTH_LANE_CROP 0.5
 #define RATIO_HEIGHT_LANE_CROP 0.45
-#define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
+// #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
 #define CENTER_POINT_Y 0.72
 #define TARGET_POINT_LEFT 0.25
 #define TARGET_POINT_RIGHT 0.75
@@ -81,34 +78,35 @@ using namespace cv::ml;
 #define SIGN_LEFT 1
 #define SIGN_RIGHT 2
 #define SIGN_STOP 3
-#define MIN_AREA_SIGN_TURN 1000
-#define MIN_HEIGHT_SIGN_STOP 25
-#define MIN_AREA_SIGN_STOP 400
+//#define MIN_AREA_SIGN_TURN 1000
+#define MIN_HEIGHT_SIGN_TO_STOP 25
+// #define MIN_AREA_SIGN_STOP 400
 #define RATE_DECELERATION 1
 //#define SIGN_THROTTLE 40
 
-#define TURN_TIME 0.2
+// #define TURN_TIME 0.2
 #define STOP_TIME 5
 
-#define KI 0.3
-#define KP 0.1
-#define KD 0.01
+// #define KI 0.3
+// #define KP 0.1
+// #define KD 0.01
 
-#define THROTTLE_VAL1 35
-#define THROTTLE_VAL2 50
-#define THROTTLE_VAL3 65
-#define THROTTLE_VAL4 100
-#define INIT_THROTTLE 45
+// #define THROTTLE_VAL1 35
+// #define THROTTLE_VAL2 50
+// #define THROTTLE_VAL3 65
+// #define THROTTLE_VAL4 100
+//#define INIT_THROTTLE 45
 #define STEP_THROTTLE 1
 #define START_UP_VAL 30
-#define DISTANCE_2_POINT 25
+//#define DISTANCE_2_POINT 25
 
-#define ENTER_KEY 13
-#define LEFT_ARROW 37
-#define RIGHT_ARROW 39
-#define UP_ARROW 38
-#define DOWN_ARROW 40
-#define SPACE_KEY 32
+// #define ENTER_KEY 13
+// #define LEFT_ARROW 37
+// #define RIGHT_ARROW 39
+// #define UP_ARROW 38
+// #define DOWN_ARROW 40
+//#define SPACE_KEY 32
+
 #define TIME_RUN_CIRCLE 10.0
 #define TIMEOUT_HAS_BLUE_SIGN 0.15
 #define TIMEOUT_HAS_RED_SIGN 10.0
@@ -143,7 +141,6 @@ extern VideoFrameRef frame_color;
 extern VideoStream *streams[1];
 
 // LCD
-
 extern I2C *i2c_device;
 extern LCDI2C *lcd;
 
@@ -176,20 +173,20 @@ extern bool allowStopSign;
 extern int backupThrottle;
 extern bool isDebug;
 extern int fps;
-extern bool turning;
+//extern bool turning;
 
 extern Point carPosition;
 
-extern double targetTimer;
-extern double counterComeBack;
-extern double counterStart;
+//extern double targetTimer;
+//extern double counterComeBack;
+extern double st_timeout_run_cirle;
 extern LaneMode laneMode;
 extern double st_timeout_has_blue_sign;
 extern double st_timeout_has_red_sign;
 extern double freq;
 extern bool allowFollow;
 extern int reachNSign;
-extern bool enableTimer1;
-extern bool enableTimer2;
+//extern bool enableTimer1;
+//extern bool enableTimer2;
 
 #endif
