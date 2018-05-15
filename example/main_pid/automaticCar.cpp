@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
     preRight = Point(FRAME_WIDTH, (1 - CENTER_POINT_Y) * FRAME_HEIGHT * RATIO_HEIGHT_LANE_CROP);
     //targetTimer = 0;
     //counterComeBack = 0;
-    st_timeout_run_cirle = 0;
-    laneMode = MIDDLE;
+    //st_timeout_run_cirle = 0;
+    laneMode = RIGHT_FOLLOW;
     allowFollow = false;
     //    hasSign = false;
     //set_throttle_val = INIT_THROTTLE;
@@ -153,7 +153,8 @@ int main(int argc, char *argv[])
                 imshow("binBlueImg", binBlueImg);
                 imshow("binRedImg", binRedImg);
             }
-            cout << "time: " << getTickCount() / freq << endl;
+            //cout << "time: " << getTickCount() / freq << endl;
+            /*
             double et_timeout_run_cirle = getTickCount();
             if ((et_timeout_run_cirle - st_timeout_run_cirle) / freq > TIME_RUN_CIRCLE)
             {
@@ -166,7 +167,7 @@ int main(int argc, char *argv[])
                     reachNSign = 0;
                 }
                 allowFollow = false;
-            }
+            }*/
             // Process lane to get theta
             laneProcessing();
             /*
@@ -206,7 +207,7 @@ int main(int argc, char *argv[])
             //enableTimer2 = false;
             reachNSign = 0;
             allowFollow = false;
-            laneMode = MIDDLE;
+            laneMode = RIGHT_FOLLOW;
             hasRedSign = false;
             hasBlueSign = false;
             setupThrottle();

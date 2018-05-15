@@ -179,7 +179,7 @@ extern Point carPosition;
 
 //extern double targetTimer;
 //extern double counterComeBack;
-extern double st_timeout_run_cirle;
+//extern double st_timeout_run_cirle;
 extern LaneMode laneMode;
 extern double st_timeout_has_blue_sign;
 extern double st_timeout_has_red_sign;
