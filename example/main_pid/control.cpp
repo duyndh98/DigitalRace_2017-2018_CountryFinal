@@ -33,6 +33,7 @@ int reachNSign;
 
 bool keyboardControl()
 {
+    /*
     if (key == ' ') // enter -> start control-mode
     {
         int alpha = 0;
@@ -67,7 +68,7 @@ bool keyboardControl()
         api_set_FORWARD_control(pca9685, 0);
         api_set_STEERING_control(pca9685, 0);
         return true;
-    }
+    }*/
     return false;
 }
 

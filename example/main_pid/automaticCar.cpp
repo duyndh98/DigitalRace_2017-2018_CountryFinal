@@ -157,6 +157,7 @@ int main(int argc, char *argv[])
             double et_timeout_run_cirle = getTickCount();
             if ((et_timeout_run_cirle - st_timeout_run_cirle) / freq > TIME_RUN_CIRCLE)
             {
+
                 cout << "Reach timer" << endl;
                 reachNSign += 1;                
                 if(allowFollow && reachNSign>1){
@@ -164,6 +165,8 @@ int main(int argc, char *argv[])
                     set_throttle_val = SLOW_THROTTLE;
                     laneMode = RIGHT_FOLLOW;
                     reachNSign = 0;
+                    
+                    
                 }
                 allowFollow = false;
             }
@@ -183,7 +186,7 @@ int main(int argc, char *argv[])
             // Log video
             // if (!orgImg.empty())
             //     org_videoWriter.write(orgImg);
-            if (isDebug && !colorImg.empty())
+            //if (isDebug && !colorImg.empty())
                 color_videoWriter.write(colorImg);
 
             et = getTickCount();
@@ -209,7 +212,7 @@ int main(int argc, char *argv[])
             laneMode = MIDDLE;
             hasRedSign = false;
             hasBlueSign = false;
-            setupThrottle();
+putText            setupThrottle();
             updateLCD();
             theta = 0;
             throttle_val = START_UP_VAL;

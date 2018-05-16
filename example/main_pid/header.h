@@ -27,19 +27,19 @@ using namespace cv;
 using namespace std;
 using namespace cv::ml;
 
-#define LOW_HSV_BLUE Scalar(100, 100, 70)
+#define LOW_HSV_BLUE Scalar(90, 150, 90)
 #define HIG_HSV_BLUE Scalar(120, 255, 255)
 
-#define LOW_HSV_RED1 Scalar(0, 100, 70)
+#define LOW_HSV_RED1 Scalar(0, 100, 60)
 #define HIG_HSV_RED1 Scalar(10, 255, 255)
-#define LOW_HSV_RED2 Scalar(170, 100, 70)
+#define LOW_HSV_RED2 Scalar(170, 100, 60)
 #define HIG_HSV_RED2 Scalar(180, 255, 255)
 
 // #define LOW_HSV_GREEN Scalar(34, 80, 100)
 // #define HIG_HSV_GREEN Scalar(83, 255, 255)
 
 #define LOW_HSV_BLACK Scalar(0, 0, 0)
-#define HIG_HSV_BLACK Scalar(255, 255, 130)
+#define HIG_HSV_BLACK Scalar(255, 255, 160)
 
 #define KERNEL_SIZE 3
 #define SIGN_SIZE 32 // sign size for hog compute
@@ -55,7 +55,7 @@ using namespace cv::ml;
 // #define TEST_DETECT_SIGN 0
 // #define ACCEPT_SIGN 1
 // #define N_SAMPLE 1
-#define ALPHA 2.1
+#define ALPHA 1.8
 // #define ALPHA_TURN 100
 
 #define SW1_PIN 160
@@ -68,9 +68,9 @@ using namespace cv::ml;
 #define MIN_LANE_AREA 200
 // #define MIN_RATIO_DISTANCE_LEFT_RIGHT_CENTER 0.3
 // #define RATIO_WIDTH_LANE_CROP 0.5
-#define RATIO_HEIGHT_LANE_CROP 0.45
+#define RATIO_HEIGHT_LANE_CROP 0.5
 // #define RATIO_LEFT_RIGHT_WIDTH_LANE_CROP 0.5
-#define CENTER_POINT_Y 0.72
+#define CENTER_POINT_Y 0.8
 #define TARGET_POINT_LEFT 0.25
 #define TARGET_POINT_RIGHT 0.75
 
@@ -107,7 +107,7 @@ using namespace cv::ml;
 // #define DOWN_ARROW 40
 //#define SPACE_KEY 32
 
-#define TIME_RUN_CIRCLE 10.0
+#define TIME_RUN_CIRCLE 10.5
 #define TIMEOUT_HAS_BLUE_SIGN 0.15
 #define TIMEOUT_HAS_RED_SIGN 10.0
 #define SLOW_THROTTLE 35
